@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SuperSocket.SocketServiceCore.Protocol;
 using SuperSocket.Common;
+using SuperSocket.SocketBase.Protocol;
+using SuperSocket.SocketBase.Command;
 
 namespace SuperWebSocket.Protocol
 {
@@ -16,7 +17,7 @@ namespace SuperWebSocket.Protocol
 
         #region ICommandAsyncReader Members
 
-        public override bool FindCommand(byte[] readBuffer, int offset, int length, out byte[] commandData)
+        public override StringCommandInfo FindCommand(byte[] readBuffer, int offset, int length)
         {
             throw new NotImplementedException();
         }

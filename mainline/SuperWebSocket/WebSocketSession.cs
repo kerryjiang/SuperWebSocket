@@ -14,6 +14,16 @@ namespace SuperWebSocket
             get { return (WebSocketServer)base.AppServer; }
         }
 
+        public new WebSocketContext Context
+        {
+            get { return (WebSocketContext)base.Context; }
+        }
+
+        protected override SocketContext CreateSocketContext()
+        {
+            return new WebSocketContext();
+        }
+
         protected override void OnClosed()
         {
             

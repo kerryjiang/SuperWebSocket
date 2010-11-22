@@ -12,10 +12,10 @@ namespace SuperWebSocket
         public string Method { get; set; }
         public string Path { get; set; }
         public string HttpVersion { get; set; }
-        public string Host { get; set; }
-        public string Origin { get; set; }
-        public string Upgrade { get; set; }
-        public string Connection { get; set; }
+        public string Host { get { return m_Values[WebSocketConstant.Host]; } }
+        public string Origin { get { return m_Values[WebSocketConstant.Origin]; } }
+        public string Upgrade { get { return m_Values[WebSocketConstant.Upgrade]; } }
+        public string Connection { get { return m_Values[WebSocketConstant.Connection]; } }
 
         private readonly StringDictionary m_Values = new StringDictionary();
 
@@ -25,7 +25,6 @@ namespace SuperWebSocket
             {
                 return m_Values[key];
             }
-
             set
             {
                 m_Values[key] = value;

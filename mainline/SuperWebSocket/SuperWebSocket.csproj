@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Command\DATA.cs" />
     <Compile Include="Command\HEAD.cs" />
+    <Compile Include="WebSocketConst.cs" />
     <Compile Include="WebSocketContext.cs" />
     <Compile Include="WebSocketProtocol.cs" />
     <Compile Include="WebSocketServer.cs" />

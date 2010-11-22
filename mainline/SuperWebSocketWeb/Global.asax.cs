@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
-using System.Configuration;
-using SuperSocket.SocketServiceCore.Configuration;
-using SuperSocket.SocketServiceCore;
+using SuperSocket.SocketBase;
+using SuperSocket.SocketEngine;
+using SuperSocket.SocketEngine.Configuration;
 
 namespace SuperWebSocketWeb
 {
     public class Global : System.Web.HttpApplication
     {
-
         void Application_Start(object sender, EventArgs e)
         {
             var serverConfig = ConfigurationManager.GetSection("socketServer") as SocketServiceConfig;

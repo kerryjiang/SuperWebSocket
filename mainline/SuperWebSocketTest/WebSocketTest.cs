@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using SuperWebSocket;
-using SuperSocket.SocketServiceCore.Config;
+using SuperSocket.SocketBase.Config;
 using System.Net.Sockets;
 using System.IO;
 using System.Net;
+using SuperSocket.SocketBase;
+using SuperSocket.SocketEngine;
 
 namespace SuperWebSocketTest
 {
@@ -25,9 +27,9 @@ namespace SuperWebSocketTest
                     Port = 911,
                     Ip = "Any",
                     MaxConnectionNumber = 100,
-                    Mode = SuperSocket.SocketServiceCore.SocketMode.Async,
+                    Mode = SocketMode.Async,
                     Name = "SuperWebSocket Server"
-                });
+                }, SocketServerFactory.Instance);
         }
 
         [SetUp]

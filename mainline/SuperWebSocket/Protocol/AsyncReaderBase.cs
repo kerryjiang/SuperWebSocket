@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SuperSocket.SocketBase.Protocol;
 using SuperSocket.Common;
+using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Command;
+using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket.Protocol
 {
@@ -14,7 +15,7 @@ namespace SuperWebSocket.Protocol
 
         #region ICommandAsyncReader Members
 
-        public abstract StringCommandInfo FindCommand(byte[] readBuffer, int offset, int length);
+        public abstract StringCommandInfo FindCommand(SocketContext context, byte[] readBuffer, int offset, int length);
 
         public ArraySegmentList<byte> GetLeftBuffer()
         {
@@ -24,5 +25,10 @@ namespace SuperWebSocket.Protocol
         public ICommandAsyncReader<StringCommandInfo> NextCommandReader { get; protected set; }
 
         #endregion
+
+        protected StringCommandInfo CreateHeadCommandInfo()
+        {
+            return new StringCommandInfo(WebSocketConstant.CommandHead, string.Empty, new string[] { });
+        }
     }
 }

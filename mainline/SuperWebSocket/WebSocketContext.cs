@@ -16,6 +16,9 @@ namespace SuperWebSocket
         public string Origin { get { return m_Values[WebSocketConstant.Origin]; } }
         public string Upgrade { get { return m_Values[WebSocketConstant.Upgrade]; } }
         public string Connection { get { return m_Values[WebSocketConstant.Connection]; } }
+        public string SecWebSocketKey1 { get { return m_Values[WebSocketConstant.SecWebSocketKey1]; } }
+        public string SecWebSocketKey2 { get { return m_Values[WebSocketConstant.SecWebSocketKey2]; } }
+        public byte[] SecWebSocketKey3 { get; set; }
 
         private readonly StringDictionary m_Values = new StringDictionary();
 

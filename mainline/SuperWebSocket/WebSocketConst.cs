@@ -17,5 +17,7 @@ namespace SuperWebSocket
         public const string Origin = "Origin";
         public const byte StartByte = 0x00;
         public const byte EndByte = 0xFF;
+        public const string CommandHead = "HEAD";
+        public const string CommandData = "DATA";
     }
 }

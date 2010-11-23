@@ -10,46 +10,13 @@ using System.Security.Cryptography;
 
 namespace SuperWebSocket.Command
 {
-    public class HEAD : StringCommandBase<WebSocketSession>
+    public class HEAD : CommandBase<WebSocketSession, WebSocketCommandInfo>
     {
-        public override void ExecuteCommand(WebSocketSession session, StringCommandInfo commandInfo)
+        public override void ExecuteCommand(WebSocketSession session, WebSocketCommandInfo commandInfo)
         {
-            StringReader reader = new StringReader(commandInfo.CommandData);
-
-            string line;
-            string firstLine = string.Empty;
-            
-            while (!string.IsNullOrEmpty(line = reader.ReadLine()))
-            {
-                if (string.IsNullOrEmpty(firstLine))
-                {
-                    firstLine = line;
-                    continue;
-                }
-
-                string[] lineInfo = line.Split(':');
-
-                string key = lineInfo[0];
-                if(!string.IsNullOrEmpty(key))
-                    key = key.Trim();
-
-                string value = lineInfo[1];
-                if (!string.IsNullOrEmpty(value))
-                    value = value.TrimStart(' ');
-
-                if (string.IsNullOrEmpty(key))
-                    continue;
-
-                session.Context[key] = value;
-            }
-
-            var metaInfo = firstLine.Split(' ');
-
-            session.Context.Method = metaInfo[0];
-            session.Context.Path = metaInfo[1];
-            session.Context.HttpVersion = metaInfo[2];
-
-            byte[] secKey3 = new byte[0];
+            var secKey1 = session.Context.SecWebSocketKey1;
+            var secKey2 = session.Context.SecWebSocketKey2;
+            var secKey3 = session.Context.SecWebSocketKey3;
 
             var responseBuilder = new StringBuilder();
 
@@ -58,9 +25,6 @@ namespace SuperWebSocket.Command
             responseBuilder.AppendLine("Upgrade: WebSocket");
             responseBuilder.AppendLine("Connection: Upgrade");
             responseBuilder.AppendLine("HTTP/1.1 101 Web Socket Protocol Handshake");
-
-            var secKey1 = session.Context[WebSocketConstant.SecWebSocketKey1];
-            var secKey2 = session.Context[WebSocketConstant.SecWebSocketKey2];
 
             //Check if the client send Sec-WebSocket-Key1 and Sec-WebSocket-Key2
             if (String.IsNullOrEmpty(secKey1) && String.IsNullOrEmpty(secKey2))
@@ -80,6 +44,8 @@ namespace SuperWebSocket.Command
                 byte[] secret = GetResponseSecurityKey(secKey1, secKey2, secKey3);
                 responseBuilder.Append(secret);
             }
+
+            session.SendRawResponse(responseBuilder.ToString());
         }
 
         private byte[] GetResponseSecurityKey(string secKey1, string secKey2, byte[] secKey3)

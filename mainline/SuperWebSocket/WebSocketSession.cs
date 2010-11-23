@@ -7,14 +7,8 @@ using SuperSocket.SocketBase.Command;
 
 namespace SuperWebSocket
 {
-    public class WebSocketSession : AppSession<WebSocketSession>
+    public class WebSocketSession : AppSession<WebSocketSession, WebSocketCommandInfo>
     {
-        public WebSocketSession()
-            : base(false)
-        {
-
-        }
-
         public new WebSocketServer AppServer
         {
             get { return (WebSocketServer)base.AppServer; }
@@ -23,6 +17,11 @@ namespace SuperWebSocket
         public new WebSocketContext Context
         {
             get { return (WebSocketContext)base.Context; }
+        }
+
+        internal void SendRawResponse(string message)
+        {
+            base.SendResponse(message);
         }
 
         public override void SendResponse(string message)

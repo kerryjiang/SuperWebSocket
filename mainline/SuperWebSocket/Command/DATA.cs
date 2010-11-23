@@ -6,9 +6,9 @@ using SuperSocket.SocketBase.Command;
 
 namespace SuperWebSocket.Command
 {
-    public class DATA : StringCommandBase<WebSocketSession>
+    public class DATA : CommandBase<WebSocketSession, WebSocketCommandInfo>
     {
-        public override void ExecuteCommand(WebSocketSession session, StringCommandInfo commandInfo)
+        public override void ExecuteCommand(WebSocketSession session, WebSocketCommandInfo commandInfo)
         {
             throw new NotImplementedException();
         }

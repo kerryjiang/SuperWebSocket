@@ -124,7 +124,7 @@ namespace SuperWebSocket
 
             base.OnSocketSessionClosed(sender, e);
 
-            if (m_SessionClosed == null)
+            if (m_SessionClosed != null)
                 m_SessionClosed(session);
         }
     }

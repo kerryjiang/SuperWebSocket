@@ -7,8 +7,8 @@ using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 using System.Configuration;
-using SuperSocket.SocketServiceCore;
-using SuperSocket.SocketServiceCore.Configuration;
+using SuperSocket.SocketEngine;
+using SuperSocket.SocketEngine.Configuration;
 
 namespace SuperWebSocket.Service
 {

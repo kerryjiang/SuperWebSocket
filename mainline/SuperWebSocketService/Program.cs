@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Configuration;
-using SuperSocket.SocketServiceCore.Configuration;
-using SuperSocket.SocketServiceCore;
+using System.Linq;
 using System.ServiceProcess;
+using System.Text;
+using SuperSocket.SocketEngine;
+using SuperSocket.SocketEngine.Configuration;
 
 namespace SuperWebSocket.Service
 {

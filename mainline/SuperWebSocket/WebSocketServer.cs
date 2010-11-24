@@ -118,6 +118,11 @@ namespace SuperWebSocket
             }
         }
 
+        protected override IEnumerable<ICommand<WebSocketSession, WebSocketCommandInfo>> LoadCommands()
+        {
+            return base.LoadCommands();
+        }
+
         protected override void OnSocketSessionClosed(object sender, SocketSessionClosedEventArgs e)
         {
             var session = this.GetAppSessionByIndentityKey(e.IdentityKey);

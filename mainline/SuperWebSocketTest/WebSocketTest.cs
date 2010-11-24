@@ -84,18 +84,23 @@ namespace SuperWebSocketTest
                     writer.WriteLine("GET /websock HTTP/1.1");
                     writer.WriteLine("Upgrade: WebSocket");
                     writer.WriteLine("Connection: Upgrade");
-                    writer.WriteLine("Sec-WebSocket-Key2: 1_ tx7X d  <  nw  334J702) 7]o}` 0");
+                    writer.WriteLine("Sec-WebSocket-Key2: 12998 5 Y3 1  .P00");
                     writer.WriteLine("Host: example.com");
-                    writer.WriteLine("Sec-WebSocket-Key1: 18x 6]8vM;54 *(5:  {   U1]8  z [  8");
+                    writer.WriteLine("Sec-WebSocket-Key1: 4 @1  46546xW%0l 1 5");
                     writer.WriteLine("Origin: http://example.com");
                     writer.WriteLine("WebSocket-Protocol: sample");
                     writer.WriteLine("");
-                    writer.Write("Tm[K T2u");
+                    writer.Write("^n:ds[4U");
                     writer.Flush();
 
                     for (var i = 0; i < 6; i++)
                         Console.WriteLine(reader.ReadLine());
-                    
+
+                    char[] buffer = new char[20];
+
+                    int read = reader.Read(buffer, 0, buffer.Length);
+
+                    Assert.AreEqual("8jKS'y:G*Co,Wxa-", new string(buffer.Take(read).ToArray()));                    
                 }
             }
         }

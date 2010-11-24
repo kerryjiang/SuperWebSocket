@@ -85,19 +85,21 @@ namespace SuperWebSocket
             if (String.IsNullOrEmpty(secKey1) && String.IsNullOrEmpty(secKey2))
             {
                 //No keys, v.75
-                responseBuilder.AppendLine(string.Format("WebSocket-Origin: {0}", session.Context.Origin));
+                if (!string.IsNullOrEmpty(session.Context.Origin))
+                    responseBuilder.AppendLine(string.Format("WebSocket-Origin: {0}", session.Context.Origin));
                 responseBuilder.AppendLine(string.Format("WebSocket-Location: ws://{0}{1}", session.Context.Host, session.Context.Path));
                 responseBuilder.AppendLine();
             }
             else
             {
                 //Have Keys, v.76
-                responseBuilder.AppendLine(string.Format("Sec-WebSocket-Origin: {0}", session.Context.Origin));
+                if (!string.IsNullOrEmpty(session.Context.Origin))
+                    responseBuilder.AppendLine(string.Format("Sec-WebSocket-Origin: {0}", session.Context.Origin));
                 responseBuilder.AppendLine(string.Format("Sec-WebSocket-Location: ws://{0}{1}", session.Context.Host, session.Context.Path));
                 responseBuilder.AppendLine();
                 //Encrypt message
                 byte[] secret = GetResponseSecurityKey(secKey1, secKey2, secKey3);
-                responseBuilder.Append(secret);
+                responseBuilder.Append(Encoding.UTF8.GetString(secret));
             }
 
             session.SendRawResponse(responseBuilder.ToString());

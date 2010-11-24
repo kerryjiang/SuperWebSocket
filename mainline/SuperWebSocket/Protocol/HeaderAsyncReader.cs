@@ -26,11 +26,11 @@ namespace SuperWebSocket.Protocol
 
         #region ICommandAsyncReader Members
 
-        public override StringCommandInfo FindCommand(SocketContext context, byte[] readBuffer, int offset, int length)
+        public override WebSocketCommandInfo FindCommand(SocketContext context, byte[] readBuffer, int offset, int length)
         {
             Segments.AddSegment(new ArraySegment<byte>(readBuffer, offset, length));
 
-            int? result = Segments.SearchMark(offset, length, m_HeaderTerminator);
+            int? result = Segments.SearchMark(m_HeaderTerminator);
 
             if (!result.HasValue || result.Value <= 0)
             {
@@ -106,13 +106,13 @@ namespace SuperWebSocket.Protocol
                     continue;
                 }
 
-                string[] lineInfo = line.Split(':');
+                int pos = line.IndexOf(':');
 
-                string key = lineInfo[0];
+                string key = line.Substring(0, pos);
                 if (!string.IsNullOrEmpty(key))
                     key = key.Trim();
 
-                string value = lineInfo[1];
+                string value = line.Substring(pos + 1);
                 if (!string.IsNullOrEmpty(value))
                     value = value.TrimStart(' ');
 

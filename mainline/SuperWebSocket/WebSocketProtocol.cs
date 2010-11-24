@@ -8,11 +8,11 @@ using SuperSocket.SocketBase.Command;
 
 namespace SuperWebSocket
 {
-    public class WebSocketProtocol : SocketProtocolBase, IAsyncProtocol<StringCommandInfo>
+    public class WebSocketProtocol : SocketProtocolBase, IAsyncProtocol<WebSocketCommandInfo>
     {
         #region IAsyncProtocol Members
 
-        public ICommandAsyncReader<StringCommandInfo> CreateAsyncCommandReader()
+        public ICommandAsyncReader<WebSocketCommandInfo> CreateAsyncCommandReader()
         {
             return new HeaderAsyncReader();
         }

@@ -27,7 +27,7 @@ namespace SuperWebSocket.Protocol
 
         #region ICommandAsyncReader Members
 
-        public override StringCommandInfo FindCommand(SocketContext context, byte[] readBuffer, int offset, int length)
+        public override WebSocketCommandInfo FindCommand(SocketContext context, byte[] readBuffer, int offset, int length)
         {
             Segments.AddSegment(new ArraySegment<byte>(readBuffer, offset, length));
 
@@ -52,7 +52,7 @@ namespace SuperWebSocket.Protocol
                 return null;
             }
 
-            var commandInfo = new StringCommandInfo(WebSocketConstant.CommandData, Encoding.UTF8.GetString(Segments.ToArrayData(m_StartPos + 1, endPos - m_StartPos)), new string[]{});
+            var commandInfo = new WebSocketCommandInfo(WebSocketConstant.CommandData, Encoding.UTF8.GetString(Segments.ToArrayData(m_StartPos + 1, endPos - m_StartPos)));
 
             int left = Segments.Count - endPos - 1;
 

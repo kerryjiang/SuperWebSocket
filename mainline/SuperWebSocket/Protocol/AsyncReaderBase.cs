@@ -9,26 +9,26 @@ using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket.Protocol
 {
-    public abstract class AsyncReaderBase : ICommandAsyncReader<StringCommandInfo>
+    public abstract class AsyncReaderBase : ICommandAsyncReader<WebSocketCommandInfo>
     {
         protected ArraySegmentList<byte> Segments { get; set; }
 
         #region ICommandAsyncReader Members
 
-        public abstract StringCommandInfo FindCommand(SocketContext context, byte[] readBuffer, int offset, int length);
+        public abstract WebSocketCommandInfo FindCommand(SocketContext context, byte[] readBuffer, int offset, int length);
 
         public ArraySegmentList<byte> GetLeftBuffer()
         {
             return Segments;
         }
 
-        public ICommandAsyncReader<StringCommandInfo> NextCommandReader { get; protected set; }
+        public ICommandAsyncReader<WebSocketCommandInfo> NextCommandReader { get; protected set; }
 
         #endregion
 
-        protected StringCommandInfo CreateHeadCommandInfo()
+        protected WebSocketCommandInfo CreateHeadCommandInfo()
         {
-            return new StringCommandInfo(WebSocketConstant.CommandHead, string.Empty, new string[] { });
+            return new WebSocketCommandInfo(WebSocketConstant.CommandHead, string.Empty);
         }
     }
 }

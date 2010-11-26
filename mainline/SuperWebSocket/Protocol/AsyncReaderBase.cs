@@ -15,7 +15,7 @@ namespace SuperWebSocket.Protocol
 
         #region ICommandAsyncReader Members
 
-        public abstract WebSocketCommandInfo FindCommand(SocketContext context, byte[] readBuffer, int offset, int length);
+        public abstract WebSocketCommandInfo FindCommand(SocketContext context, byte[] readBuffer, int offset, int length, bool isReusableBuffer);
 
         public ArraySegmentList<byte> GetLeftBuffer()
         {
@@ -29,6 +29,14 @@ namespace SuperWebSocket.Protocol
         protected WebSocketCommandInfo CreateHeadCommandInfo()
         {
             return new WebSocketCommandInfo(WebSocketConstant.CommandHead, string.Empty);
+        }
+
+        protected void AddArraySegment(byte[] buffer, int offset, int length, bool isReusableBuffer)
+        {
+            if (isReusableBuffer)
+                Segments.AddSegment(new ArraySegment<byte>(buffer.Skip(offset).Take(length).ToArray()));
+            else
+                Segments.AddSegment(new ArraySegment<byte>(buffer, offset, length));
         }
     }
 }

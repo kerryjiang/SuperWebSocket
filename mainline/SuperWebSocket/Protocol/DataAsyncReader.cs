@@ -27,9 +27,9 @@ namespace SuperWebSocket.Protocol
 
         #region ICommandAsyncReader Members
 
-        public override WebSocketCommandInfo FindCommand(SocketContext context, byte[] readBuffer, int offset, int length)
+        public override WebSocketCommandInfo FindCommand(SocketContext context, byte[] readBuffer, int offset, int length, bool isReusableBuffer)
         {
-            Segments.AddSegment(new ArraySegment<byte>(readBuffer, offset, length));
+            AddArraySegment(readBuffer, offset, length, isReusableBuffer);
 
             if (m_StartPos < 0)
             {
@@ -59,7 +59,7 @@ namespace SuperWebSocket.Protocol
             if (left > 0)
             {
                 Segments.ClearSegements();
-                Segments.AddSegment(new ArraySegment<byte>(readBuffer, offset + length - left, left));
+                AddArraySegment(readBuffer, offset + length - left, left, isReusableBuffer);
             }
 
             NextCommandReader = new DataAsyncReader(this);

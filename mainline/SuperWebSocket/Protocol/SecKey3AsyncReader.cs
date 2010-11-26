@@ -14,7 +14,7 @@ namespace SuperWebSocket.Protocol
             Segments = prevReader.GetLeftBuffer();
         }
 
-        public override WebSocketCommandInfo FindCommand(SocketContext context, byte[] readBuffer, int offset, int length)
+        public override WebSocketCommandInfo FindCommand(SocketContext context, byte[] readBuffer, int offset, int length, bool isReusableBuffer)
         {
             int total = Segments.Count + length;
 
@@ -37,13 +37,13 @@ namespace SuperWebSocket.Protocol
                 key.AddRange(readBuffer.Skip(offset).Take(8 - Segments.Count));
                 socketContext.SecWebSocketKey3 = key.ToArray();
                 Segments.ClearSegements();
-                Segments.AddSegment(new ArraySegment<byte>(readBuffer, offset + 8 - Segments.Count, total - 8));
+                AddArraySegment(readBuffer, offset + 8 - Segments.Count, total - 8, isReusableBuffer);
                 NextCommandReader = new DataAsyncReader(this);
                 return CreateHeadCommandInfo();
             }
             else
             {
-                Segments.AddSegment(new ArraySegment<byte>(readBuffer, offset, length));
+                AddArraySegment(readBuffer, offset, length, isReusableBuffer);
                 NextCommandReader = new SecKey3AsyncReader(this);
                 return null;
             }

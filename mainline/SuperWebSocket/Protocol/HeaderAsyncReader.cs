@@ -26,9 +26,9 @@ namespace SuperWebSocket.Protocol
 
         #region ICommandAsyncReader Members
 
-        public override WebSocketCommandInfo FindCommand(SocketContext context, byte[] readBuffer, int offset, int length)
+        public override WebSocketCommandInfo FindCommand(SocketContext context, byte[] readBuffer, int offset, int length, bool isReusableBuffer)
         {
-            Segments.AddSegment(new ArraySegment<byte>(readBuffer, offset, length));
+            AddArraySegment(readBuffer, offset, length, isReusableBuffer);
 
             int? result = Segments.SearchMark(m_HeaderTerminator);
 
@@ -55,7 +55,7 @@ namespace SuperWebSocket.Protocol
             {
                 //v.75
                 if (left > 0)
-                    Segments.AddSegment(new ArraySegment<byte>(readBuffer, offset + length - left, left));
+                    AddArraySegment(readBuffer, offset + length - left, left, isReusableBuffer);
 
                 NextCommandReader = new DataAsyncReader(this);
                 return CreateHeadCommandInfo();
@@ -73,7 +73,7 @@ namespace SuperWebSocket.Protocol
                 else if (left > 8)
                 {
                     socketContext.SecWebSocketKey3 = readBuffer.Skip(offset + length - left).Take(8).ToArray();
-                    Segments.AddSegment(new ArraySegment<byte>(readBuffer, offset + length - left + 8, left - 8));
+                    AddArraySegment(readBuffer, offset + length - left + 8, left - 8, isReusableBuffer);
                     NextCommandReader = new DataAsyncReader(this);
                     return CreateHeadCommandInfo();
                 }
@@ -81,7 +81,7 @@ namespace SuperWebSocket.Protocol
                 {
                     //left < 8
                     if(left > 0)
-                        Segments.AddSegment(new ArraySegment<byte>(readBuffer, offset + length - left, left));
+                        AddArraySegment(readBuffer, offset + length - left, left, isReusableBuffer);
 
                     NextCommandReader = new SecKey3AsyncReader(this);
                     return null;

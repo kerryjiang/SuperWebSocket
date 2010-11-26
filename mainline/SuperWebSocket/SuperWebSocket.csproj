@@ -48,6 +48,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Protocol\SecKey3AsyncReader.cs" />
+    <Compile Include="SubProtocol\ISubCommand.cs" />
+    <Compile Include="SubProtocol\ISubProtocol.cs" />
+    <Compile Include="SubProtocol\ISubProtocolCommandParser.cs" />
+    <Compile Include="SubProtocol\SubProtocolCommand.cs" />
     <Compile Include="WebSocketCommandInfo.cs" />
     <Compile Include="WebSocketConst.cs" />
     <Compile Include="WebSocketContext.cs" />
@@ -59,6 +63,7 @@
     <Compile Include="Protocol\DataAsyncReader.cs" />
     <Compile Include="Protocol\HeaderAsyncReader.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

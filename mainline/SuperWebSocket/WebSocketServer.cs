@@ -6,6 +6,9 @@ using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Command;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
+using SuperWebSocket.SubProtocol;
+using SuperSocket.SocketBase.Config;
+using SuperSocket.Common;
 
 namespace SuperWebSocket
 {
@@ -18,6 +21,28 @@ namespace SuperWebSocket
         {
             Protocol = new WebSocketProtocol();
         }
+
+        private ISubProtocol m_SubProtocol;
+
+        public new WebSocketProtocol Protocol
+        {
+            get
+            {
+                return (WebSocketProtocol)base.Protocol;
+            }
+            protected set
+            {
+                base.Protocol = value;
+            }
+        }
+
+        public override bool Setup(IServerConfig config, ISocketServerFactory socketServerFactory, object protocol, string consoleBaseAddress, string assembly)
+        {
+            m_SubProtocol = Protocol.SubProtocol;
+            return base.Setup(config, socketServerFactory, protocol, consoleBaseAddress, assembly);
+        }
+
+        private Dictionary<string, ISubCommand> m_SubProtocolCommandDict = new Dictionary<string, ISubCommand>(StringComparer.OrdinalIgnoreCase);
 
         private SessionEventHandler m_NewSessionConnected;
 
@@ -120,9 +145,33 @@ namespace SuperWebSocket
             }
         }
 
-        protected override IEnumerable<ICommand<WebSocketSession, WebSocketCommandInfo>> LoadCommands()
+        protected override bool SetupCommands(Dictionary<string, ICommand<WebSocketSession, WebSocketCommandInfo>> commandDict)
         {
-            return base.LoadCommands();
+            if (m_SubProtocol != null)
+            {
+                var commandAssembly = m_SubProtocol.GetSubCommandAssembly;
+                if (commandAssembly != null)
+                {
+                    var commandLoader = new ReflectCommandLoader<ISubCommand>(commandAssembly);
+
+                    foreach (var command in commandLoader.LoadCommands())
+                    {
+                        if (m_SubProtocolCommandDict.ContainsKey(command.Name))
+                        {
+                            LogUtil.LogError(this, string.Format("You have defined duplicated command {0} in your command assembly!", command.Name));
+                            return false;
+                        }
+
+                        m_SubProtocolCommandDict.Add(command.Name, command);
+                    }
+                }
+            }
+            else
+            {
+                base.SetupCommands(commandDict);
+            }
+
+            return true;
         }
 
         protected override void OnSocketSessionClosed(object sender, SocketSessionClosedEventArgs e)

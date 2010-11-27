@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using SuperWebSocket.SubProtocol;
 using SuperSocket.SocketBase.Config;
 using SuperSocket.Common;
+using System.Threading;
 
 namespace SuperWebSocket
 {
@@ -127,7 +128,7 @@ namespace SuperWebSocket
                 responseBuilder.Append(Encoding.UTF8.GetString(secret));
             }
 
-            session.SendRawResponse(responseBuilder.ToString());
+            session.SendRawResponse(responseBuilder.ToString());           
         }
 
         public override void ExecuteCommand(WebSocketSession session, WebSocketCommandInfo commandInfo)

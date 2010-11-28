@@ -11,14 +11,31 @@ using SuperSocket.SocketEngine.Configuration;
 using SuperWebSocket;
 using SuperSocket.SocketBase.Config;
 using SuperSocket.SocketBase.Command;
+using System.Threading;
 
 namespace SuperWebSocketWeb
 {
     public class Global : System.Web.HttpApplication
     {
+        private List<WebSocketSession> m_Sessions = new List<WebSocketSession>();
+        private object m_SessionSyncRoot = new object();
+        private Timer m_WebSocketTimer;
+
         void Application_Start(object sender, EventArgs e)
         {
             StartSuperWebSocketByConfig();
+            m_WebSocketTimer = new Timer(OnTimerCallback, new object(), 5000, 5000);
+        }
+
+        private void OnTimerCallback(object state)
+        {
+            lock (m_SessionSyncRoot)
+            {
+                foreach (var session in m_Sessions)
+                {
+                    session.SendResponse(Guid.NewGuid().ToString());
+                }
+            }
         }
 
         void StartSuperWebSocketByConfig()
@@ -27,7 +44,13 @@ namespace SuperWebSocketWeb
             if (!SocketServerManager.Initialize(serverConfig))
                 return;
 
-            if (!SocketServerManager.Start(serverConfig))
+            var socketServer = SocketServerManager.GetServerByName("SuperWebSocket") as WebSocketServer;
+
+            socketServer.CommandHandler += new CommandHandler<WebSocketSession, WebSocketCommandInfo>(socketServer_CommandHandler);
+            socketServer.NewSessionConnected += new SessionEventHandler(socketServer_NewSessionConnected);
+            socketServer.SessionClosed += new SessionEventHandler(socketServer_SessionClosed);
+
+            if (!SocketServerManager.Start())
                 SocketServerManager.Stop();
         }
 
@@ -47,22 +70,27 @@ namespace SuperWebSocketWeb
 
         void socketServer_NewSessionConnected(WebSocketSession session)
         {
-            
+            session.SendResponse("Nice to meet you!");
+
+            lock (m_SessionSyncRoot)
+                m_Sessions.Add(session);
         }
 
         void socketServer_SessionClosed(WebSocketSession session)
         {
-            
+            lock (m_SessionSyncRoot)
+                m_Sessions.Remove(session);
         }
 
         void socketServer_CommandHandler(WebSocketSession session, WebSocketCommandInfo commandInfo)
         {
-            
+            session.SendResponse("ECHO:" + commandInfo.CommandData);
         }
 
         void Application_End(object sender, EventArgs e)
         {
             SocketServerManager.Stop();
+            m_WebSocketTimer.Dispose();
         }
 
         void Application_Error(object sender, EventArgs e)

@@ -115,6 +115,7 @@ namespace SuperWebSocket
                     responseBuilder.AppendLine(string.Format("WebSocket-Origin: {0}", session.Context.Origin));
                 responseBuilder.AppendLine(string.Format("WebSocket-Location: ws://{0}{1}", session.Context.Host, session.Context.Path));
                 responseBuilder.AppendLine();
+                session.SendRawResponse(responseBuilder.ToString());
             }
             else
             {
@@ -123,12 +124,11 @@ namespace SuperWebSocket
                     responseBuilder.AppendLine(string.Format("Sec-WebSocket-Origin: {0}", session.Context.Origin));
                 responseBuilder.AppendLine(string.Format("Sec-WebSocket-Location: ws://{0}{1}", session.Context.Host, session.Context.Path));
                 responseBuilder.AppendLine();
+                session.SendRawResponse(responseBuilder.ToString());
                 //Encrypt message
                 byte[] secret = GetResponseSecurityKey(secKey1, secKey2, secKey3);
-                responseBuilder.Append(Encoding.UTF8.GetString(secret));
+                session.SendResponse(secret);
             }
-
-            session.SendRawResponse(responseBuilder.ToString());           
         }
 
         public override void ExecuteCommand(WebSocketSession session, WebSocketCommandInfo commandInfo)

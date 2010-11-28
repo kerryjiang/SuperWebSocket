@@ -3,12 +3,13 @@
 <head>
     <title>WebSocket Test</title>
     <script type="text/javascript">
+    var ws;
     var start = function () {
         var inc = document.getElementById('incomming');
         inc.innerHTML += "connecting to server ..<br/>";
 
         // create a new websocket and connect
-        var ws = new WebSocket('ws://localhost:911/sample');
+        ws = new WebSocket('ws://localhost:911/sample');
 
         // when data is comming from the server, this metod is called
         ws.onmessage = function (evt) {
@@ -24,6 +25,13 @@
         ws.onclose = function () {
             inc.innerHTML += '.. connection closed<br/>';
         }
+
+        setTimeout("sendCurrentTime();", 6000);
+    }
+
+    function sendCurrentTime() {
+        ws.send((new Date()).toDateString());
+        setTimeout("sendCurrentTime();", 6000);
     }
     window.onload = start;
     </script>

@@ -55,7 +55,7 @@ namespace SuperWebSocket.Service
                 return;
             }
 
-            if (!SocketServerManager.Start(serverConfig))
+            if (!SocketServerManager.Start())
             {
                 Console.WriteLine("Failed to start SuperWebSocket server! Please check error log for more information!");
                 SocketServerManager.Stop();

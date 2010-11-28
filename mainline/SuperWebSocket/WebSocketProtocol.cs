@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SuperWebSocket.Protocol;
-using SuperSocket.SocketBase.Protocol;
 using SuperSocket.SocketBase.Command;
+using SuperSocket.SocketBase.Protocol;
+using SuperWebSocket.Protocol;
 using SuperWebSocket.SubProtocol;
 
 namespace SuperWebSocket

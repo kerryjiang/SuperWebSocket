@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using SuperSocket.Common;
 using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Command;
-using System.Security.Cryptography;
-using System.Text.RegularExpressions;
-using SuperWebSocket.SubProtocol;
 using SuperSocket.SocketBase.Config;
-using SuperSocket.Common;
-using System.Threading;
+using SuperWebSocket.SubProtocol;
 
 namespace SuperWebSocket
 {

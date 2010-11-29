@@ -10,6 +10,7 @@ using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Command;
 using SuperSocket.SocketBase.Config;
 using SuperWebSocket.SubProtocol;
+using System.Net;
 
 namespace SuperWebSocket
 {
@@ -94,8 +95,42 @@ namespace SuperWebSocket
             return hash;
         }
 
+        private void SetCookie(WebSocketSession session)
+        {
+            string cookieValue = session.Context[WebSocketConstant.Cookie];
+
+            CookieCollection cookies = new CookieCollection();
+
+            if (!string.IsNullOrEmpty(cookieValue))
+            {
+                string[] pairs = cookieValue.Split(';');
+
+                int pos;
+                string key, value;
+
+                foreach (var p in pairs)
+                {
+                    pos = p.IndexOf('=');
+                    if (pos > 0)
+                    {
+                        key = p.Substring(0, pos).Trim();
+                        pos += 1;
+                        if (pos < p.Length)
+                            value = p.Substring(pos).Trim();
+                        else
+                            value = string.Empty;
+                        cookies.Add(new Cookie(key, value));
+                    }
+                }                
+            }
+
+            session.Cookies = cookies;
+        }
+
         private void ProcessHeadRequest(WebSocketSession session)
         {
+            SetCookie(session);
+
             var secKey1 = session.Context.SecWebSocketKey1;
             var secKey2 = session.Context.SecWebSocketKey2;
             var secKey3 = session.Context.SecWebSocketKey3;

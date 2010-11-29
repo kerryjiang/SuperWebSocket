@@ -13,6 +13,7 @@ namespace SuperWebSocket
         public const string SecWebSocketKey2 = "Sec-WebSocket-Key2";
         public const string SecWebSocketKey3 = "Sec-WebSocket-Key3";
         public const string SecWebSocketProtocol = "Sec-WebSocket-Protocol";
+        public const string Cookie = "Cookie";
         public const string Upgrade = "Upgrade";
         public const string Origin = "Origin";
         public const byte StartByte = 0x00;

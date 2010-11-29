@@ -93,10 +93,13 @@ namespace SuperWebSocket.Protocol
 
         private void ProcessHead(WebSocketContext context, string header)
         {
+            LogUtil.LogInfo(header);
+
             StringReader reader = new StringReader(header);
 
             string line;
             string firstLine = string.Empty;
+            string prevKey = string.Empty;
 
             while (!string.IsNullOrEmpty(line = reader.ReadLine()))
             {
@@ -106,9 +109,17 @@ namespace SuperWebSocket.Protocol
                     continue;
                 }
 
+                if (line.StartsWith("\t") && !string.IsNullOrEmpty(prevKey))
+                {
+                    string currentValue = context[prevKey];
+                    context[prevKey] = currentValue + line.Trim();
+                    continue;
+                }
+
                 int pos = line.IndexOf(':');
 
                 string key = line.Substring(0, pos);
+
                 if (!string.IsNullOrEmpty(key))
                     key = key.Trim();
 
@@ -120,6 +131,7 @@ namespace SuperWebSocket.Protocol
                     continue;
 
                 context[key] = value;
+                prevKey = key;
             }
 
             var metaInfo = firstLine.Split(' ');

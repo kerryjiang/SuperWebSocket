@@ -20,6 +20,11 @@ namespace SuperWebSocket
         public string SecWebSocketKey2 { get { return m_Values[WebSocketConstant.SecWebSocketKey2]; } }
         public byte[] SecWebSocketKey3 { get; set; }
 
+        public WebSocketContext()
+        {
+            this.Charset = Encoding.UTF8;
+        }
+
         private readonly StringDictionary m_Values = new StringDictionary();
 
         public string this[string key]

@@ -67,6 +67,8 @@ namespace SuperWebSocketWeb
         {
             lock (m_SessionSyncRoot)
                 m_Sessions.Remove(session);
+
+            SendToAll("System: " + session.Cookies["name"].Value + " disconnected");
         }
 
         void socketServer_CommandHandler(WebSocketSession session, WebSocketCommandInfo commandInfo)

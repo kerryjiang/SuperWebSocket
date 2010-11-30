@@ -54,13 +54,12 @@ namespace SuperWebSocket.Protocol
 
             var commandInfo = new WebSocketCommandInfo(WebSocketConstant.CommandData, Encoding.UTF8.GetString(Segments.ToArrayData(m_StartPos + 1, endPos - m_StartPos - 1)));
 
+            Segments.ClearSegements();
+
             int left = Segments.Count - endPos - 1;
 
-            if (left > 0)
-            {
-                Segments.ClearSegements();
+            if (left > 0)               
                 AddArraySegment(readBuffer, offset + length - left, left, isReusableBuffer);
-            }
 
             NextCommandReader = new DataAsyncReader(this);
             return commandInfo;

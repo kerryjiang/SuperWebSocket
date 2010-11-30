@@ -19,23 +19,10 @@ namespace SuperWebSocketWeb
     {
         private List<WebSocketSession> m_Sessions = new List<WebSocketSession>();
         private object m_SessionSyncRoot = new object();
-        //private Timer m_WebSocketTimer;
 
         void Application_Start(object sender, EventArgs e)
         {
             StartSuperWebSocketByConfig();
-            //m_WebSocketTimer = new Timer(OnTimerCallback, new object(), 5000, 5000);
-        }
-
-        private void OnTimerCallback(object state)
-        {
-            lock (m_SessionSyncRoot)
-            {
-                foreach (var session in m_Sessions)
-                {
-                    session.SendResponse(session.Cookies["name"].Value);
-                }
-            }
         }
 
         void StartSuperWebSocketByConfig()
@@ -72,6 +59,8 @@ namespace SuperWebSocketWeb
         {
             lock (m_SessionSyncRoot)
                 m_Sessions.Add(session);
+
+            SendToAll("System: " + session.Cookies["name"].Value + " connected");
         }
 
         void socketServer_SessionClosed(WebSocketSession session)
@@ -82,11 +71,16 @@ namespace SuperWebSocketWeb
 
         void socketServer_CommandHandler(WebSocketSession session, WebSocketCommandInfo commandInfo)
         {
+            SendToAll(session.Cookies["name"].Value + ": " + commandInfo.CommandData);
+        }
+
+        void SendToAll(string message)
+        {
             lock (m_SessionSyncRoot)
             {
                 foreach (var s in m_Sessions)
                 {
-                    s.SendResponse(session.Cookies["name"].Value + ": " + commandInfo.CommandData);
+                    s.SendResponse(message);
                 }
             }
         }
@@ -94,7 +88,6 @@ namespace SuperWebSocketWeb
         void Application_End(object sender, EventArgs e)
         {
             SocketServerManager.Stop();
-            //m_WebSocketTimer.Dispose();
         }
 
         void Application_Error(object sender, EventArgs e)

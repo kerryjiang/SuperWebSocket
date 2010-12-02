@@ -38,7 +38,7 @@ namespace SuperWebSocket.Protocol
                 if (m_StartPos < 0)
                 {
                     //Continue to read following bytes to seek start pos
-                    NextCommandReader = new DataAsyncReader(this);
+                    NextCommandReader = this;
                     return null;
                 }
             }
@@ -48,7 +48,7 @@ namespace SuperWebSocket.Protocol
             if (endPos < 0)
             {
                 //Continue to search end byte
-                NextCommandReader = new DataAsyncReader(this, m_StartPos);
+                NextCommandReader = this;
                 return null;
             }
 
@@ -61,7 +61,8 @@ namespace SuperWebSocket.Protocol
             if (left > 0)               
                 AddArraySegment(readBuffer, offset + length - left, left, isReusableBuffer);
 
-            NextCommandReader = new DataAsyncReader(this);
+            m_StartPos = -1;
+            NextCommandReader = this;
             return commandInfo;
         }
 

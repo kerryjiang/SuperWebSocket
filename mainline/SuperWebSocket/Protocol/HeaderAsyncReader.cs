@@ -14,11 +14,6 @@ namespace SuperWebSocket.Protocol
     {
         private static readonly byte[] m_HeaderTerminator = Encoding.UTF8.GetBytes(Environment.NewLine + Environment.NewLine);
 
-        public HeaderAsyncReader(HeaderAsyncReader prevHeaderReader)
-        {
-            Segments = prevHeaderReader.GetLeftBuffer();
-        }
-
         public HeaderAsyncReader()
         {
             Segments = new ArraySegmentList<byte>();
@@ -34,7 +29,7 @@ namespace SuperWebSocket.Protocol
 
             if (!result.HasValue || result.Value <= 0)
             {
-                NextCommandReader = new HeaderAsyncReader(this);
+                NextCommandReader = this;
                 return null;
             }
 

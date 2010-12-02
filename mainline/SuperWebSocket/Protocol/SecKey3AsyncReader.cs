@@ -44,7 +44,7 @@ namespace SuperWebSocket.Protocol
             else
             {
                 AddArraySegment(readBuffer, offset, length, isReusableBuffer);
-                NextCommandReader = new SecKey3AsyncReader(this);
+                NextCommandReader = this;
                 return null;
             }
         }

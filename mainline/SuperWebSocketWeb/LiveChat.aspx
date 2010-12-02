@@ -24,6 +24,7 @@
     }
     </style>
     <script type="text/javascript">
+        var noSupportMessage = "Your browser cannot support WebSocket!";
         var ws;
 
         function resizeFrame() {
@@ -46,10 +47,17 @@
         })
 
         function connectSocketServer() {
+
+            if (!("WebSocket" in window)) {
+                alert(noSupportMessage);
+                $('#messageBoard').append("* " + noSupportMessage + "<br/>");
+                return;
+            }
+
             $('#messageBoard').append("* Connecting to server ..<br/>");
 
             // create a new websocket and connect
-            ws = new WebSocket('ws://localhost:911/sample');
+            ws = new WebSocket('ws://<%= Request.Url.Host %>:<%= WebSocketPort %>/sample');
 
             // when data is comming from the server, this metod is called
             ws.onmessage = function (evt) {
@@ -68,9 +76,13 @@
         }
 
         function sendMessage() {
-            var messageBox = document.getElementById('messageBox');
-            ws.send(messageBox.value);
-            messageBox.value = "";
+            if (ws) {
+                var messageBox = document.getElementById('messageBox');
+                ws.send(messageBox.value);
+                messageBox.value = "";
+            } else {
+                alert(noSupportMessage);
+            }
         }
 
         jQuery.event.add(window, "resize", resizeFrame);

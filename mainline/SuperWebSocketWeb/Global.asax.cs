@@ -33,6 +33,8 @@ namespace SuperWebSocketWeb
 
             var socketServer = SocketServerManager.GetServerByName("SuperWebSocket") as WebSocketServer;
 
+            Application["WebSocketPort"] = socketServer.Config.Port;
+
             socketServer.CommandHandler += new CommandHandler<WebSocketSession, WebSocketCommandInfo>(socketServer_CommandHandler);
             socketServer.NewSessionConnected += new SessionEventHandler(socketServer_NewSessionConnected);
             socketServer.SessionClosed += new SessionEventHandler(socketServer_SessionClosed);
@@ -82,7 +84,7 @@ namespace SuperWebSocketWeb
             {
                 foreach (var s in m_Sessions)
                 {
-                    s.SendResponse(message);
+                    s.SendResponseAsync(message);
                 }
             }
         }

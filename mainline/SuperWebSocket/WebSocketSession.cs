@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using SuperSocket.Common;
 using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Command;
 
 namespace SuperWebSocket
 {
-    public class WebSocketSession : AppSession<WebSocketSession, WebSocketCommandInfo>
+    public class WebSocketSession : AppSession<WebSocketSession, WebSocketCommandInfo>, IAsyncRunner
     {
         public new WebSocketServer AppServer
         {
@@ -39,6 +40,16 @@ namespace SuperWebSocket
             SocketSession.SendResponse(Context, new byte[] { WebSocketConstant.StartByte });
             base.SendResponse(message, paramValues);
             SocketSession.SendResponse(Context, new byte[] { WebSocketConstant.EndByte });
+        }
+
+        public void SendResponseAsync(string message)
+        {
+            this.ExecuteAsync(w => SendResponse(message));
+        }
+
+        public void SendResponseAsync(string message, params object[] paramValues)
+        {
+            this.ExecuteAsync(w => SendResponse(message, paramValues));
         }
 
         protected override SocketContext CreateSocketContext()

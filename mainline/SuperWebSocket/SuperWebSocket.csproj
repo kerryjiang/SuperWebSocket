@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Protocol\SecKey3AsyncReader.cs" />
+    <Compile Include="Protocol\WebSocketCommandStreamReader.cs" />
     <Compile Include="SubProtocol\ISubCommand.cs" />
     <Compile Include="SubProtocol\ISubProtocol.cs" />
     <Compile Include="SubProtocol\ISubProtocolCommandParser.cs" />

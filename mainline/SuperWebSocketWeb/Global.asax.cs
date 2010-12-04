@@ -37,7 +37,7 @@ namespace SuperWebSocketWeb
 
             socketServer.CommandHandler += new CommandHandler<WebSocketSession, WebSocketCommandInfo>(socketServer_CommandHandler);
             socketServer.NewSessionConnected += new SessionEventHandler(socketServer_NewSessionConnected);
-            socketServer.SessionClosed += new SessionEventHandler(socketServer_SessionClosed);
+            socketServer.SessionClosed += new SessionClosedEventHandler(socketServer_SessionClosed);
 
             if (!SocketServerManager.Start())
                 SocketServerManager.Stop();
@@ -54,7 +54,7 @@ namespace SuperWebSocketWeb
                 }, SocketServerFactory.Instance);
             socketServer.CommandHandler += new CommandHandler<WebSocketSession, WebSocketCommandInfo>(socketServer_CommandHandler);
             socketServer.NewSessionConnected += new SessionEventHandler(socketServer_NewSessionConnected);
-            socketServer.SessionClosed += new SessionEventHandler(socketServer_SessionClosed);
+            socketServer.SessionClosed += new SessionClosedEventHandler(socketServer_SessionClosed);
         }
 
         void socketServer_NewSessionConnected(WebSocketSession session)
@@ -62,20 +62,23 @@ namespace SuperWebSocketWeb
             lock (m_SessionSyncRoot)
                 m_Sessions.Add(session);
 
-            SendToAll("System: " + session.Cookies["name"].Value + " connected");
+            SendToAll("System: " + session.Cookies["name"] + " connected");
         }
 
-        void socketServer_SessionClosed(WebSocketSession session)
+        void socketServer_SessionClosed(WebSocketSession session, CloseReason reason)
         {
             lock (m_SessionSyncRoot)
                 m_Sessions.Remove(session);
 
-            SendToAll("System: " + session.Cookies["name"].Value + " disconnected");
+            if (reason == CloseReason.ServerShutdown)
+                return;
+
+            SendToAll("System: " + session.Cookies["name"] + " disconnected");
         }
 
         void socketServer_CommandHandler(WebSocketSession session, WebSocketCommandInfo commandInfo)
         {
-            SendToAll(session.Cookies["name"].Value + ": " + commandInfo.CommandData);
+            SendToAll(session.Cookies["name"] + ": " + commandInfo.CommandData);
         }
 
         void SendToAll(string message)

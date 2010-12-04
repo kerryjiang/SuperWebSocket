@@ -37,7 +37,7 @@ namespace SuperWebSocket.Protocol
 
             var socketContext = context as WebSocketContext;
 
-            ProcessHead(socketContext, header);
+            WebSocketServer.ParseHandshake(socketContext, new StringReader(header));
 
             var secWebSocketKey1 = socketContext.SecWebSocketKey1;
             var secWebSocketKey2 = socketContext.SecWebSocketKey2;
@@ -84,56 +84,6 @@ namespace SuperWebSocket.Protocol
             }
         }
 
-        #endregion
-
-        private void ProcessHead(WebSocketContext context, string header)
-        {
-            LogUtil.LogInfo(header);
-
-            StringReader reader = new StringReader(header);
-
-            string line;
-            string firstLine = string.Empty;
-            string prevKey = string.Empty;
-
-            while (!string.IsNullOrEmpty(line = reader.ReadLine()))
-            {
-                if (string.IsNullOrEmpty(firstLine))
-                {
-                    firstLine = line;
-                    continue;
-                }
-
-                if (line.StartsWith("\t") && !string.IsNullOrEmpty(prevKey))
-                {
-                    string currentValue = context[prevKey];
-                    context[prevKey] = currentValue + line.Trim();
-                    continue;
-                }
-
-                int pos = line.IndexOf(':');
-
-                string key = line.Substring(0, pos);
-
-                if (!string.IsNullOrEmpty(key))
-                    key = key.Trim();
-
-                string value = line.Substring(pos + 1);
-                if (!string.IsNullOrEmpty(value))
-                    value = value.TrimStart(' ');
-
-                if (string.IsNullOrEmpty(key))
-                    continue;
-
-                context[key] = value;
-                prevKey = key;
-            }
-
-            var metaInfo = firstLine.Split(' ');
-
-            context.Method = metaInfo[0];
-            context.Path = metaInfo[1];
-            context.HttpVersion = metaInfo[2];
-        }
+        #endregion        
     }
 }

@@ -30,16 +30,16 @@ namespace SuperWebSocketTest
                     Port = 911,
                     Ip = "Any",
                     MaxConnectionNumber = 100,
-                    Mode = SocketMode.Async,
+                    Mode = SocketMode.Sync,
                     Name = "SuperWebSocket Server"
                 }, SocketServerFactory.Instance);
 
             m_WebSocketServer.CommandHandler += new CommandHandler<WebSocketSession, WebSocketCommandInfo>(m_WebSocketServer_CommandHandler);
             m_WebSocketServer.NewSessionConnected += new SessionEventHandler(m_WebSocketServer_NewSessionConnected);
-            m_WebSocketServer.SessionClosed += new SessionEventHandler(m_WebSocketServer_SessionClosed);
+            m_WebSocketServer.SessionClosed += new SessionClosedEventHandler(m_WebSocketServer_SessionClosed);
         }
 
-        void m_WebSocketServer_SessionClosed(WebSocketSession session)
+        void m_WebSocketServer_SessionClosed(WebSocketSession session, CloseReason reason)
         {
 
         }
@@ -91,8 +91,11 @@ namespace SuperWebSocketTest
             writer.WriteLine("Origin: http://example.com");
             writer.WriteLine("WebSocket-Protocol: sample");
             writer.WriteLine("");
-            writer.Write("^n:ds[4U");
+            string secKey = "^n:ds[4U";
+            writer.Write(secKey);
             writer.Flush();
+
+            //secKey.ToList().ForEach(c => Console.WriteLine((int)c));
 
             for (var i = 0; i < 6; i++)
                 Console.WriteLine(reader.ReadLine());

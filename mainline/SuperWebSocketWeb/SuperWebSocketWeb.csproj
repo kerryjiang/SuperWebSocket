@@ -65,6 +65,7 @@
   <ItemGroup>
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="Images\white-top-bottom.gif" />
     <Content Include="LiveChat.aspx" />
   </ItemGroup>
   <ItemGroup>
@@ -97,6 +98,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Scripts\jquery.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

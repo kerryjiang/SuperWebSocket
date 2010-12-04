@@ -11,10 +11,14 @@ using SuperSocket.SocketBase.Command;
 using SuperSocket.SocketBase.Config;
 using SuperWebSocket.SubProtocol;
 using System.Net;
+using System.IO;
+using System.Collections.Specialized;
 
 namespace SuperWebSocket
 {
     public delegate void SessionEventHandler(WebSocketSession session);
+
+    public delegate void SessionClosedEventHandler(WebSocketSession session, CloseReason reason);
 
     public class WebSocketServer : AppServer<WebSocketSession, WebSocketCommandInfo>
     {
@@ -54,9 +58,9 @@ namespace SuperWebSocket
             remove { m_NewSessionConnected -= value; }
         }
 
-        private SessionEventHandler m_SessionClosed;
+        private SessionClosedEventHandler m_SessionClosed;
 
-        public event SessionEventHandler SessionClosed
+        public event SessionClosedEventHandler SessionClosed
         {
             add { m_SessionClosed += value; }
             remove { m_SessionClosed -= value; }
@@ -99,7 +103,7 @@ namespace SuperWebSocket
         {
             string cookieValue = session.Context[WebSocketConstant.Cookie];
 
-            CookieCollection cookies = new CookieCollection();
+            var cookies = new StringDictionary();
 
             if (!string.IsNullOrEmpty(cookieValue))
             {
@@ -119,7 +123,7 @@ namespace SuperWebSocket
                             value = p.Substring(pos).Trim();
                         else
                             value = string.Empty;
-                        cookies.Add(new Cookie(key, value));
+                        cookies.Add(key, value);
                     }
                 }                
             }
@@ -127,7 +131,7 @@ namespace SuperWebSocket
             session.Cookies = cookies;
         }
 
-        private void ProcessHeadRequest(WebSocketSession session)
+        private void ProcessHandshakeRequest(WebSocketSession session)
         {
             SetCookie(session);
 
@@ -166,11 +170,57 @@ namespace SuperWebSocket
             }
         }
 
+        internal static void ParseHandshake(WebSocketContext context, TextReader reader)
+        {
+            string line;
+            string firstLine = string.Empty;
+            string prevKey = string.Empty;
+
+            while (!string.IsNullOrEmpty(line = reader.ReadLine()))
+            {
+                if (string.IsNullOrEmpty(firstLine))
+                {
+                    firstLine = line;
+                    continue;
+                }
+
+                if (line.StartsWith("\t") && !string.IsNullOrEmpty(prevKey))
+                {
+                    string currentValue = context[prevKey];
+                    context[prevKey] = currentValue + line.Trim();
+                    continue;
+                }
+
+                int pos = line.IndexOf(':');
+
+                string key = line.Substring(0, pos);
+
+                if (!string.IsNullOrEmpty(key))
+                    key = key.Trim();
+
+                string value = line.Substring(pos + 1);
+                if (!string.IsNullOrEmpty(value))
+                    value = value.TrimStart(' ');
+
+                if (string.IsNullOrEmpty(key))
+                    continue;
+
+                context[key] = value;
+                prevKey = key;
+            }
+
+            var metaInfo = firstLine.Split(' ');
+
+            context.Method = metaInfo[0];
+            context.Path = metaInfo[1];
+            context.HttpVersion = metaInfo[2];
+        }
+
         public override void ExecuteCommand(WebSocketSession session, WebSocketCommandInfo commandInfo)
         {
             if (commandInfo.CommandKey.Equals(WebSocketConstant.CommandHead))
             {
-                ProcessHeadRequest(session);
+                ProcessHandshakeRequest(session);
 
                 if (m_NewSessionConnected != null)
                     m_NewSessionConnected(session);
@@ -217,7 +267,7 @@ namespace SuperWebSocket
             base.OnSocketSessionClosed(sender, e);
 
             if (m_SessionClosed != null)
-                m_SessionClosed(session);
+                m_SessionClosed(session, e.Reason);
         }
     }
 }

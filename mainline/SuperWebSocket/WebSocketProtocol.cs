@@ -9,7 +9,7 @@ using SuperWebSocket.SubProtocol;
 
 namespace SuperWebSocket
 {
-    public class WebSocketProtocol : SocketProtocolBase, IAsyncProtocol<WebSocketCommandInfo>
+    public class WebSocketProtocol : SocketProtocolBase, IAsyncProtocol<WebSocketCommandInfo>, ISyncProtocol<WebSocketCommandInfo>
     {
         public WebSocketProtocol()
         {
@@ -28,6 +28,15 @@ namespace SuperWebSocket
         public ICommandAsyncReader<WebSocketCommandInfo> CreateAsyncCommandReader()
         {
             return new HeaderAsyncReader();
+        }
+
+        #endregion
+
+        #region ISyncProtocol<WebSocketCommandInfo> Members
+
+        public ICommandStreamReader<WebSocketCommandInfo> CreateSyncCommandReader()
+        {
+            return new WebSocketCommandStreamReader();
         }
 
         #endregion

@@ -6,6 +6,7 @@ using System.Text;
 using SuperSocket.Common;
 using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Command;
+using System.Collections.Specialized;
 
 namespace SuperWebSocket
 {
@@ -26,7 +27,7 @@ namespace SuperWebSocket
             base.SendResponse(message);
         }
 
-        public CookieCollection Cookies { get; internal set; }
+        public StringDictionary Cookies { get; internal set; }
 
         public override void SendResponse(string message)
         {

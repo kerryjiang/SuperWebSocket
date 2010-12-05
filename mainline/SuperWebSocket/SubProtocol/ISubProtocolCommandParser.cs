@@ -7,6 +7,6 @@ namespace SuperWebSocket.SubProtocol
 {
     public interface ISubProtocolCommandParser
     {
-        SubProtocolCommand ParseSubProtocolCommand(WebSocketCommandInfo commandInfo);
+        SubCommandInfo ParseSubCommand(WebSocketCommandInfo commandInfo);
     }
 }

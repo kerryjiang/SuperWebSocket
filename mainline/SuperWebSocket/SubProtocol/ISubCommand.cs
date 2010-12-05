@@ -9,6 +9,7 @@ namespace SuperWebSocket.SubProtocol
     public interface ISubCommand
     {
         string Name { get; }
-        void ExecuteCommand(WebSocketSession session, SubProtocolCommand commandInfo);
+
+        void ExecuteCommand(WebSocketSession session, SubCommandInfo commandInfo);
     }
 }

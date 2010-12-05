@@ -39,6 +39,7 @@
       <HintPath>..\Reference\SuperSocket.SocketBase.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -52,7 +53,7 @@
     <Compile Include="SubProtocol\ISubCommand.cs" />
     <Compile Include="SubProtocol\ISubProtocol.cs" />
     <Compile Include="SubProtocol\ISubProtocolCommandParser.cs" />
-    <Compile Include="SubProtocol\SubProtocolCommand.cs" />
+    <Compile Include="SubProtocol\SubCommandInfo.cs" />
     <Compile Include="WebSocketCommandInfo.cs" />
     <Compile Include="WebSocketConst.cs" />
     <Compile Include="WebSocketContext.cs" />

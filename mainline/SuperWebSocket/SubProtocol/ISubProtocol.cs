@@ -9,7 +9,7 @@ namespace SuperWebSocket.SubProtocol
 {
     public interface ISubProtocol
     {
-        ISubProtocolCommandParser GetSubProtocolCommandParser();
+        ISubProtocolCommandParser SubCommandParser { get; }
 
         Assembly GetSubCommandAssembly { get; }
     }

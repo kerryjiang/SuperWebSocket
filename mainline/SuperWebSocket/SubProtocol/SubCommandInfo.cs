@@ -5,9 +5,9 @@ using System.Text;
 
 namespace SuperWebSocket.SubProtocol
 {
-    public class SubProtocolCommand : WebSocketCommandInfo
+    public class SubCommandInfo : WebSocketCommandInfo
     {
-        public SubProtocolCommand(string key, string data)
+        public SubCommandInfo(string key, string data)
             : base(key, data)
         {
 

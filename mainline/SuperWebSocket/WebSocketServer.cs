@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -10,9 +13,6 @@ using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Command;
 using SuperSocket.SocketBase.Config;
 using SuperWebSocket.SubProtocol;
-using System.Net;
-using System.IO;
-using System.Collections.Specialized;
 
 namespace SuperWebSocket
 {
@@ -22,10 +22,16 @@ namespace SuperWebSocket
 
     public class WebSocketServer : AppServer<WebSocketSession, WebSocketCommandInfo>
     {
-        public WebSocketServer()
+        public WebSocketServer(WebSocketProtocol protocol)
             : base()
         {
-            Protocol = new WebSocketProtocol();
+            Protocol = protocol;
+        }
+
+        public WebSocketServer()
+            : this(new WebSocketProtocol())
+        {
+ 
         }
 
         private ISubProtocol m_SubProtocol;
@@ -45,10 +51,21 @@ namespace SuperWebSocket
         public override bool Setup(IServerConfig config, ISocketServerFactory socketServerFactory, object protocol, string consoleBaseAddress, string assembly)
         {
             m_SubProtocol = Protocol.SubProtocol;
+
+            string subProtocolValue = config.Parameters.GetValue("subProtocol");
+            if (!string.IsNullOrEmpty(subProtocolValue))
+            {
+                ISubProtocol subProtocol;
+                if (AssemblyUtil.TryCreateInstance<ISubProtocol>(subProtocolValue, out subProtocol))
+                    m_SubProtocol = subProtocol;
+            }
+
             return base.Setup(config, socketServerFactory, protocol, consoleBaseAddress, assembly);
         }
 
         private Dictionary<string, ISubCommand> m_SubProtocolCommandDict = new Dictionary<string, ISubCommand>(StringComparer.OrdinalIgnoreCase);
+
+        private bool m_SubCommandsLoaded = false;
 
         private SessionEventHandler m_NewSessionConnected;
 
@@ -227,8 +244,36 @@ namespace SuperWebSocket
             }
             else
             {
-                base.ExecuteCommand(session, commandInfo);
+                if (m_SubCommandsLoaded)
+                {
+                    ExecuteSubCommand(session, m_SubProtocol.SubCommandParser.ParseSubCommand(commandInfo));
+                }
+                else
+                {
+                    base.ExecuteCommand(session, commandInfo);
+                }
             }
+        }
+
+        private void ExecuteSubCommand(WebSocketSession session, SubCommandInfo subCommandInfo)
+        {
+            ISubCommand subCommand;
+
+            if (m_SubProtocolCommandDict.TryGetValue(subCommandInfo.CommandKey, out subCommand))
+            {
+                session.Context.CurrentCommand = subCommandInfo.CommandKey;
+                subCommand.ExecuteCommand(session, subCommandInfo);
+                session.Context.PrevCommand = subCommandInfo.CommandKey;
+
+                if (Config.LogCommand)
+                    LogUtil.LogInfo(this, string.Format("Command - {0} - {1}", session.IdentityKey, subCommandInfo.CommandKey));
+            }
+            else
+            {
+                session.HandleUnknownCommand(subCommandInfo);
+            }
+
+            session.LastActiveTime = DateTime.Now;
         }
 
         protected override bool SetupCommands(Dictionary<string, ICommand<WebSocketSession, WebSocketCommandInfo>> commandDict)
@@ -250,6 +295,8 @@ namespace SuperWebSocket
 
                         m_SubProtocolCommandDict.Add(command.Name, command);
                     }
+
+                    m_SubCommandsLoaded = true;
                 }
             }
             else

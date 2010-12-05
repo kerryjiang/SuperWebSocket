@@ -87,6 +87,7 @@ namespace SuperWebSocketWeb
             {
                 foreach (var s in m_Sessions)
                 {
+                    //s.SendResponse(message);
                     s.SendResponseAsync(message);
                 }
             }

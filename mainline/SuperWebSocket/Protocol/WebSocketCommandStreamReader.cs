@@ -143,6 +143,10 @@ namespace SuperWebSocket.Protocol
 
                 thisRead = ProcessReadStream();
 
+                //The connection will be closed
+                if (thisRead == 0)
+                    return null;
+
                 if (thisRead >= m_HeaderTerminator.Length)
                 {
                     var result = m_Buffer.SearchMark(0, m_BufferLength, m_HeaderTerminator);
@@ -242,6 +246,9 @@ namespace SuperWebSocket.Protocol
                 PrepareReceiveBuffer();
                 offset = m_BufferLength;
                 thisRead = ProcessReadStream();
+
+                if (thisRead <= 0)
+                    return null;
 
                 if (!m_GotStartMark)
                 {

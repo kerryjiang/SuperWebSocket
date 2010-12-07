@@ -13,5 +13,11 @@ namespace SuperWebSocket
         {
 
         }
+
+        public WebSocketCommandInfo(string data)
+            : base(string.Empty, data)
+        {
+
+        }
     }
 }

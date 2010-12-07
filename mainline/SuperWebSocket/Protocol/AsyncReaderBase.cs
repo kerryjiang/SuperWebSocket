@@ -28,7 +28,7 @@ namespace SuperWebSocket.Protocol
 
         protected WebSocketCommandInfo CreateHeadCommandInfo()
         {
-            return new WebSocketCommandInfo(WebSocketConstant.CommandHead, string.Empty);
+            return new WebSocketCommandInfo(string.Empty);
         }
 
         protected void AddArraySegment(byte[] buffer, int offset, int length, bool isReusableBuffer)

@@ -15,14 +15,6 @@ namespace SuperWebSocket
         {
         }
 
-        public WebSocketProtocol(ISubProtocol subProtocol)
-            : this()
-        {
-            SubProtocol = subProtocol;
-        }        
-
-        public ISubProtocol SubProtocol { get; private set; }
-
         #region IAsyncProtocol Members
 
         public ICommandAsyncReader<WebSocketCommandInfo> CreateAsyncCommandReader()

@@ -17,10 +17,10 @@ namespace SuperWebSocketTest
     [TestFixture]
     public class WebSocketTest
     {
-        private WebSocketServer m_WebSocketServer;
+        protected WebSocketServer m_WebSocketServer;
 
         [TestFixtureSetUp]
-        public void Setup()
+        public virtual void Setup()
         {
             LogUtil.Setup(new ConsoleLogger());
 
@@ -51,8 +51,8 @@ namespace SuperWebSocketTest
 
         void m_WebSocketServer_CommandHandler(WebSocketSession session, WebSocketCommandInfo commandInfo)
         {
-            Console.WriteLine("Server:" + commandInfo.CommandData);
-            session.SendResponse(commandInfo.CommandData);
+            Console.WriteLine("Server:" + commandInfo.Data);
+            session.SendResponse(commandInfo.Data);
         }
 
         [SetUp]
@@ -67,7 +67,7 @@ namespace SuperWebSocketTest
             m_WebSocketServer.Stop();
         }
 
-        private void Handshake(out Socket socket, out Stream stream)
+        protected void Handshake(out Socket socket, out Stream stream)
         {
             var ip = "127.0.0.1";
             var port = 911;
@@ -120,7 +120,7 @@ namespace SuperWebSocketTest
         }
 
         [Test, Timeout(5000)]
-        public void MessageTransferTest()
+        public virtual void MessageTransferTest()
         {
             Socket socket;
             Stream stream;
@@ -167,17 +167,19 @@ namespace SuperWebSocketTest
             socket.Close();
         }
 
-        private void ReceiveMessage(Stream stream, ArraySegmentList<byte> commandBuffer, int predictCount)
+        protected void ReceiveMessage(Stream stream, ArraySegmentList<byte> commandBuffer, int predictCount)
         {
             byte[] buffer = new byte[1024];
             int thisRead = 0;
+            int left = predictCount;
 
-            while ((thisRead = stream.Read(buffer, 0, buffer.Length)) > 0)
+            while ((thisRead = stream.Read(buffer, 0, Math.Min(left, buffer.Length))) > 0)
             {
                 Console.WriteLine("Current read: {0}", thisRead);
                 commandBuffer.AddSegment(new ArraySegment<byte>(buffer.Take(thisRead).ToArray()));
+                left -= thisRead;
 
-                if (commandBuffer.Count >= predictCount)
+                if (left <= 0)
                     break;
             }
         }

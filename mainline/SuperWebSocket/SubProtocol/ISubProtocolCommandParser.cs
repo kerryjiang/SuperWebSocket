@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SuperSocket.SocketBase.Command;
 
 namespace SuperWebSocket.SubProtocol
 {
     public interface ISubProtocolCommandParser
     {
-        SubCommandInfo ParseSubCommand(WebSocketCommandInfo commandInfo);
+        StringCommandInfo ParseSubCommand(WebSocketCommandInfo commandInfo);
     }
 }

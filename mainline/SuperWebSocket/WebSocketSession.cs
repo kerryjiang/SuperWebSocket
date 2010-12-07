@@ -27,6 +27,8 @@ namespace SuperWebSocket
             base.SendResponse(message);
         }
 
+        internal bool Handshaked { get; set; }
+
         public StringDictionary Cookies { get; internal set; }
 
         public override void SendResponse(string message)

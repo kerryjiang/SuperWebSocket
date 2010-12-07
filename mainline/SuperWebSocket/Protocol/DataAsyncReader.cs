@@ -52,7 +52,7 @@ namespace SuperWebSocket.Protocol
                 return null;
             }
 
-            var commandInfo = new WebSocketCommandInfo(WebSocketConstant.CommandData, Encoding.UTF8.GetString(Segments.ToArrayData(m_StartPos + 1, endPos - m_StartPos - 1)));
+            var commandInfo = new WebSocketCommandInfo(Encoding.UTF8.GetString(Segments.ToArrayData(m_StartPos + 1, endPos - m_StartPos - 1)));
 
             Segments.ClearSegements();
 

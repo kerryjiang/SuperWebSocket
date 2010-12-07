@@ -48,7 +48,7 @@ namespace SuperWebSocket.Protocol
 
         private WebSocketCommandInfo CreateHeadCommandInfo()
         {
-            var commandInfo = new WebSocketCommandInfo(WebSocketConstant.CommandHead, string.Empty);
+            var commandInfo = new WebSocketCommandInfo(string.Empty);
             
             var secWebSocketKey1 = m_SocketContext.SecWebSocketKey1;
             var secWebSocketKey2 = m_SocketContext.SecWebSocketKey2;
@@ -233,7 +233,7 @@ namespace SuperWebSocket.Protocol
 
         private WebSocketCommandInfo CreateDataCommandInfo(string data)
         {
-            return new WebSocketCommandInfo(WebSocketConstant.CommandData, data);
+            return new WebSocketCommandInfo(data);
         }
 
         private WebSocketCommandInfo ReadDataCommand()

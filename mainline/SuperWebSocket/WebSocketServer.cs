@@ -22,16 +22,15 @@ namespace SuperWebSocket
 
     public class WebSocketServer : AppServer<WebSocketSession, WebSocketCommandInfo>
     {
-        public WebSocketServer(WebSocketProtocol protocol)
-            : base()
+        public WebSocketServer(ISubProtocol subProtocol)
+            : this()
         {
-            Protocol = protocol;
+            m_SubProtocol = subProtocol;
         }
 
         public WebSocketServer()
-            : this(new WebSocketProtocol())
         {
- 
+            Protocol = new WebSocketProtocol();
         }
 
         private ISubProtocol m_SubProtocol;
@@ -50,8 +49,6 @@ namespace SuperWebSocket
 
         public override bool Setup(IServerConfig config, ISocketServerFactory socketServerFactory, object protocol, string consoleBaseAddress, string assembly)
         {
-            m_SubProtocol = Protocol.SubProtocol;
-
             string subProtocolValue = config.Parameters.GetValue("subProtocol");
             if (!string.IsNullOrEmpty(subProtocolValue))
             {
@@ -59,6 +56,9 @@ namespace SuperWebSocket
                 if (AssemblyUtil.TryCreateInstance<ISubProtocol>(subProtocolValue, out subProtocol))
                     m_SubProtocol = subProtocol;
             }
+
+            if (m_SubProtocol != null)
+                m_SubProtocol.Initialize(config);
 
             return base.Setup(config, socketServerFactory, protocol, consoleBaseAddress, assembly);
         }
@@ -235,9 +235,10 @@ namespace SuperWebSocket
 
         public override void ExecuteCommand(WebSocketSession session, WebSocketCommandInfo commandInfo)
         {
-            if (commandInfo.CommandKey.Equals(WebSocketConstant.CommandHead))
+            if (!session.Handshaked)
             {
                 ProcessHandshakeRequest(session);
+                session.Handshaked = true;
 
                 if (m_NewSessionConnected != null)
                     m_NewSessionConnected(session);
@@ -246,7 +247,7 @@ namespace SuperWebSocket
             {
                 if (m_SubCommandsLoaded)
                 {
-                    ExecuteSubCommand(session, m_SubProtocol.SubCommandParser.ParseSubCommand(commandInfo));
+                    ExecuteSubCommand(session, commandInfo, m_SubProtocol.SubCommandParser.ParseSubCommand(commandInfo));
                 }
                 else
                 {
@@ -255,22 +256,22 @@ namespace SuperWebSocket
             }
         }
 
-        private void ExecuteSubCommand(WebSocketSession session, SubCommandInfo subCommandInfo)
+        private void ExecuteSubCommand(WebSocketSession session, WebSocketCommandInfo rawCommandInfo, StringCommandInfo subCommandInfo)
         {
             ISubCommand subCommand;
 
-            if (m_SubProtocolCommandDict.TryGetValue(subCommandInfo.CommandKey, out subCommand))
+            if (m_SubProtocolCommandDict.TryGetValue(subCommandInfo.Key, out subCommand))
             {
-                session.Context.CurrentCommand = subCommandInfo.CommandKey;
+                session.Context.CurrentCommand = subCommandInfo.Key;
                 subCommand.ExecuteCommand(session, subCommandInfo);
-                session.Context.PrevCommand = subCommandInfo.CommandKey;
+                session.Context.PrevCommand = subCommandInfo.Key;
 
                 if (Config.LogCommand)
-                    LogUtil.LogInfo(this, string.Format("Command - {0} - {1}", session.IdentityKey, subCommandInfo.CommandKey));
+                    LogUtil.LogInfo(this, string.Format("Command - {0} - {1}", session.IdentityKey, subCommandInfo.Key));
             }
             else
             {
-                session.HandleUnknownCommand(subCommandInfo);
+                session.HandleUnknownCommand(rawCommandInfo);
             }
 
             session.LastActiveTime = DateTime.Now;
@@ -280,24 +281,18 @@ namespace SuperWebSocket
         {
             if (m_SubProtocol != null)
             {
-                var commandAssembly = m_SubProtocol.GetSubCommandAssembly;
-                if (commandAssembly != null)
+                foreach (var command in m_SubProtocol.GetSubCommands())
                 {
-                    var commandLoader = new ReflectCommandLoader<ISubCommand>(commandAssembly);
-
-                    foreach (var command in commandLoader.LoadCommands())
+                    if (m_SubProtocolCommandDict.ContainsKey(command.Name))
                     {
-                        if (m_SubProtocolCommandDict.ContainsKey(command.Name))
-                        {
-                            LogUtil.LogError(this, string.Format("You have defined duplicated command {0} in your command assembly!", command.Name));
-                            return false;
-                        }
-
-                        m_SubProtocolCommandDict.Add(command.Name, command);
+                        LogUtil.LogError(this, string.Format("You have defined duplicated command {0} in your command assembly!", command.Name));
+                        return false;
                     }
 
-                    m_SubCommandsLoaded = true;
+                    m_SubProtocolCommandDict.Add(command.Name, command);
                 }
+
+                m_SubCommandsLoaded = true;
             }
             else
             {

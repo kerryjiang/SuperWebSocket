@@ -57,7 +57,7 @@
             $('#messageBoard').append("* Connecting to server ..<br/>");
 
             // create a new websocket and connect
-            ws = new WebSocket('ws://<%= Request.Url.Host %>:<%= WebSocketPort %>/sample');
+            ws = new WebSocket('ws://<%= Request.Url.Host %>:<%= WebSocketPort %>/sample');            
 
             // when data is comming from the server, this metod is called
             ws.onmessage = function (evt) {
@@ -72,6 +72,24 @@
             // when the connection is closed, this method is called
             ws.onclose = function () {
                 $('#messageBoard').append('* Connection closed<br/>');
+            }
+
+            //setup secure websocket
+            var wss = new WebSocket('wss://<%= Request.Url.Host %>:<%= SecureWebSocketPort %>/sample');
+
+            // when data is comming from the server, this metod is called
+            wss.onmessage = function (evt) {
+                $('#messageBoard').append("# " + evt.data + "<br />");
+            };
+
+            // when the connection is established, this method is called
+            wss.onopen = function () {
+                $('#messageBoard').append('* Secure Connection open<br/>');
+            };
+
+            // when the connection is closed, this method is called
+            wss.onclose = function () {
+                $('#messageBoard').append('* Secure Connection closed<br/>');
             }
         }
 

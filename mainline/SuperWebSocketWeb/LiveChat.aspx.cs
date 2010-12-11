@@ -30,5 +30,18 @@ namespace SuperWebSocketWeb
                     return extPort;
             }
         }
+
+        protected object SecureWebSocketPort
+        {
+            get
+            {
+                var extPort = ConfigurationManager.AppSettings["extSecurePort"];
+
+                if (string.IsNullOrEmpty(extPort))
+                    return Application["SecureWebSocketPort"];
+                else
+                    return extPort;
+            }
+        }
     }
 }

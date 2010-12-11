@@ -18,11 +18,25 @@ namespace SuperWebSocketWeb
     public class Global : System.Web.HttpApplication
     {
         private List<WebSocketSession> m_Sessions = new List<WebSocketSession>();
+        private List<WebSocketSession> m_SecureSessions = new List<WebSocketSession>();
         private object m_SessionSyncRoot = new object();
+        private object m_SecureSessionSyncRoot = new object();
+        private Timer m_SecureSocketPushTimer;
 
         void Application_Start(object sender, EventArgs e)
         {
             StartSuperWebSocketByConfig();
+            //StartSuperWebSocketByProgramming();
+            var ts = new TimeSpan(0, 0, 5);
+            m_SecureSocketPushTimer = new Timer(OnSecureSocketPushTimerCallback, new object(), ts, ts);
+        }
+
+        void OnSecureSocketPushTimerCallback(object state)
+        {
+            lock (m_SecureSessionSyncRoot)
+            {
+                m_SecureSessions.ForEach(s => s.SendResponseAsync("Push data from SecureWebSocket. Current Time: " + DateTime.Now));
+            }
         }
 
         void StartSuperWebSocketByConfig()
@@ -32,15 +46,36 @@ namespace SuperWebSocketWeb
                 return;
 
             var socketServer = SocketServerManager.GetServerByName("SuperWebSocket") as WebSocketServer;
+            var secureSocketServer = SocketServerManager.GetServerByName("SecureSuperWebSocket") as WebSocketServer;
 
             Application["WebSocketPort"] = socketServer.Config.Port;
+            Application["SecureWebSocketPort"] = secureSocketServer.Config.Port;
 
             socketServer.CommandHandler += new CommandHandler<WebSocketSession, WebSocketCommandInfo>(socketServer_CommandHandler);
             socketServer.NewSessionConnected += new SessionEventHandler(socketServer_NewSessionConnected);
             socketServer.SessionClosed += new SessionClosedEventHandler(socketServer_SessionClosed);
 
+            secureSocketServer.NewSessionConnected += new SessionEventHandler(secureSocketServer_NewSessionConnected);
+            secureSocketServer.SessionClosed += new SessionClosedEventHandler(secureSocketServer_SessionClosed);
+
             if (!SocketServerManager.Start())
                 SocketServerManager.Stop();
+        }
+
+        void secureSocketServer_SessionClosed(WebSocketSession session, CloseReason reason)
+        {
+            lock (m_SecureSessionSyncRoot)
+            {
+                m_SecureSessions.Remove(session);
+            }
+        }
+
+        void secureSocketServer_NewSessionConnected(WebSocketSession session)
+        {
+            lock (m_SecureSessionSyncRoot)
+            {
+                m_SecureSessions.Add(session);
+            }
         }
 
         void StartSuperWebSocketByProgramming()
@@ -49,12 +84,33 @@ namespace SuperWebSocketWeb
             socketServer.Setup(new ServerConfig
                 {
                     Ip = "Any",
-                    Port = 912,
+                    Port = 2001,
                     Mode = SocketMode.Async
                 }, SocketServerFactory.Instance);
             socketServer.CommandHandler += new CommandHandler<WebSocketSession, WebSocketCommandInfo>(socketServer_CommandHandler);
             socketServer.NewSessionConnected += new SessionEventHandler(socketServer_NewSessionConnected);
             socketServer.SessionClosed += new SessionClosedEventHandler(socketServer_SessionClosed);
+
+            var secureSocketServer = new WebSocketServer();
+            secureSocketServer.Setup(new ServerConfig
+            {
+                Ip = "Any",
+                Port = 2001,
+                Mode = SocketMode.Sync,
+                Security = "tls",
+                Certificate = new SuperSocket.SocketBase.Config.CertificateConfig
+                {
+                    CertificateFilePath = Server.MapPath("~/supersocket.pfx"),
+                    CertificatePassword = "supersocket",
+                    IsEnabled = true
+                }
+            }, SocketServerFactory.Instance);
+
+            secureSocketServer.NewSessionConnected += new SessionEventHandler(secureSocketServer_NewSessionConnected);
+            secureSocketServer.SessionClosed += new SessionClosedEventHandler(secureSocketServer_SessionClosed);
+
+            Application["WebSocketPort"] = socketServer.Config.Port;
+            Application["SecureWebSocketPort"] = secureSocketServer.Config.Port;
         }
 
         void socketServer_NewSessionConnected(WebSocketSession session)
@@ -78,7 +134,7 @@ namespace SuperWebSocketWeb
 
         void socketServer_CommandHandler(WebSocketSession session, WebSocketCommandInfo commandInfo)
         {
-            SendToAll(session.Cookies["name"] + ": " + commandInfo.CommandData);
+            SendToAll(session.Cookies["name"] + ": " + commandInfo.Data);
         }
 
         void SendToAll(string message)
@@ -95,6 +151,8 @@ namespace SuperWebSocketWeb
 
         void Application_End(object sender, EventArgs e)
         {
+            m_SecureSocketPushTimer.Change(Timeout.Infinite, Timeout.Infinite);
+            m_SecureSocketPushTimer.Dispose();
             SocketServerManager.Stop();
         }
 

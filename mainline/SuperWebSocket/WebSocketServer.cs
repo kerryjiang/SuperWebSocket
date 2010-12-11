@@ -35,6 +35,8 @@ namespace SuperWebSocket
 
         private ISubProtocol m_SubProtocol;
 
+        private string m_WebSocketUriSufix;
+
         public new WebSocketProtocol Protocol
         {
             get
@@ -60,7 +62,15 @@ namespace SuperWebSocket
             if (m_SubProtocol != null)
                 m_SubProtocol.Initialize(config);
 
-            return base.Setup(config, socketServerFactory, protocol, consoleBaseAddress, assembly);
+            if (!base.Setup(config, socketServerFactory, protocol, consoleBaseAddress, assembly))
+                return false;
+
+            if (string.IsNullOrEmpty(config.Security) || "none".Equals(config.Security, StringComparison.OrdinalIgnoreCase))
+                m_WebSocketUriSufix = "ws";
+            else
+                m_WebSocketUriSufix = "wss";
+
+            return true;
         }
 
         private Dictionary<string, ISubCommand> m_SubProtocolCommandDict = new Dictionary<string, ISubCommand>(StringComparer.OrdinalIgnoreCase);
@@ -169,7 +179,7 @@ namespace SuperWebSocket
                 //No keys, v.75
                 if (!string.IsNullOrEmpty(session.Context.Origin))
                     responseBuilder.AppendLine(string.Format("WebSocket-Origin: {0}", session.Context.Origin));
-                responseBuilder.AppendLine(string.Format("WebSocket-Location: ws://{0}{1}", session.Context.Host, session.Context.Path));
+                responseBuilder.AppendLine(string.Format("WebSocket-Location: {0}://{1}{2}", m_WebSocketUriSufix, session.Context.Host, session.Context.Path));
                 responseBuilder.AppendLine();
                 session.SendRawResponse(responseBuilder.ToString());
             }
@@ -178,7 +188,7 @@ namespace SuperWebSocket
                 //Have Keys, v.76
                 if (!string.IsNullOrEmpty(session.Context.Origin))
                     responseBuilder.AppendLine(string.Format("Sec-WebSocket-Origin: {0}", session.Context.Origin));
-                responseBuilder.AppendLine(string.Format("Sec-WebSocket-Location: ws://{0}{1}", session.Context.Host, session.Context.Path));
+                responseBuilder.AppendLine(string.Format("Sec-WebSocket-Location: {0}://{1}{2}", m_WebSocketUriSufix, session.Context.Host, session.Context.Path));
                 responseBuilder.AppendLine();
                 session.SendRawResponse(responseBuilder.ToString());
                 //Encrypt message

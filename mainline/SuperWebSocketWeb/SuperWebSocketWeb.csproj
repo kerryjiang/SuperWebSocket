@@ -117,6 +117,9 @@
   <ItemGroup>
     <Content Include="supersocket.pfx" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="localhost.pfx" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
   <ProjectExtensions>

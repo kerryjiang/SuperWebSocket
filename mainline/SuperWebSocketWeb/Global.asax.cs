@@ -100,8 +100,8 @@ namespace SuperWebSocketWeb
                 Security = "tls",
                 Certificate = new SuperSocket.SocketBase.Config.CertificateConfig
                 {
-                    CertificateFilePath = Server.MapPath("~/supersocket.pfx"),
-                    CertificatePassword = "supersocket",
+                    FilePath = Server.MapPath("~/localhost.pfx"),
+                    Password = "supersocket",
                     IsEnabled = true
                 }
             }, SocketServerFactory.Instance);

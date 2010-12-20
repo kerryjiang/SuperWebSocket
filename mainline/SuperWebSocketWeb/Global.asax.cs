@@ -84,7 +84,7 @@ namespace SuperWebSocketWeb
             socketServer.Setup(new ServerConfig
                 {
                     Ip = "Any",
-                    Port = 2001,
+                    Port = 2011,
                     Mode = SocketMode.Async
                 }, SocketServerFactory.Instance);
             socketServer.CommandHandler += new CommandHandler<WebSocketSession, WebSocketCommandInfo>(socketServer_CommandHandler);
@@ -95,7 +95,7 @@ namespace SuperWebSocketWeb
             secureSocketServer.Setup(new ServerConfig
             {
                 Ip = "Any",
-                Port = 2001,
+                Port = 2012,
                 Mode = SocketMode.Sync,
                 Security = "tls",
                 Certificate = new SuperSocket.SocketBase.Config.CertificateConfig
@@ -111,6 +111,9 @@ namespace SuperWebSocketWeb
 
             Application["WebSocketPort"] = socketServer.Config.Port;
             Application["SecureWebSocketPort"] = secureSocketServer.Config.Port;
+
+            socketServer.Start();
+            secureSocketServer.Start();
         }
 
         void socketServer_NewSessionConnected(WebSocketSession session)

@@ -31,7 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SuperSocket.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SuperSocket.Common">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Reference\SuperSocket.Common.dll</HintPath>
     </Reference>

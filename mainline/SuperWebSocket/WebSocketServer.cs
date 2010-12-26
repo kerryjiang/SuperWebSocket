@@ -13,6 +13,7 @@ using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Command;
 using SuperSocket.SocketBase.Config;
 using SuperWebSocket.SubProtocol;
+using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket
 {
@@ -49,7 +50,7 @@ namespace SuperWebSocket
             }
         }
 
-        public override bool Setup(IServerConfig config, ISocketServerFactory socketServerFactory, object protocol, string consoleBaseAddress, string assembly)
+        public override bool Setup(IRootConfig rootConfig, IServerConfig config, ISocketServerFactory socketServerFactory, ICustomProtocol<WebSocketCommandInfo> protocol, string assembly)
         {
             string subProtocolValue = config.Parameters.GetValue("subProtocol");
             if (!string.IsNullOrEmpty(subProtocolValue))
@@ -62,7 +63,7 @@ namespace SuperWebSocket
             if (m_SubProtocol != null)
                 m_SubProtocol.Initialize(config);
 
-            if (!base.Setup(config, socketServerFactory, protocol, consoleBaseAddress, assembly))
+            if (!base.Setup(rootConfig, config, socketServerFactory, protocol, assembly))
                 return false;
 
             if (string.IsNullOrEmpty(config.Security) || "none".Equals(config.Security, StringComparison.OrdinalIgnoreCase))
@@ -277,7 +278,7 @@ namespace SuperWebSocket
                 session.Context.PrevCommand = subCommandInfo.Key;
 
                 if (Config.LogCommand)
-                    LogUtil.LogInfo(this, string.Format("Command - {0} - {1}", session.IdentityKey, subCommandInfo.Key));
+                    Logger.LogError(session, string.Format("Command - {0} - {1}", session.IdentityKey, subCommandInfo.Key));
             }
             else
             {
@@ -295,7 +296,7 @@ namespace SuperWebSocket
                 {
                     if (m_SubProtocolCommandDict.ContainsKey(command.Name))
                     {
-                        LogUtil.LogError(this, string.Format("You have defined duplicated command {0} in your command assembly!", command.Name));
+                        Logger.LogError(string.Format("You have defined duplicated command {0} in your command assembly!", command.Name));
                         return false;
                     }
 

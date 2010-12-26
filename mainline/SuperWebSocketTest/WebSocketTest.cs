@@ -25,7 +25,7 @@ namespace SuperWebSocketTest
             LogUtil.Setup(new ConsoleLogger());
 
             m_WebSocketServer = new WebSocketServer();
-            m_WebSocketServer.Setup(new ServerConfig
+            m_WebSocketServer.Setup(new RootConfig(), new ServerConfig
                 {
                     Port = 911,
                     Ip = "Any",

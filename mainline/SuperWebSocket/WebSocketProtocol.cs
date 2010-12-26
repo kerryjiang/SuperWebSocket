@@ -6,29 +6,22 @@ using SuperSocket.SocketBase.Command;
 using SuperSocket.SocketBase.Protocol;
 using SuperWebSocket.Protocol;
 using SuperWebSocket.SubProtocol;
+using SuperSocket.SocketBase;
 
 namespace SuperWebSocket
 {
-    public class WebSocketProtocol : SocketProtocolBase, IAsyncProtocol<WebSocketCommandInfo>, ISyncProtocol<WebSocketCommandInfo>
+    public class WebSocketProtocol : ICustomProtocol<WebSocketCommandInfo>
     {
         public WebSocketProtocol()
         {
+
         }
 
-        #region IAsyncProtocol Members
+        #region ICustomProtocol<WebSocketCommandInfo> Members
 
-        public ICommandAsyncReader<WebSocketCommandInfo> CreateAsyncCommandReader()
+        public ICommandReader<WebSocketCommandInfo> CreateCommandReader(IAppServer appServer)
         {
-            return new HeaderAsyncReader();
-        }
-
-        #endregion
-
-        #region ISyncProtocol<WebSocketCommandInfo> Members
-
-        public ICommandStreamReader<WebSocketCommandInfo> CreateSyncCommandReader()
-        {
-            return new WebSocketCommandStreamReader();
+            return new WebSocketHeaderReader(appServer);
         }
 
         #endregion

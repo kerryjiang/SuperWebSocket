@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Threading;
 using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
+using SuperSocket.Common;
 using SuperSocket.SocketBase;
+using SuperSocket.SocketBase.Command;
+using SuperSocket.SocketBase.Config;
 using SuperSocket.SocketEngine;
 using SuperSocket.SocketEngine.Configuration;
 using SuperWebSocket;
-using SuperSocket.SocketBase.Config;
-using SuperSocket.SocketBase.Command;
-using System.Threading;
 
 namespace SuperWebSocketWeb
 {
@@ -25,6 +26,7 @@ namespace SuperWebSocketWeb
 
         void Application_Start(object sender, EventArgs e)
         {
+            LogUtil.Setup();
             StartSuperWebSocketByConfig();
             //StartSuperWebSocketByProgramming();
             var ts = new TimeSpan(0, 0, 5);
@@ -81,30 +83,34 @@ namespace SuperWebSocketWeb
         void StartSuperWebSocketByProgramming()
         {
             var socketServer = new WebSocketServer();
-            socketServer.Setup(new ServerConfig
+            socketServer.Setup(new RootConfig(),
+                new ServerConfig
                 {
                     Ip = "Any",
                     Port = 2011,
                     Mode = SocketMode.Async
                 }, SocketServerFactory.Instance);
+
             socketServer.CommandHandler += new CommandHandler<WebSocketSession, WebSocketCommandInfo>(socketServer_CommandHandler);
             socketServer.NewSessionConnected += new SessionEventHandler(socketServer_NewSessionConnected);
             socketServer.SessionClosed += new SessionClosedEventHandler(socketServer_SessionClosed);
 
             var secureSocketServer = new WebSocketServer();
-            secureSocketServer.Setup(new ServerConfig
-            {
-                Ip = "Any",
-                Port = 2012,
-                Mode = SocketMode.Sync,
-                Security = "tls",
-                Certificate = new SuperSocket.SocketBase.Config.CertificateConfig
+            secureSocketServer.Setup(
+                new RootConfig(),
+                new ServerConfig
                 {
-                    FilePath = Server.MapPath("~/localhost.pfx"),
-                    Password = "supersocket",
-                    IsEnabled = true
-                }
-            }, SocketServerFactory.Instance);
+                    Ip = "Any",
+                    Port = 2012,
+                    Mode = SocketMode.Sync,
+                    Security = "tls",
+                    Certificate = new SuperSocket.SocketBase.Config.CertificateConfig
+                    {
+                        FilePath = Server.MapPath("~/localhost.pfx"),
+                        Password = "supersocket",
+                        IsEnabled = true
+                    }
+                }, SocketServerFactory.Instance);
 
             secureSocketServer.NewSessionConnected += new SessionEventHandler(secureSocketServer_NewSessionConnected);
             secureSocketServer.SessionClosed += new SessionClosedEventHandler(secureSocketServer_SessionClosed);

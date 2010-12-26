@@ -6,13 +6,13 @@ using System.Threading;
 using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
+using SuperSocket.Common;
 using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Command;
 using SuperSocket.SocketBase.Config;
 using SuperSocket.SocketEngine;
 using SuperSocket.SocketEngine.Configuration;
 using SuperWebSocket;
-using SuperSocket.Common;
 
 namespace SuperWebSocketWeb
 {
@@ -26,6 +26,7 @@ namespace SuperWebSocketWeb
 
         void Application_Start(object sender, EventArgs e)
         {
+            LogUtil.Setup();
             StartSuperWebSocketByConfig();
             //StartSuperWebSocketByProgramming();
             var ts = new TimeSpan(0, 0, 5);
@@ -82,7 +83,7 @@ namespace SuperWebSocketWeb
         void StartSuperWebSocketByProgramming()
         {
             var socketServer = new WebSocketServer();
-            socketServer.Setup(new ServerConfig
+            socketServer.Setup(new RootConfig(), new ServerConfig
             {
                 Ip = "Any",
                 Port = 2011,
@@ -93,7 +94,7 @@ namespace SuperWebSocketWeb
             socketServer.SessionClosed += new SessionClosedEventHandler(socketServer_SessionClosed);
 
             var secureSocketServer = new WebSocketServer();
-            secureSocketServer.Setup(new ServerConfig
+            secureSocketServer.Setup(new RootConfig(), new ServerConfig
             {
                 Ip = "Any",
                 Port = 2012,

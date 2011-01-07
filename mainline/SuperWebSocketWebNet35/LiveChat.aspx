@@ -22,6 +22,11 @@
         line-height:26px;
         padding-left:10px;
     }
+    #messageBoard
+    {
+        overflow: scroll;
+        padding-bottom:100px;
+    }
     </style>
     <script type="text/javascript">
         var noSupportMessage = "Your browser cannot support WebSocket!";
@@ -31,7 +36,7 @@
             var h = $(window).height();
             var w = $(window).width();
             //Adapt screen height
-            $('#messageBoard').css("height", (h - 80 - 50) + "px");
+            $('#messageBoard').css("height", (h - 80 - 50 - 100) + "px");
             $('#messageBoxCell').css("width", (w - 100) + "px");
             $('#messageBox').css("width", (w - 110) + "px");
         }
@@ -46,32 +51,38 @@
             }
         })
 
+        function scrollToBottom(target) {
+            target.animate({ scrollTop: target[0].scrollHeight });
+        }
+
         function connectSocketServer() {
+            var messageBoard = $('#messageBoard');
 
             if (!("WebSocket" in window)) {
                 alert(noSupportMessage);
-                $('#messageBoard').append("* " + noSupportMessage + "<br/>");
+                messageBoard.append("* " + noSupportMessage + "<br/>");
                 return;
             }
 
-            $('#messageBoard').append("* Connecting to server ..<br/>");
+            messageBoard.append("* Connecting to server ..<br/>");
 
             // create a new websocket and connect
             ws = new WebSocket('ws://<%= Request.Url.Host %>:<%= WebSocketPort %>/sample');
 
             // when data is comming from the server, this metod is called
             ws.onmessage = function (evt) {
-                $('#messageBoard').append("# " + evt.data + "<br />");
+                messageBoard.append("# " + evt.data + "<br />");
+                scrollToBottom(messageBoard);
             };
 
             // when the connection is established, this method is called
             ws.onopen = function () {
-                $('#messageBoard').append('* Connection open<br/>');
+                messageBoard.append('* Connection open<br/>');
             };
 
             // when the connection is closed, this method is called
             ws.onclose = function () {
-                $('#messageBoard').append('* Connection closed<br/>');
+                messageBoard.append('* Connection closed<br/>');
             }
 
             //setup secure websocket
@@ -79,17 +90,18 @@
 
             // when data is comming from the server, this metod is called
             wss.onmessage = function (evt) {
-                $('#messageBoard').append("# " + evt.data + "<br />");
+                messageBoard.append("# " + evt.data + "<br />");
+                scrollToBottom(messageBoard);
             };
 
             // when the connection is established, this method is called
             wss.onopen = function () {
-                $('#messageBoard').append('* Secure Connection open<br/>');
+                messageBoard.append('* Secure Connection open<br/>');
             };
 
             // when the connection is closed, this method is called
             wss.onclose = function () {
-                $('#messageBoard').append('* Secure Connection closed<br/>');
+                messageBoard.append('* Secure Connection closed<br/>');
             }
         }
 

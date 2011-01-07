@@ -100,7 +100,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Config\log4net.config" />
+    <Content Include="Config\log4net.config">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="localhost.pfx" />
     <None Include="supersocket.pfx" />
   </ItemGroup>

@@ -33,11 +33,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SuperSocket.SocketBase">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference\SuperSocket.SocketBase.dll</HintPath>
+      <HintPath>..\Reference\SuperSocket\NET4.0\$(Configuration)\SuperSocket.SocketBase.dll</HintPath>
     </Reference>
     <Reference Include="SuperSocket.SocketEngine">
-      <HintPath>..\Reference\SuperSocket.SocketEngine.dll</HintPath>
+      <HintPath>..\Reference\SuperSocket\NET4.0\$(Configuration)\SuperSocket.SocketEngine.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />

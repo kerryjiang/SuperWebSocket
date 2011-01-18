@@ -27,13 +27,5 @@ namespace SuperWebSocket.Protocol
         {
             return new WebSocketCommandInfo(string.Empty);
         }
-
-        protected void AddArraySegment(byte[] buffer, int offset, int length, bool isReusableBuffer)
-        {
-            if (isReusableBuffer)
-                BufferSegments.AddSegment(new ArraySegment<byte>(buffer.Skip(offset).Take(length).ToArray()));
-            else
-                BufferSegments.AddSegment(new ArraySegment<byte>(buffer, offset, length));
-        }
     }
 }

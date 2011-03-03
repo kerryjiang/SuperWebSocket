@@ -24,7 +24,7 @@ namespace SuperWebSocket.SubProtocol
     }
 
     public class BasicSubProtocol<TWebSocketSession> : ISubProtocol<TWebSocketSession>
-        where TWebSocketSession : WebSocketSession
+        where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
         private Assembly m_CommandAssembly;
 

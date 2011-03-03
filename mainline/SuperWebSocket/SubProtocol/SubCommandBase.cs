@@ -12,7 +12,7 @@ namespace SuperWebSocket.SubProtocol
     }
 
     public abstract class SubCommandBase<TWebSocketSession> : ISubCommand<TWebSocketSession>
-        where TWebSocketSession : WebSocketSession
+        where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
         #region ISubCommand Members
 

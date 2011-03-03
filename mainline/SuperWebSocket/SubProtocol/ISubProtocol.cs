@@ -9,7 +9,7 @@ using SuperSocket.SocketBase.Config;
 namespace SuperWebSocket.SubProtocol
 {
     public interface ISubProtocol<TWebSocketSession>
-        where TWebSocketSession : WebSocketSession
+        where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
         bool Initialize(IServerConfig config);
 

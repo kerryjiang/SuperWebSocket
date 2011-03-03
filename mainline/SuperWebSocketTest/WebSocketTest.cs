@@ -35,18 +35,18 @@ namespace SuperWebSocketTest
                 }, SocketServerFactory.Instance);
 
             m_WebSocketServer.CommandHandler += new CommandHandler<WebSocketSession, WebSocketCommandInfo>(m_WebSocketServer_CommandHandler);
-            m_WebSocketServer.NewSessionConnected += new SessionEventHandler(m_WebSocketServer_NewSessionConnected);
-            m_WebSocketServer.SessionClosed += new SessionClosedEventHandler(m_WebSocketServer_SessionClosed);
+            m_WebSocketServer.NewSessionConnected += new SessionEventHandler<WebSocketSession>(m_WebSocketServer_NewSessionConnected);
+            m_WebSocketServer.SessionClosed += new SessionClosedEventHandler<WebSocketSession>(m_WebSocketServer_SessionClosed);
         }
 
         void m_WebSocketServer_SessionClosed(WebSocketSession session, CloseReason reason)
         {
-
+            
         }
 
         void m_WebSocketServer_NewSessionConnected(WebSocketSession session)
         {
-
+            
         }
 
         void m_WebSocketServer_CommandHandler(WebSocketSession session, WebSocketCommandInfo commandInfo)

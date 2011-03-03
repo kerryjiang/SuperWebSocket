@@ -7,7 +7,7 @@ using SuperSocket.SocketBase.Command;
 namespace SuperWebSocket.SubProtocol
 {
     public interface ISubCommand<TWebSocketSession>
-        where TWebSocketSession : WebSocketSession
+        where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
         string Name { get; }
 

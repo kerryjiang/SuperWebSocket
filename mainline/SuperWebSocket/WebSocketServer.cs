@@ -17,9 +17,9 @@ using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket
 {
-    public delegate void SessionEventHandler(WebSocketSession session);
+    public delegate void SessionEventHandler<TWebSocketSession>(TWebSocketSession session) where TWebSocketSession : WebSocketSession<TWebSocketSession>, new();
 
-    public delegate void SessionClosedEventHandler(WebSocketSession session, CloseReason reason);
+    public delegate void SessionClosedEventHandler<TWebSocketSession>(TWebSocketSession session, CloseReason reason) where TWebSocketSession : WebSocketSession<TWebSocketSession>, new();
 
     public class WebSocketServer : WebSocketServer<WebSocketSession>
     {
@@ -37,7 +37,7 @@ namespace SuperWebSocket
     }
 
     public abstract class WebSocketServer<TWebSocketSession> : AppServer<TWebSocketSession, WebSocketCommandInfo>
-        where TWebSocketSession : WebSocketSession, IAppSession<TWebSocketSession, WebSocketCommandInfo>, new()
+        where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
         public WebSocketServer(ISubProtocol<TWebSocketSession> subProtocol)
             : this()
@@ -94,17 +94,17 @@ namespace SuperWebSocket
 
         private bool m_SubCommandsLoaded = false;
 
-        private SessionEventHandler m_NewSessionConnected;
+        private SessionEventHandler<TWebSocketSession> m_NewSessionConnected;
 
-        public event SessionEventHandler NewSessionConnected
+        public event SessionEventHandler<TWebSocketSession> NewSessionConnected
         {
             add { m_NewSessionConnected += value; }
             remove { m_NewSessionConnected -= value; }
         }
 
-        private SessionClosedEventHandler m_SessionClosed;
+        private SessionClosedEventHandler<TWebSocketSession> m_SessionClosed;
 
-        public event SessionClosedEventHandler SessionClosed
+        public event SessionClosedEventHandler<TWebSocketSession> SessionClosed
         {
             add { m_SessionClosed += value; }
             remove { m_SessionClosed -= value; }
@@ -143,7 +143,7 @@ namespace SuperWebSocket
             return hash;
         }
 
-        private void SetCookie(WebSocketSession session)
+        private void SetCookie(TWebSocketSession session)
         {
             string cookieValue = session.Context[WebSocketConstant.Cookie];
 
@@ -175,7 +175,7 @@ namespace SuperWebSocket
             session.Cookies = cookies;
         }
 
-        private void ProcessHandshakeRequest(WebSocketSession session)
+        private void ProcessHandshakeRequest(TWebSocketSession session)
         {
             SetCookie(session);
 

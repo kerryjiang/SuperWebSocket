@@ -8,12 +8,13 @@ using SuperSocket.SocketBase.Config;
 
 namespace SuperWebSocket.SubProtocol
 {
-    public interface ISubProtocol
+    public interface ISubProtocol<TWebSocketSession>
+        where TWebSocketSession : WebSocketSession
     {
         bool Initialize(IServerConfig config);
 
         ISubProtocolCommandParser SubCommandParser { get; }
 
-        IEnumerable<ISubCommand> GetSubCommands();
+        IEnumerable<ISubCommand<TWebSocketSession>> GetSubCommands();
     }
 }

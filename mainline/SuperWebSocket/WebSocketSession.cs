@@ -10,7 +10,13 @@ using System.Collections.Specialized;
 
 namespace SuperWebSocket
 {
-    public class WebSocketSession : AppSession<WebSocketSession, WebSocketCommandInfo>, IAsyncRunner
+    public class WebSocketSession : WebSocketSession<WebSocketSession>
+    {
+
+    }
+
+    public class WebSocketSession<TWebSocketSession> : AppSession<TWebSocketSession, WebSocketCommandInfo>, IAsyncRunner
+        where TWebSocketSession : IAppSession<TWebSocketSession, WebSocketCommandInfo>, new()
     {
         public new WebSocketServer AppServer
         {

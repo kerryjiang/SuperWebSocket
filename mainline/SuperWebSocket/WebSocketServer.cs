@@ -23,7 +23,7 @@ namespace SuperWebSocket
 
     public class WebSocketServer : WebSocketServer<WebSocketSession>
     {
-        public WebSocketServer(ISubProtocol subProtocol)
+        public WebSocketServer(ISubProtocol<WebSocketSession> subProtocol)
             : base(subProtocol)
         {
 
@@ -39,7 +39,7 @@ namespace SuperWebSocket
     public abstract class WebSocketServer<TWebSocketSession> : AppServer<TWebSocketSession, WebSocketCommandInfo>
         where TWebSocketSession : WebSocketSession, IAppSession<TWebSocketSession, WebSocketCommandInfo>, new()
     {
-        public WebSocketServer(ISubProtocol subProtocol)
+        public WebSocketServer(ISubProtocol<TWebSocketSession> subProtocol)
             : this()
         {
             m_SubProtocol = subProtocol;
@@ -50,7 +50,7 @@ namespace SuperWebSocket
             Protocol = new WebSocketProtocol();
         }
 
-        private ISubProtocol m_SubProtocol;
+        private ISubProtocol<TWebSocketSession> m_SubProtocol;
 
         private string m_WebSocketUriSufix;
 
@@ -71,8 +71,8 @@ namespace SuperWebSocket
             string subProtocolValue = config.Parameters.GetValue("subProtocol");
             if (!string.IsNullOrEmpty(subProtocolValue))
             {
-                ISubProtocol subProtocol;
-                if (AssemblyUtil.TryCreateInstance<ISubProtocol>(subProtocolValue, out subProtocol))
+                ISubProtocol<TWebSocketSession> subProtocol;
+                if (AssemblyUtil.TryCreateInstance<ISubProtocol<TWebSocketSession>>(subProtocolValue, out subProtocol))
                     m_SubProtocol = subProtocol;
             }
 
@@ -90,7 +90,7 @@ namespace SuperWebSocket
             return true;
         }
 
-        private Dictionary<string, ISubCommand> m_SubProtocolCommandDict = new Dictionary<string, ISubCommand>(StringComparer.OrdinalIgnoreCase);
+        private Dictionary<string, ISubCommand<TWebSocketSession>> m_SubProtocolCommandDict = new Dictionary<string, ISubCommand<TWebSocketSession>>(StringComparer.OrdinalIgnoreCase);
 
         private bool m_SubCommandsLoaded = false;
 
@@ -283,9 +283,9 @@ namespace SuperWebSocket
             }
         }
 
-        private void ExecuteSubCommand(WebSocketSession session, WebSocketCommandInfo rawCommandInfo, StringCommandInfo subCommandInfo)
+        private void ExecuteSubCommand(TWebSocketSession session, WebSocketCommandInfo rawCommandInfo, StringCommandInfo subCommandInfo)
         {
-            ISubCommand subCommand;
+            ISubCommand<TWebSocketSession> subCommand;
 
             if (m_SubProtocolCommandDict.TryGetValue(subCommandInfo.Key, out subCommand))
             {

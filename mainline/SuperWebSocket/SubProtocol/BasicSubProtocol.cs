@@ -9,7 +9,22 @@ using SuperSocket.SocketBase.Command;
 
 namespace SuperWebSocket.SubProtocol
 {
-    public class BasicSubProtocol : ISubProtocol
+    public class BasicSubProtocol : BasicSubProtocol<WebSocketSession>
+    {
+        public BasicSubProtocol(Assembly commandAssembly)
+            : base(commandAssembly)
+        {
+        }
+
+        public BasicSubProtocol()
+            : base()
+        {
+
+        }
+    }
+
+    public class BasicSubProtocol<TWebSocketSession> : ISubProtocol<TWebSocketSession>
+        where TWebSocketSession : WebSocketSession
     {
         private Assembly m_CommandAssembly;
 
@@ -28,12 +43,12 @@ namespace SuperWebSocket.SubProtocol
 
         public ISubProtocolCommandParser SubCommandParser { get; private set; }
 
-        public IEnumerable<ISubCommand> GetSubCommands()
+        public IEnumerable<ISubCommand<TWebSocketSession>> GetSubCommands()
         {
             if (m_CommandAssembly == null)
                 m_CommandAssembly = Assembly.GetEntryAssembly();
 
-            return m_CommandAssembly.GetImplementedObjectsByInterface<ISubCommand>().Cast<ISubCommand>();
+            return m_CommandAssembly.GetImplementedObjectsByInterface<ISubCommand<TWebSocketSession>>();
         }
 
         public bool Initialize(IServerConfig config)

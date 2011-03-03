@@ -6,10 +6,11 @@ using SuperSocket.SocketBase.Command;
 
 namespace SuperWebSocket.SubProtocol
 {
-    public interface ISubCommand
+    public interface ISubCommand<TWebSocketSession>
+        where TWebSocketSession : WebSocketSession
     {
         string Name { get; }
 
-        void ExecuteCommand(WebSocketSession session, StringCommandInfo commandInfo);
+        void ExecuteCommand(TWebSocketSession session, StringCommandInfo commandInfo);
     }
 }

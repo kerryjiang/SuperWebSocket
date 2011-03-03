@@ -6,7 +6,13 @@ using SuperSocket.SocketBase.Command;
 
 namespace SuperWebSocket.SubProtocol
 {
-    public abstract class SubCommandBase : ISubCommand
+    public abstract class SubCommandBase : SubCommandBase<WebSocketSession>
+    {
+
+    }
+
+    public abstract class SubCommandBase<TWebSocketSession> : ISubCommand<TWebSocketSession>
+        where TWebSocketSession : WebSocketSession
     {
         #region ISubCommand Members
 
@@ -15,7 +21,7 @@ namespace SuperWebSocket.SubProtocol
             get { return this.GetType().Name; }
         }
 
-        public abstract void ExecuteCommand(WebSocketSession session, StringCommandInfo commandInfo);
+        public abstract void ExecuteCommand(TWebSocketSession session, StringCommandInfo commandInfo);
 
         #endregion
     }

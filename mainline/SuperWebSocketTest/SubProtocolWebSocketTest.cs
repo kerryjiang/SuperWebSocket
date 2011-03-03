@@ -102,20 +102,23 @@ namespace SuperWebSocketTest
             for (int i = 0; i < 10; i++)
             {
                 int startPos = rd.Next(0, messageSource.Length - 2);
-                int endPos = rd.Next(startPos + 1, messageSource.Length - 1);
+                int endPos = rd.Next(startPos + 1, Math.Min(messageSource.Length - 1, startPos + 1 + 100));
 
                 string currentCommand = messageSource.Substring(startPos, endPos - startPos);
 
                 Console.WriteLine("Client:" + currentCommand);
 
                 stream.Write(new byte[] { WebSocketConstant.StartByte }, 0, 1);
-                byte[] data = Encoding.UTF8.GetBytes("ECHO:" + currentCommand);
+                byte[] data = Encoding.UTF8.GetBytes("ECHO " + currentCommand);
                 stream.Write(data, 0, data.Length);
                 stream.Write(new byte[] { WebSocketConstant.EndByte }, 0, 1);
                 stream.Flush();
 
-                ReceiveMessage(stream, receivedBuffer, data.Length + 2);
-                Assert.AreEqual(data.Length + 2, receivedBuffer.Count);
+                int requredCount = Encoding.UTF8.GetByteCount(currentCommand) + 2;
+                Console.WriteLine("Require:" + requredCount);
+
+                ReceiveMessage(stream, receivedBuffer, requredCount);
+                Assert.AreEqual(requredCount, receivedBuffer.Count);
                 Assert.AreEqual(WebSocketConstant.StartByte, receivedBuffer[0]);
                 Assert.AreEqual(WebSocketConstant.EndByte, receivedBuffer[receivedBuffer.Count - 1]);
                 Assert.AreEqual(currentCommand, Encoding.UTF8.GetString(receivedBuffer.ToArrayData(1, receivedBuffer.Count - 2)));

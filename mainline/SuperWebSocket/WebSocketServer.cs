@@ -21,7 +21,23 @@ namespace SuperWebSocket
 
     public delegate void SessionClosedEventHandler(WebSocketSession session, CloseReason reason);
 
-    public class WebSocketServer : AppServer<WebSocketSession, WebSocketCommandInfo>
+    public class WebSocketServer : WebSocketServer<WebSocketSession>
+    {
+        public WebSocketServer(ISubProtocol subProtocol)
+            : base(subProtocol)
+        {
+
+        }
+
+        public WebSocketServer()
+            : base()
+        {
+
+        }
+    }
+
+    public abstract class WebSocketServer<TWebSocketSession> : AppServer<TWebSocketSession, WebSocketCommandInfo>
+        where TWebSocketSession : WebSocketSession, IAppSession<TWebSocketSession, WebSocketCommandInfo>, new()
     {
         public WebSocketServer(ISubProtocol subProtocol)
             : this()
@@ -244,7 +260,7 @@ namespace SuperWebSocket
             context.HttpVersion = metaInfo[2];
         }
 
-        public override void ExecuteCommand(WebSocketSession session, WebSocketCommandInfo commandInfo)
+        public override void ExecuteCommand(TWebSocketSession session, WebSocketCommandInfo commandInfo)
         {
             if (!session.Handshaked)
             {
@@ -288,7 +304,7 @@ namespace SuperWebSocket
             session.LastActiveTime = DateTime.Now;
         }
 
-        protected override bool SetupCommands(Dictionary<string, ICommand<WebSocketSession, WebSocketCommandInfo>> commandDict)
+        protected override bool SetupCommands(Dictionary<string, ICommand<TWebSocketSession, WebSocketCommandInfo>> commandDict)
         {
             if (m_SubProtocol != null)
             {

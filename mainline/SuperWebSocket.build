@@ -1,0 +1,60 @@
+<?xml version="1.0" ?>
+<project name="SuperWebSocket" default="buildDebug40" xmlns="http://nant.sf.net/schemas/nant.xsd">
+	<property name="working.dir" value="${project::get-base-directory()}" />
+	<property name="build.dir" value="${project::get-base-directory()}\build" />
+	<property name="output.dir" value="${project::get-base-directory()}\..\..\Publish\SuperWebSocket" />
+	<property name="web.dir" value="${working.dir}\web" />
+	<property name="framework.dir" value="${environment::get-variable('windir')}\Microsoft.Net\Framework"/>
+	<property name="framework.version" value="v4.0.30319"/>
+	<property name="msbuild.exe" value="${framework.dir}\${framework.version}\msbuild.exe"/>
+	<property name="aspnet.compiler.exe" value="${framework.dir}\${framework.version}\aspnet_compiler.exe"/>
+	<property name="program.files" value="${environment::get-variable('ProgramFiles')}"/>
+	<echo message="program.files:${program.files}" />
+	<property name="svn.exe" value="${program.files}\SlikSvn\bin\svn.exe" unless="${property::exists('svn.exe')}" />
+	<property name="buildConfiguration" value="Debug" />
+
+	<target name="clean" description="Delete Automated Build artifacts">
+		<delete>
+			<fileset>
+				<include name="**/bin/**" />
+			</fileset>
+		</delete>
+	</target>
+	
+	<target name="buildProject">
+		<call target="clean"/>
+		<exec program="${msbuild.exe}"
+			commandline="${project.file} /p:Configuration=${buildConfiguration} /t:Rebuild /p:OutputPath=${output.dir}\${net.version}\${buildConfiguration}"
+			failonerror="true" verbose="false" />
+	</target>
+	
+	<target name="buildDebug40">
+		<property name="buildConfiguration" value="Debug" />
+		<property name="net.version" value="Net40" />
+		<property name="project.file" value="SuperWebSocket\SuperWebSocket.csproj" />
+		<call target="buildProject"/>
+	</target>
+	
+	<target name="buildRelease40">
+		<property name="buildConfiguration" value="Release" />
+		<property name="net.version" value="Net40" />
+		<property name="project.file" value="SuperWebSocket\SuperWebSocket.csproj" />
+		<call target="buildProject"/>
+	</target>
+	
+	<target name="buildDebug35">
+		<property name="buildConfiguration" value="Debug" />
+		<property name="net.version" value="Net35" />
+		<property name="project.file" value="SuperWebSocket\SuperWebSocketNet35.csproj" />
+		<call target="buildProject"/>
+	</target>
+	
+	<target name="buildRelease35">
+		<property name="buildConfiguration" value="Release" />
+		<property name="net.version" value="Net35" />
+		<property name="project.file" value="SuperWebSocket\SuperWebSocketNet35.csproj" />
+		<call target="buildProject"/>
+	</target>
+	
+</project>
+

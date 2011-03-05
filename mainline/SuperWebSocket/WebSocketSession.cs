@@ -33,7 +33,24 @@ namespace SuperWebSocket
             base.SendResponse(message);
         }
 
-        internal bool Handshaked { get; set; }
+
+        private bool m_Handshaked = false;
+
+        internal bool Handshaked
+        {
+            get { return m_Handshaked; }
+            set
+            {
+                m_Handshaked = value;
+                if (m_Handshaked)
+                    OnHandShaked();
+            }
+        }
+
+        protected virtual void OnHandShaked()
+        {
+
+        }
 
         public StringDictionary Cookies { get; internal set; }
 

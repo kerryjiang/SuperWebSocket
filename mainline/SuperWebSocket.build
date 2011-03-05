@@ -8,8 +8,7 @@
 	<property name="framework.version" value="v4.0.30319"/>
 	<property name="msbuild.exe" value="${framework.dir}\${framework.version}\msbuild.exe"/>
 	<property name="aspnet.compiler.exe" value="${framework.dir}\${framework.version}\aspnet_compiler.exe"/>
-	<property name="program.files" value="${environment::get-variable('ProgramFiles')}"/>
-	<echo message="program.files:${program.files}" />
+	<property name="program.files" value="D:"/>
 	<property name="svn.exe" value="${program.files}\SlikSvn\bin\svn.exe" unless="${property::exists('svn.exe')}" />
 	<property name="buildConfiguration" value="Debug" />
 
@@ -33,7 +32,7 @@
 		<call target="clean"/>
 		<call target="getHeadRevision"/>
 		<exec program="${msbuild.exe}"
-			commandline="${project.file} /p:Configuration=${buildConfiguration} /t:Rebuild /p:OutputPath=${output.dir}\${net.version}\${buildConfiguration}\${getHeadRevision}"
+			commandline="${project.file} /p:Configuration=${buildConfiguration} /t:Rebuild /p:OutputPath=${output.dir}\${getHeadRevision}\${net.version}\${buildConfiguration}"
 			failonerror="true" verbose="false" />
 	</target>
 	

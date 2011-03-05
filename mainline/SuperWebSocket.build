@@ -21,10 +21,19 @@
 		</delete>
 	</target>
 	
+	<target name="getHeadRevision" description="Get Head Revision">
+		<exec program="${svn.exe}" commandline="info -r HEAD" output="rootinfo.txt" />
+		<foreach item="Line" in="rootinfo.txt" property="infoline">
+			<property name="head.revision" value="${string::substring(infoline,10,string::get-length(infoline) - 10)}"
+				if="${string::starts-with(infoline,'Revision: ')}" />
+		</foreach>
+	</target>
+	
 	<target name="buildProject">
 		<call target="clean"/>
+		<call target="getHeadRevision"/>
 		<exec program="${msbuild.exe}"
-			commandline="${project.file} /p:Configuration=${buildConfiguration} /t:Rebuild /p:OutputPath=${output.dir}\${net.version}\${buildConfiguration}"
+			commandline="${project.file} /p:Configuration=${buildConfiguration} /t:Rebuild /p:OutputPath=${output.dir}\${net.version}\${buildConfiguration}\${getHeadRevision}"
 			failonerror="true" verbose="false" />
 	</target>
 	

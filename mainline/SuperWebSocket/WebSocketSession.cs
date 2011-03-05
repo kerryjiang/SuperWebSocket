@@ -15,7 +15,7 @@ namespace SuperWebSocket
 
     }
 
-    public class WebSocketSession<TWebSocketSession> : AppSession<TWebSocketSession, WebSocketCommandInfo>, IAsyncRunner
+    public class WebSocketSession<TWebSocketSession> : AppSession<TWebSocketSession, WebSocketCommandInfo>
         where TWebSocketSession : IAppSession<TWebSocketSession, WebSocketCommandInfo>, new()
     {
         public new WebSocketServer AppServer
@@ -53,22 +53,17 @@ namespace SuperWebSocket
 
         public void SendResponseAsync(string message)
         {
-            this.ExecuteAsync(w => SendResponse(message));
+            Async.Run(() => SendResponse(message));
         }
 
         public void SendResponseAsync(string message, params object[] paramValues)
         {
-            this.ExecuteAsync(w => SendResponse(message, paramValues));
+            Async.Run(() => SendResponse(message, paramValues));
         }
 
         protected override SocketContext CreateSocketContext()
         {
             return new WebSocketContext();
-        }
-
-        protected override void OnClosed()
-        {
-            
         }
 
         public override void HandleExceptionalError(Exception e)

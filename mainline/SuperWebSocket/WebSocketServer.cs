@@ -66,9 +66,9 @@ namespace SuperWebSocket
             }
         }
 
-        public override bool Setup(IRootConfig rootConfig, IServerConfig config, ISocketServerFactory socketServerFactory, ICustomProtocol<WebSocketCommandInfo> protocol, string assembly)
+        public override bool Setup(IRootConfig rootConfig, IServerConfig config, ISocketServerFactory socketServerFactory, ICustomProtocol<WebSocketCommandInfo> protocol)
         {
-            string subProtocolValue = config.Parameters.GetValue("subProtocol");
+            string subProtocolValue = config.Options.GetValue("subProtocol");
             if (!string.IsNullOrEmpty(subProtocolValue))
             {
                 ISubProtocol<TWebSocketSession> subProtocol;
@@ -79,7 +79,7 @@ namespace SuperWebSocket
             if (m_SubProtocol != null)
                 m_SubProtocol.Initialize(config);
 
-            if (!base.Setup(rootConfig, config, socketServerFactory, protocol, assembly))
+            if (!base.Setup(rootConfig, config, socketServerFactory, protocol))
                 return false;
 
             if (string.IsNullOrEmpty(config.Security) || "none".Equals(config.Security, StringComparison.OrdinalIgnoreCase))
@@ -329,14 +329,10 @@ namespace SuperWebSocket
             return true;
         }
 
-        protected override void OnSocketSessionClosed(object sender, SocketSessionClosedEventArgs e)
+        protected override void OnAppSessionClosed(object sender, AppSessionClosedEventArgs<TWebSocketSession> e)
         {
-            var session = this.GetAppSessionByIndentityKey(e.IdentityKey);
-
-            base.OnSocketSessionClosed(sender, e);
-
             if (m_SessionClosed != null)
-                m_SessionClosed(session, e.Reason);
+                m_SessionClosed(e.Session, e.Reason);
         }
     }
 }

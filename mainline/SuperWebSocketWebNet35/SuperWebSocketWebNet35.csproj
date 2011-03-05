@@ -63,7 +63,9 @@
     <Content Include="Images\white-top-bottom.gif" />
     <Content Include="LiveChat.aspx" />
     <Content Include="Scripts\jquery.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>

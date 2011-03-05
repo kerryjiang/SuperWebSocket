@@ -56,7 +56,7 @@ namespace SuperWebSocket.SubProtocol
             if (m_CommandAssembly != null)
                 return true;
 
-            var commandAssembly = config.Parameters.GetValue("commandAssembly");
+            var commandAssembly = config.Options.GetValue("commandAssembly");
 
             if (string.IsNullOrEmpty(commandAssembly))
                 return true;

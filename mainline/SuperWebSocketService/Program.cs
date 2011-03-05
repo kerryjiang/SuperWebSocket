@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.ServiceProcess;
 using System.Text;
+using SuperSocket.Common;
 using SuperSocket.SocketEngine;
 using SuperSocket.SocketEngine.Configuration;
 
@@ -16,6 +17,8 @@ namespace SuperWebSocket.Service
         /// </summary>
         static void Main(string[] args)
         {
+            LogUtil.Setup();
+
             if (args != null && args.Length > 0)
             {
                 if (args[0].Equals("-i", StringComparison.OrdinalIgnoreCase))

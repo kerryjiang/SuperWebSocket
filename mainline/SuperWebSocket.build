@@ -45,14 +45,14 @@
 	<target name="buildDebug35">
 		<property name="buildConfiguration" value="Debug" />
 		<property name="net.version" value="Net35" />
-		<property name="project.file" value="SuperWebSocket\SuperWebSocketNet35.csproj" />
+		<property name="project.file" value="SuperWebSocket\SuperWebSocket.Net35.csproj" />
 		<call target="buildProject"/>
 	</target>
 	
 	<target name="buildRelease35">
 		<property name="buildConfiguration" value="Release" />
 		<property name="net.version" value="Net35" />
-		<property name="project.file" value="SuperWebSocket\SuperWebSocketNet35.csproj" />
+		<property name="project.file" value="SuperWebSocket\SuperWebSocket.Net35.csproj" />
 		<call target="buildProject"/>
 	</target>
 	

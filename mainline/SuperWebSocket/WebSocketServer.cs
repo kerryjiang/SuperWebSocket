@@ -46,8 +46,9 @@ namespace SuperWebSocket
         }
 
         public WebSocketServer()
+            : base(new WebSocketProtocol())
         {
-            Protocol = new WebSocketProtocol();
+
         }
 
         private ISubProtocol<TWebSocketSession> m_SubProtocol;
@@ -59,10 +60,6 @@ namespace SuperWebSocket
             get
             {
                 return (WebSocketProtocol)base.Protocol;
-            }
-            protected set
-            {
-                base.Protocol = value;
             }
         }
 

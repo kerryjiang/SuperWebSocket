@@ -12,15 +12,18 @@ namespace SuperWebSocket
 {
     public class WebSocketSession : WebSocketSession<WebSocketSession>
     {
-
-    }
-
-    public class WebSocketSession<TWebSocketSession> : AppSession<TWebSocketSession, WebSocketCommandInfo>
-        where TWebSocketSession : IAppSession<TWebSocketSession, WebSocketCommandInfo>, new()
-    {
         public new WebSocketServer AppServer
         {
             get { return (WebSocketServer)base.AppServer; }
+        }
+    }
+
+    public class WebSocketSession<TWebSocketSession> : AppSession<TWebSocketSession, WebSocketCommandInfo>
+        where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
+    {
+        public new WebSocketServer<TWebSocketSession> AppServer
+        {
+            get { return (WebSocketServer<TWebSocketSession>)base.AppServer; }
         }
 
         public new WebSocketContext Context

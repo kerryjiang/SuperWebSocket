@@ -51,13 +51,13 @@ namespace SuperWebSocket.WebSocketClient
                 }
             }
 
-            int pos = uri.IndexOf('/', 6);
+            int pos = uri.IndexOf('/', 5);
             if(pos <= 0)
                 throw new ArgumentException("Invalid websocket address!");
 
             m_Path = uri.Substring(pos);
 
-            string host = uri.Substring(6, pos - 6);
+            string host = uri.Substring(5, pos - 5);
 
             string[] hostInfo = host.Split(':');
 
@@ -77,8 +77,6 @@ namespace SuperWebSocket.WebSocketClient
                 m_RemoteEndPoint = new IPEndPoint(ipAddress, port);          
 
             m_Cookies = cookies;
-
-            Connect();
         }
 
         private EventHandler m_OnOpen;
@@ -126,15 +124,16 @@ namespace SuperWebSocket.WebSocketClient
                 handler(this, new MessageEventArgs(message));
         }
 
-        private void Connect()
+        public bool Connect()
         {
             m_Socket = new Socket(m_RemoteEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
             try
             {
-                string secKey1 = Encoding.UTF8.GetString(GenerateRandomData(new byte[m_Random.Next(10, 20)]));
-                string secKey2 = Encoding.UTF8.GetString(GenerateRandomData(new byte[m_Random.Next(10, 20)]));
-                byte[] secKey3 = GenerateRandomData(new byte[8]);                
+                byte spaceByte = (byte)' ';
+                string secKey1 = "12998 5 Y3 1  .P00";//Encoding.UTF8.GetString(GenerateRandomSpaceAndNumber(GenerateRandomData(new byte[m_Random.Next(10, 20)]), spaceByte));
+                string secKey2 = "4 @1  46546xW%0l 1 5";//Encoding.UTF8.GetString(GenerateRandomSpaceAndNumber(GenerateRandomData(new byte[m_Random.Next(10, 20)]), spaceByte));
+                byte[] secKey3 = Encoding.UTF8.GetBytes("^n:ds[4U");//GenerateRandomData(new byte[8]);                
 
                 m_Socket.Connect(m_RemoteEndPoint);
 
@@ -156,16 +155,30 @@ namespace SuperWebSocket.WebSocketClient
                 writer.Write(Encoding.UTF8.GetString(secKey3));
                 writer.Flush();
 
-                for (var i = 0; i < 6; i++)
-                    reader.ReadLine();
+                while (true)
+                {
+                    var line = reader.ReadLine();
+                    if (string.IsNullOrEmpty(line))
+                        break;
+                }
 
-                char[] buffer = new char[20];
+                char[] buffer = new char[16];
 
-                int read = reader.Read(buffer, 0, buffer.Length);
+                int totalRead = 0;
+
+                while (totalRead < 16)
+                {
+                    int read = reader.Read(buffer, totalRead, buffer.Length - totalRead);
+
+                    if (read <= 0)
+                        return false;
+
+                    totalRead += read;
+                }
 
                 string expectedResponse = Encoding.UTF8.GetString(GetResponseSecurityKey(secKey1, secKey2, secKey3));
 
-                if (string.Compare(expectedResponse, new string(buffer.Take(read).ToArray())) == 0)
+                if (string.Compare(expectedResponse, new string(buffer)) == 0)
                 {                    
                     FireOnOpen();
 
@@ -175,15 +188,17 @@ namespace SuperWebSocket.WebSocketClient
 
                     StartReceiveAsync(m_SocketAsyncEventArgs);
                     
-                    return;
+                    return true;
                 }
 
                 m_Socket.Shutdown(SocketShutdown.Both);
                 m_Socket.Close();
+
+                return false;
             }
             catch (Exception)
             {
-
+                return false;
             }
         }
 
@@ -331,6 +346,21 @@ namespace SuperWebSocket.WebSocketClient
             {
                 data[i] = (byte)m_Random.Next(0, 255);
             }
+
+            return data;
+        }
+
+        private byte[] GenerateRandomSpaceAndNumber(byte[] data, byte spaceByte)
+        {
+            for (int i = 0; i < m_Random.Next(2, data.Length - 1); i++)
+            {
+                data[m_Random.Next(0, data.Length - 1)] = (byte)m_Random.Next(0, 9).ToString()[0];
+            }
+
+            for (int i = 0; i < m_Random.Next(1, data.Length / 2 + 1); i++)
+            {
+                data[m_Random.Next(0, data.Length - 1)] = spaceByte;
+            }            
 
             return data;
         }

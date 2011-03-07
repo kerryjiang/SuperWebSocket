@@ -100,11 +100,21 @@ namespace SuperWebSocketTest
             for (var i = 0; i < 6; i++)
                 Console.WriteLine(reader.ReadLine());
 
-            char[] buffer = new char[20];
+            char[] buffer = new char[16];
 
-            int read = reader.Read(buffer, 0, buffer.Length);
+            int totalRead = 0;
 
-            Assert.AreEqual("8jKS'y:G*Co,Wxa-", new string(buffer.Take(read).ToArray()));
+            while (totalRead < 16)
+            {
+                int read = reader.Read(buffer, totalRead, buffer.Length - totalRead);
+
+                if (read <= 0)
+                    Assert.Fail("Connection closed!");
+
+                totalRead += read;
+            }
+
+            Assert.AreEqual("8jKS'y:G*Co,Wxa-", new string(buffer));
         }
 
         [Test]

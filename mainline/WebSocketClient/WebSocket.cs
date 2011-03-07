@@ -6,6 +6,8 @@ using System.Collections.Specialized;
 using System.Net;
 using System.Net.Sockets;
 using System.IO;
+using System.Text.RegularExpressions;
+using System.Security.Cryptography;
 
 namespace SuperWebSocket.WebSocketClient
 {
@@ -14,18 +16,28 @@ namespace SuperWebSocket.WebSocketClient
         private NameValueCollection m_Cookies;
         private EndPoint m_RemoteEndPoint;
         private string m_Path = string.Empty;
+        private string m_Host = string.Empty;
+        private string m_Protocol = string.Empty;
         private Socket m_Socket;
 
-        public WebSocket(string uri)
-            : this(uri, new NameValueCollection())
+        private const byte m_StartByte = 0x00;
+        private const byte m_EndByte = 0xFF;
+
+        private SocketAsyncEventArgs m_SocketAsyncEventArgs;
+        private byte[] m_Buffer = new byte[512];
+
+        public WebSocket(string uri, string protocol)
+            : this(uri, protocol, new NameValueCollection()) 
         {
 
         }
 
-        public WebSocket(string uri, NameValueCollection cookies)
+        public WebSocket(string uri, string protocol, NameValueCollection cookies)
         {
             if (string.IsNullOrEmpty(uri))
                 throw new ArgumentNullException("uri");
+
+            m_Protocol = protocol;
 
             if (!uri.StartsWith("ws://"))
             {
@@ -56,9 +68,11 @@ namespace SuperWebSocket.WebSocketClient
             if (!int.TryParse(hostInfo[1], out port))
                 throw new ArgumentException("Invalid websocket address!");
 
+            m_Host = hostInfo[0];
+
             IPAddress ipAddress;
-            if (!IPAddress.TryParse(hostInfo[0], out ipAddress))
-                m_RemoteEndPoint = new DnsEndPoint(hostInfo[0], port);
+            if (!IPAddress.TryParse(m_Host, out ipAddress))
+                m_RemoteEndPoint = new DnsEndPoint(m_Host, port);
             else
                 m_RemoteEndPoint = new IPEndPoint(ipAddress, port);          
 
@@ -118,6 +132,10 @@ namespace SuperWebSocket.WebSocketClient
 
             try
             {
+                string secKey1 = Encoding.UTF8.GetString(GenerateRandomData(new byte[m_Random.Next(10, 20)]));
+                string secKey2 = Encoding.UTF8.GetString(GenerateRandomData(new byte[m_Random.Next(10, 20)]));
+                byte[] secKey3 = GenerateRandomData(new byte[8]);                
+
                 m_Socket.Connect(m_RemoteEndPoint);
 
                 var stream = new NetworkStream(m_Socket);
@@ -125,31 +143,43 @@ namespace SuperWebSocket.WebSocketClient
                 var reader = new StreamReader(stream, Encoding.UTF8, false);
                 var writer = new StreamWriter(stream, Encoding.UTF8, 1024 * 10);
 
-                writer.WriteLine("GET /websock HTTP/1.1");
+                writer.WriteLine("GET {0} HTTP/1.1", m_Path);
                 writer.WriteLine("Upgrade: WebSocket");
                 writer.WriteLine("Connection: Upgrade");
-                writer.WriteLine("Sec-WebSocket-Key2: 12998 5 Y3 1  .P00");
-                writer.WriteLine("Host: example.com");
-                writer.WriteLine("Sec-WebSocket-Key1: 4 @1  46546xW%0l 1 5");
-                writer.WriteLine("Origin: http://example.com");
-                writer.WriteLine("WebSocket-Protocol: sample");
+                writer.WriteLine("Sec-WebSocket-Key2: {0}", secKey2);
+                writer.WriteLine("Host: {0}", m_Host);
+                writer.WriteLine("Sec-WebSocket-Key1: {0}", secKey1);
+                writer.WriteLine("Origin: {0}", m_Host);
+                writer.WriteLine("WebSocket-Protocol: {0}", m_Protocol);
                 writer.WriteLine("");
-                string secKey = "^n:ds[4U";
-                writer.Write(secKey);
+
+                writer.Write(Encoding.UTF8.GetString(secKey3));
                 writer.Flush();
 
-                //secKey.ToList().ForEach(c => Console.WriteLine((int)c));
-
                 for (var i = 0; i < 6; i++)
-                    Console.WriteLine(reader.ReadLine());
+                    reader.ReadLine();
 
                 char[] buffer = new char[20];
 
                 int read = reader.Read(buffer, 0, buffer.Length);
 
-                //Assert.AreEqual("8jKS'y:G*Co,Wxa-", new string(buffer.Take(read).ToArray()));
+                string expectedResponse = Encoding.UTF8.GetString(GetResponseSecurityKey(secKey1, secKey2, secKey3));
 
-                FireOnOpen();
+                if (string.Compare(expectedResponse, new string(buffer.Take(read).ToArray())) == 0)
+                {                    
+                    FireOnOpen();
+
+                    m_SocketAsyncEventArgs = new SocketAsyncEventArgs();
+                    m_SocketAsyncEventArgs.SetBuffer(m_Buffer, 0, m_Buffer.Length);
+                    m_SocketAsyncEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(m_SocketAsyncEventArgs_Completed);
+
+                    StartReceiveAsync(m_SocketAsyncEventArgs);
+                    
+                    return;
+                }
+
+                m_Socket.Shutdown(SocketShutdown.Both);
+                m_Socket.Close();
             }
             catch (Exception)
             {
@@ -157,14 +187,179 @@ namespace SuperWebSocket.WebSocketClient
             }
         }
 
+        void m_SocketAsyncEventArgs_Completed(object sender, SocketAsyncEventArgs e)
+        {
+            if (e.LastOperation == SocketAsyncOperation.Receive)
+                ProcessReceive(e);
+        }
+
+        List<byte> m_MessBuilder = new List<byte>();
+
+        void StartReceiveAsync(SocketAsyncEventArgs e)
+        {
+            var willRaiseEvent = m_Socket.ReceiveAsync(e);
+            if (!willRaiseEvent)
+                ProcessReceive(e);
+        }
+
+        void ProcessReceive(SocketAsyncEventArgs e)
+        {
+            if (e.SocketError != SocketError.Success)
+            {
+                FireOnClose();
+                return;
+            }
+
+            if (e.BytesTransferred == 0)
+            {
+                FireOnClose();
+                return;
+            }
+
+            ProcessReceiveData(e.Buffer, e.Offset, e.BytesTransferred);
+            StartReceiveAsync(e);
+        }
+
+        void ProcessReceiveData(byte[] buffer, int offset, int length)
+        {
+            //First data
+            if (m_MessBuilder.Count <= 0)
+            {
+                int startPos = IndexOf(buffer, m_StartByte, offset, length);
+                if (startPos < 0)
+                    return;
+
+                int endPos = IndexOf(buffer, m_EndByte, startPos, offset + length - startPos);
+                if (endPos < 0)
+                {
+                    m_MessBuilder.AddRange(CloneRange(buffer, startPos, offset + length - startPos));
+                }
+                else
+                {
+                    m_MessBuilder.AddRange(CloneRange(buffer, startPos + 1, endPos - startPos - 1));
+                    FireOnMessage(Encoding.UTF8.GetString(m_MessBuilder.ToArray()));
+                    m_MessBuilder.Clear();
+
+                    if (endPos >= (offset + length - 1))
+                        return;
+
+                    ProcessReceiveData(buffer, endPos + 1, offset + length - endPos - 1);
+                }
+            }
+            else
+            {
+                int endPos = IndexOf(buffer, m_EndByte, offset, length);
+
+                if (endPos < 0)
+                {
+                    m_MessBuilder.AddRange(CloneRange(buffer, offset, length));
+                    return;
+                }
+
+                m_MessBuilder.AddRange(CloneRange(buffer, offset, endPos - offset + 1));
+                FireOnMessage(Encoding.UTF8.GetString(m_MessBuilder.ToArray()));
+                m_MessBuilder.Clear();
+
+                if (endPos >= (offset + length - 1))
+                    return;
+
+                ProcessReceiveData(buffer, endPos + 1, offset + length - endPos - 1);
+            }
+        }
+
+        private byte[] CloneRange(byte[] buffer, int offset, int length)
+        {
+            byte[] data = new byte[length];
+
+            for (int i = 0; i < length; i++)
+            {
+                data[i] = buffer[offset + i];
+            }
+
+            return data;
+        }
+
+        private int IndexOf(byte[] buffer, byte target, int offset, int length)
+        {
+            for (int i = offset; i < offset + length; i++)
+            {
+                if (buffer[i] == target)
+                    return i;
+            }
+
+            return -1;
+        }
+
+        private byte[] GetResponseSecurityKey(string secKey1, string secKey2, byte[] secKey3)
+        {
+            //Remove all symbols that are not numbers
+            string k1 = Regex.Replace(secKey1, "[^0-9]", String.Empty);
+            string k2 = Regex.Replace(secKey2, "[^0-9]", String.Empty);
+
+            //Convert received string to 64 bit integer.
+            Int64 intK1 = Int64.Parse(k1);
+            Int64 intK2 = Int64.Parse(k2);
+
+            //Dividing on number of spaces
+            int k1Spaces = secKey1.Count(c => c == ' ');
+            int k2Spaces = secKey2.Count(c => c == ' ');
+            int k1FinalNum = (int)(intK1 / k1Spaces);
+            int k2FinalNum = (int)(intK2 / k2Spaces);
+
+            //Getting byte parts
+            byte[] b1 = BitConverter.GetBytes(k1FinalNum).Reverse().ToArray();
+            byte[] b2 = BitConverter.GetBytes(k2FinalNum).Reverse().ToArray();
+            //byte[] b3 = Encoding.UTF8.GetBytes(secKey3);
+            byte[] b3 = secKey3;
+
+            //Concatenating everything into 1 byte array for hashing.
+            List<byte> bChallenge = new List<byte>();
+            bChallenge.AddRange(b1);
+            bChallenge.AddRange(b2);
+            bChallenge.AddRange(b3);
+
+            //Hash and return
+            byte[] hash = MD5.Create().ComputeHash(bChallenge.ToArray());
+            return hash;
+        }
+
+        private Random m_Random = new Random();
+
+        private byte[] GenerateRandomData(byte[] data)
+        {
+            for (int i = 0; i < data.Length; i++)
+            {
+                data[i] = (byte)m_Random.Next(0, 255);
+            }
+
+            return data;
+        }
+
         public void Send(string message)
         {
-
-        }        
+            try
+            {
+                m_Socket.Send(new byte[] { m_StartByte });
+                m_Socket.Send(Encoding.UTF8.GetBytes(message));
+                m_Socket.Send(new byte[] { m_EndByte });
+            }
+            catch (Exception)
+            {
+                FireOnClose();
+            }
+        }
 
         public void Close()
         {
+            try
+            {
+                m_Socket.Shutdown(SocketShutdown.Both);
+                m_Socket.Close();
+            }
+            catch (Exception)
+            {
 
+            }
         }
     }
 }

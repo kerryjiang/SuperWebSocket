@@ -240,8 +240,8 @@ namespace SuperWebSocket
                     key = key.Trim();
 
                 string value = line.Substring(pos + 1);
-                if (!string.IsNullOrEmpty(value))
-                    value = value.TrimStart(' ');
+                if (!string.IsNullOrEmpty(value) && value.StartsWith(" ") && value.Length > 1)
+                    value = value.Substring(1);
 
                 if (string.IsNullOrEmpty(key))
                     continue;

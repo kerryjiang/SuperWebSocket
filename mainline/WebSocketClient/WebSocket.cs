@@ -26,6 +26,22 @@ namespace SuperWebSocket.WebSocketClient
         private SocketAsyncEventArgs m_SocketAsyncEventArgs;
         private byte[] m_Buffer = new byte[512];
 
+        private static List<char> m_CharLib = new List<char>();
+        private static List<char> m_DigLib = new List<char>();
+
+        static WebSocket()
+        {
+            for (int i = 33; i <= 126; i++)
+            {
+                char currentChar = (char)i;
+
+                if (char.IsLetter(currentChar))
+                    m_CharLib.Add(currentChar);
+                else if (char.IsDigit(currentChar))
+                    m_DigLib.Add(currentChar);
+            }
+        }
+
         public WebSocket(string uri, string protocol)
             : this(uri, protocol, new NameValueCollection()) 
         {
@@ -130,16 +146,18 @@ namespace SuperWebSocket.WebSocketClient
 
             try
             {
-                byte spaceByte = (byte)' ';
-                string secKey1 = "12998 5 Y3 1  .P00";//Encoding.UTF8.GetString(GenerateRandomSpaceAndNumber(GenerateRandomData(new byte[m_Random.Next(10, 20)]), spaceByte));
-                string secKey2 = "4 @1  46546xW%0l 1 5";//Encoding.UTF8.GetString(GenerateRandomSpaceAndNumber(GenerateRandomData(new byte[m_Random.Next(10, 20)]), spaceByte));
-                byte[] secKey3 = Encoding.UTF8.GetBytes("^n:ds[4U");//GenerateRandomData(new byte[8]);                
+                string secKey1 = Encoding.UTF8.GetString(GenerateSecKey());
+                Console.WriteLine(secKey1);
+                string secKey2 = Encoding.UTF8.GetString(GenerateSecKey());
+                Console.WriteLine(secKey2);
+                byte[] secKey3 = GenerateSecKey(8);
+
+                byte[] expectedResponse = GetResponseSecurityKey(secKey1, secKey2, secKey3);
 
                 m_Socket.Connect(m_RemoteEndPoint);
 
                 var stream = new NetworkStream(m_Socket);
 
-                var reader = new StreamReader(stream, Encoding.UTF8, false);
                 var writer = new StreamWriter(stream, Encoding.UTF8, 1024 * 10);
 
                 writer.WriteLine("GET {0} HTTP/1.1", m_Path);
@@ -155,30 +173,27 @@ namespace SuperWebSocket.WebSocketClient
                 writer.Write(Encoding.UTF8.GetString(secKey3));
                 writer.Flush();
 
-                while (true)
+                byte[] challengeResponse;
+
+                string handshake = ParseServerHandshake(stream, out challengeResponse);
+
+                bool matched = false;
+
+                if (challengeResponse.Length == expectedResponse.Length)
                 {
-                    var line = reader.ReadLine();
-                    if (string.IsNullOrEmpty(line))
-                        break;
+                    matched = true;
+
+                    for (int i = 0; i < challengeResponse.Length; i++)
+                    {
+                        if (challengeResponse[i] != expectedResponse[i])
+                        {
+                            matched = false;
+                            break;
+                        }
+                    }
                 }
 
-                char[] buffer = new char[16];
-
-                int totalRead = 0;
-
-                while (totalRead < 16)
-                {
-                    int read = reader.Read(buffer, totalRead, buffer.Length - totalRead);
-
-                    if (read <= 0)
-                        return false;
-
-                    totalRead += read;
-                }
-
-                string expectedResponse = Encoding.UTF8.GetString(GetResponseSecurityKey(secKey1, secKey2, secKey3));
-
-                if (string.Compare(expectedResponse, new string(buffer)) == 0)
+                if (matched)
                 {                    
                     FireOnOpen();
 
@@ -200,6 +215,65 @@ namespace SuperWebSocket.WebSocketClient
             {
                 return false;
             }
+        }
+
+        private static readonly byte[] m_NewLineMark = Encoding.UTF8.GetBytes(Environment.NewLine + Environment.NewLine);
+
+        private string ParseServerHandshake(Stream stream, out byte[] challengeResponse)
+        {
+            ArraySegmentList<byte> handshakeData = new ArraySegmentList<byte>();
+            challengeResponse = new byte[16];
+            int challengeOffset = 0;
+            string handshake = string.Empty;
+            int thisRead = 0;
+            int lastTotalRead = 0;
+
+            while (true)
+            {
+                lastTotalRead += thisRead;
+                byte[] buffer = new byte[128];
+                thisRead = stream.Read(buffer, 0, buffer.Length);
+
+                if (thisRead <= 0)
+                    break;
+
+                if (string.IsNullOrEmpty(handshake))
+                {
+                    handshakeData.AddSegment(new ArraySegment<byte>(buffer, 0, thisRead));
+                    var result = handshakeData.SearchMark(lastTotalRead, thisRead, m_NewLineMark);
+                    if (result.HasValue && result.Value >= 0)
+                    {
+                        handshake = Encoding.UTF8.GetString(handshakeData.ToArrayData(0, result.Value));
+
+                        if (result.Value + m_NewLineMark.Length < handshakeData.Count)
+                        {
+                            int leftLength = handshakeData.Count - result.Value - m_NewLineMark.Length;
+                            int thisCopy = Math.Min(challengeResponse.Length, leftLength);
+                            Array.Copy(buffer, result.Value - lastTotalRead + m_NewLineMark.Length, challengeResponse, 0, thisCopy);
+                            challengeOffset = thisCopy;
+
+                            if (thisCopy == challengeResponse.Length)
+                                return handshake;
+                        }
+                    }
+
+                    continue;
+                }
+                else
+                {
+                    int left = challengeResponse.Length - challengeOffset;
+                    int thisCopy = Math.Min(left, thisRead);
+                    Array.Copy(buffer, 0, challengeResponse, challengeOffset, thisCopy);
+                    challengeOffset += thisCopy;
+
+                    if (challengeOffset == challengeResponse.Length)
+                        return handshake;
+
+                    continue;
+                }               
+            }
+
+            return handshake;
         }
 
         void m_SocketAsyncEventArgs_Completed(object sender, SocketAsyncEventArgs e)
@@ -240,18 +314,18 @@ namespace SuperWebSocket.WebSocketClient
             //First data
             if (m_MessBuilder.Count <= 0)
             {
-                int startPos = IndexOf(buffer, m_StartByte, offset, length);
+                int startPos = buffer.IndexOf(m_StartByte, offset, length);
                 if (startPos < 0)
                     return;
 
-                int endPos = IndexOf(buffer, m_EndByte, startPos, offset + length - startPos);
+                int endPos = buffer.IndexOf(m_EndByte, startPos, offset + length - startPos);
                 if (endPos < 0)
                 {
-                    m_MessBuilder.AddRange(CloneRange(buffer, startPos, offset + length - startPos));
+                    m_MessBuilder.AddRange(CloneRange(buffer, startPos + 1, offset + length - startPos));
                 }
                 else
                 {
-                    m_MessBuilder.AddRange(CloneRange(buffer, startPos + 1, endPos - startPos - 1));
+                    m_MessBuilder.AddRange(CloneRange(buffer, startPos + 1, endPos - startPos - 2));
                     FireOnMessage(Encoding.UTF8.GetString(m_MessBuilder.ToArray()));
                     m_MessBuilder.Clear();
 
@@ -263,7 +337,7 @@ namespace SuperWebSocket.WebSocketClient
             }
             else
             {
-                int endPos = IndexOf(buffer, m_EndByte, offset, length);
+                int endPos = buffer.IndexOf(m_EndByte, offset, length);
 
                 if (endPos < 0)
                 {
@@ -271,7 +345,7 @@ namespace SuperWebSocket.WebSocketClient
                     return;
                 }
 
-                m_MessBuilder.AddRange(CloneRange(buffer, offset, endPos - offset + 1));
+                m_MessBuilder.AddRange(CloneRange(buffer, offset, endPos - offset));
                 FireOnMessage(Encoding.UTF8.GetString(m_MessBuilder.ToArray()));
                 m_MessBuilder.Clear();
 
@@ -292,17 +366,6 @@ namespace SuperWebSocket.WebSocketClient
             }
 
             return data;
-        }
-
-        private int IndexOf(byte[] buffer, byte target, int offset, int length)
-        {
-            for (int i = offset; i < offset + length; i++)
-            {
-                if (buffer[i] == target)
-                    return i;
-            }
-
-            return -1;
         }
 
         private byte[] GetResponseSecurityKey(string secKey1, string secKey2, byte[] secKey3)
@@ -338,31 +401,47 @@ namespace SuperWebSocket.WebSocketClient
             return hash;
         }
 
-        private Random m_Random = new Random();
+        private Random m_Random = new Random();        
 
-        private byte[] GenerateRandomData(byte[] data)
+        private byte[] GenerateSecKey()
         {
-            for (int i = 0; i < data.Length; i++)
-            {
-                data[i] = (byte)m_Random.Next(0, 255);
-            }
-
-            return data;
+            int totalLen = m_Random.Next(10, 20);
+            return GenerateSecKey(totalLen);
         }
 
-        private byte[] GenerateRandomSpaceAndNumber(byte[] data, byte spaceByte)
+        private byte[] GenerateSecKey(int totalLen)
         {
-            for (int i = 0; i < m_Random.Next(2, data.Length - 1); i++)
+            int spaceLen = m_Random.Next(1, totalLen / 2 + 1);
+            int charLen = m_Random.Next(3, totalLen - 1 - spaceLen);
+            int digLen = totalLen - spaceLen - charLen;
+
+            List<char> source = new List<char>(totalLen);
+
+            for (int i = 0; i < spaceLen; i++)
+                source.Add(' ');
+
+            for (int i = 0; i < charLen; i++)
             {
-                data[m_Random.Next(0, data.Length - 1)] = (byte)m_Random.Next(0, 9).ToString()[0];
+                source.Add(m_CharLib[m_Random.Next(0, m_CharLib.Count - 1)]);
             }
 
-            for (int i = 0; i < m_Random.Next(1, data.Length / 2 + 1); i++)
+            for (int i = 0; i < digLen; i++)
             {
-                data[m_Random.Next(0, data.Length - 1)] = spaceByte;
-            }            
+                source.Add(m_DigLib[m_Random.Next(0, m_DigLib.Count - 1)]);
+            }
 
-            return data;
+            List<char> mixedChars = new List<char>();
+
+            for (int i = 0; i < totalLen - 1; i++)
+            {
+                int pos = m_Random.Next(0, source.Count - 1);
+                mixedChars.Add(source[pos]);
+                source.RemoveAt(pos);
+            }
+
+            mixedChars.Add(source[0]);
+
+            return mixedChars.Select(c => (byte)c).ToArray();
         }
 
         public void Send(string message)

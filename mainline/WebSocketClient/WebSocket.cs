@@ -168,6 +168,19 @@ namespace SuperWebSocket.WebSocketClient
                 writer.WriteLine("Sec-WebSocket-Key1: {0}", secKey1);
                 writer.WriteLine("Origin: {0}", m_Host);
                 writer.WriteLine("WebSocket-Protocol: {0}", m_Protocol);
+
+                if (m_Cookies != null && m_Cookies.Count > 0)
+                {
+                    string[] cookiePairs = new string[m_Cookies.Count];
+                    for (int i = 0; i < m_Cookies.Count; i++)
+                    {
+                        var key = m_Cookies.AllKeys[i];
+                        var value = m_Cookies[key];
+                        cookiePairs[i] = key + "=" + value;                  
+                    }
+                    writer.WriteLine("Cookie: {0}", string.Join("&", cookiePairs));
+                }
+
                 writer.WriteLine("");
 
                 writer.Write(Encoding.UTF8.GetString(secKey3));

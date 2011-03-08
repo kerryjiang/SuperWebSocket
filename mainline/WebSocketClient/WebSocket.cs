@@ -321,12 +321,12 @@ namespace SuperWebSocket.WebSocketClient
                 int endPos = buffer.IndexOf(m_EndByte, startPos, offset + length - startPos);
                 if (endPos < 0)
                 {
-                    m_MessBuilder.AddRange(CloneRange(buffer, startPos + 1, offset + length - startPos));
+                    m_MessBuilder.AddRange(CloneRange(buffer, startPos, offset + length - startPos));
                 }
                 else
                 {
                     m_MessBuilder.AddRange(CloneRange(buffer, startPos + 1, endPos - startPos - 2));
-                    FireOnMessage(Encoding.UTF8.GetString(m_MessBuilder.ToArray()));
+                    FireOnMessage(Encoding.UTF8.GetString(m_MessBuilder.Skip(1).ToArray()));
                     m_MessBuilder.Clear();
 
                     if (endPos >= (offset + length - 1))
@@ -346,7 +346,7 @@ namespace SuperWebSocket.WebSocketClient
                 }
 
                 m_MessBuilder.AddRange(CloneRange(buffer, offset, endPos - offset));
-                FireOnMessage(Encoding.UTF8.GetString(m_MessBuilder.ToArray()));
+                FireOnMessage(Encoding.UTF8.GetString(m_MessBuilder.Skip(1).ToArray()));
                 m_MessBuilder.Clear();
 
                 if (endPos >= (offset + length - 1))

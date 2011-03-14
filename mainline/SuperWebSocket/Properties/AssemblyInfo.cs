@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("SuperWebSocket")]
 [assembly: AssemblyProduct("SuperWebSocket")]
-[assembly: AssemblyCopyright("Copyright © SuperWebSocket 2010")]
+[assembly: AssemblyCopyright("Copyright © SuperWebSocket 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -40,7 +40,7 @@
 		<property name="net.version" value="Net40" />
 		<property name="project.file" value="SuperWebSocket\SuperWebSocket.csproj" />
 		<call target="buildProject"/>
-		<property name="project.file" value="WebSocketClient\WebSocketClient.csproj" />
+		<property name="project.file" value="Client\Client.csproj" />
 		<call target="buildProject"/>
 	</target>
 	
@@ -49,7 +49,7 @@
 		<property name="net.version" value="Net40" />
 		<property name="project.file" value="SuperWebSocket\SuperWebSocket.csproj" />
 		<call target="buildProject"/>
-		<property name="project.file" value="WebSocketClient\WebSocketClient.csproj" />
+		<property name="project.file" value="Client\Client.csproj" />
 		<call target="buildProject"/>
 	</target>
 	
@@ -58,7 +58,7 @@
 		<property name="net.version" value="Net35" />
 		<property name="project.file" value="SuperWebSocket\SuperWebSocket.Net35.csproj" />
 		<call target="buildProject"/>
-		<property name="project.file" value="WebSocketClient\WebSocketClient.csproj" />
+		<property name="project.file" value="Client\Client.Net35.csproj" />
 		<call target="buildProject"/>
 	</target>
 	
@@ -67,7 +67,7 @@
 		<property name="net.version" value="Net35" />
 		<property name="project.file" value="SuperWebSocket\SuperWebSocket.Net35.csproj" />
 		<call target="buildProject"/>
-		<property name="project.file" value="WebSocketClient\WebSocketClient.csproj" />
+		<property name="project.file" value="Client\Client.Net35.csproj" />
 		<call target="buildProject"/>
 	</target>
 	

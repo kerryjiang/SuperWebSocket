@@ -8,7 +8,7 @@ using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Config;
 using SuperSocket.SocketEngine;
 using SuperWebSocket;
-using SuperWebSocket.WebSocketClient;
+using SuperWebSocket.Client;
 using System.Threading;
 using SuperWebSocket.SubProtocol;
 
@@ -56,7 +56,7 @@ namespace SuperWebSocketTest
             WebSocket webSocketClient = new WebSocket("ws://127.0.0.1:911/websocket", "basic");
             webSocketClient.OnClose += new EventHandler(webSocketClient_OnClose);
             webSocketClient.OnOpen +=new EventHandler(webSocketClient_OnOpen);
-            webSocketClient.OnMessage += new EventHandler<SuperWebSocket.WebSocketClient.MessageEventArgs>(webSocketClient_OnMessage);
+            webSocketClient.OnMessage += new EventHandler<MessageEventArgs>(webSocketClient_OnMessage);
             Assert.IsTrue(webSocketClient.Connect());
             if(!m_OpneCloseEvent.WaitOne(1000))
                 Assert.Fail("Failed to open session ontime");
@@ -68,7 +68,7 @@ namespace SuperWebSocketTest
         {
             WebSocket webSocketClient = new WebSocket("ws://127.0.0.1:911/websocket", "basic");
             webSocketClient.OnClose += new EventHandler(webSocketClient_OnClose);
-            webSocketClient.OnMessage += new EventHandler<SuperWebSocket.WebSocketClient.MessageEventArgs>(webSocketClient_OnMessage);
+            webSocketClient.OnMessage += new EventHandler<MessageEventArgs>(webSocketClient_OnMessage);
             Assert.IsTrue(webSocketClient.Connect());
 
             for (int i = 0; i < 10; i++)
@@ -91,7 +91,7 @@ namespace SuperWebSocketTest
         {
             WebSocket webSocketClient = new WebSocket("ws://127.0.0.1:911/websocket", "basic");
             webSocketClient.OnClose += new EventHandler(webSocketClient_OnClose);
-            webSocketClient.OnMessage += new EventHandler<SuperWebSocket.WebSocketClient.MessageEventArgs>(webSocketClient_OnMessage);
+            webSocketClient.OnMessage += new EventHandler<MessageEventArgs>(webSocketClient_OnMessage);
             Assert.IsTrue(webSocketClient.Connect());
 
             webSocketClient.Send("QUIT");
@@ -105,7 +105,7 @@ namespace SuperWebSocketTest
             m_OpneCloseEvent.Set();
         }
 
-        void webSocketClient_OnMessage(object sender, SuperWebSocket.WebSocketClient.MessageEventArgs e)
+        void webSocketClient_OnMessage(object sender, MessageEventArgs e)
         {
             m_CurrentMessage = e.Message;
             m_MessageReceiveEvent.Set();

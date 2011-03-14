@@ -9,7 +9,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
 
-namespace SuperWebSocket.WebSocketClient
+namespace SuperWebSocket.Client
 {
     public class WebSocket
     {

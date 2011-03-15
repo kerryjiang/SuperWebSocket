@@ -34,6 +34,9 @@
     <Reference Include="log4net">
       <HintPath>..\Reference\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\Reference\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="SuperSocket.Common">
       <HintPath>..\Reference\SuperSocket\NET4.0\$(Configuration)\SuperSocket.Common.dll</HintPath>
     </Reference>
@@ -56,6 +59,7 @@
     <Compile Include="SubProtocol\ISubCommand.cs" />
     <Compile Include="SubProtocol\ISubProtocol.cs" />
     <Compile Include="SubProtocol\ISubProtocolCommandParser.cs" />
+    <Compile Include="SubProtocol\JsonSubCommand.cs" />
     <Compile Include="SubProtocol\SubCommandBase.cs" />
     <Compile Include="WebSocketCommandInfo.cs" />
     <Compile Include="WebSocketConst.cs" />

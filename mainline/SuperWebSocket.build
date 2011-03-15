@@ -71,4 +71,16 @@
 		<call target="buildProject"/>
 	</target>
 	
+	<target name="createReleasePackage">
+		<zip zipfile="${output.dir}\${head.revision}\SuperWebSocket.zip">
+			<fileset>
+				<include name="**/*" />
+				<exclude name="**/obj/**" />
+				<exclude name="**/bin/**" />
+				<exclude name="**/.svn/**" />
+				<exclude name="**/rootinfo.txt" />
+				<exclude name="**/*.build" />
+			</fileset>
+		</zip>
+	</target>
 </project>

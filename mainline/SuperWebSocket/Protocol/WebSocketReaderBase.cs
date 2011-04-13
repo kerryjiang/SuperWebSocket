@@ -17,7 +17,7 @@ namespace SuperWebSocket.Protocol
 
         }
 
-        public WebSocketReaderBase(ICommandReader<WebSocketCommandInfo> previousCommandReader)
+        public WebSocketReaderBase(WebSocketReaderBase previousCommandReader)
             : base(previousCommandReader)
         {
 

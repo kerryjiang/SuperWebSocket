@@ -23,8 +23,14 @@ namespace SuperWebSocket.Client
         private const byte m_StartByte = 0x00;
         private const byte m_EndByte = 0xFF;
 
-        private SocketAsyncEventArgs m_SocketAsyncEventArgs;
-        private byte[] m_Buffer = new byte[512];
+        private SocketAsyncEventArgs m_ReceiveAsyncEventArgs;
+        private SocketAsyncEventArgs m_SendAsyncEventArgs;
+        private byte[] m_SendBuffer;
+
+        /// <summary>
+        /// It means whether hanshake successfully
+        /// </summary>
+        private bool m_Connected = false;
 
         private static List<char> m_CharLib = new List<char>();
         private static List<char> m_DigLib = new List<char>();
@@ -48,7 +54,19 @@ namespace SuperWebSocket.Client
 
         }
 
+        public WebSocket(string uri, string protocol, int sendBufferSize, int receiveBufferSize)
+            : this(uri, protocol, new List<KeyValuePair<string, string>>(), sendBufferSize, receiveBufferSize)
+        {
+
+        }
+
         public WebSocket(string uri, string protocol, List<KeyValuePair<string, string>> cookies)
+            : this(uri, protocol, cookies, 512, 512)
+        {
+
+        }
+
+        public WebSocket(string uri, string protocol, List<KeyValuePair<string, string>> cookies, int sendBufferSize, int receiveBufferSize)
         {
             if (string.IsNullOrEmpty(uri))
                 throw new ArgumentNullException("uri");
@@ -92,7 +110,112 @@ namespace SuperWebSocket.Client
             else
                 m_RemoteEndPoint = new IPEndPoint(ipAddress, port);          
 
-            m_Cookies = cookies;
+            m_Cookies = cookies;            
+
+            byte[] buffer = new byte[receiveBufferSize];
+            m_ReceiveAsyncEventArgs = new SocketAsyncEventArgs();
+            m_ReceiveAsyncEventArgs.SetBuffer(buffer, 0, buffer.Length);
+            m_ReceiveAsyncEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(m_ReceiveAsyncEventArgs_Completed);
+
+            m_SendBuffer = new byte[sendBufferSize];
+            m_SendAsyncEventArgs = new SocketAsyncEventArgs();
+            m_SendAsyncEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(m_SendAsyncEventArgs_Completed);
+        }
+
+        void m_SendAsyncEventArgs_Completed(object sender, SocketAsyncEventArgs e)
+        {
+            ProcessSend(e);
+        }        
+
+        void m_ReceiveAsyncEventArgs_Completed(object sender, SocketAsyncEventArgs e)
+        {
+            if (e.LastOperation == SocketAsyncOperation.Connect)
+            {
+                ProcessConnect(e);
+            }
+            else if (e.LastOperation == SocketAsyncOperation.Receive)
+            {
+                ProcessReceive(e);
+            }
+        }
+
+        void ProcessConnect(SocketAsyncEventArgs e)
+        {
+            if (e.SocketError != SocketError.Success)
+                return;
+#if NET35
+            //Do nothing
+#else
+            m_Socket = e.ConnectSocket;
+#endif
+            SendHandShake();
+        }
+
+        void ProcessSend(SocketAsyncEventArgs e)
+        {
+            if (e.SocketError != SocketError.Success)
+            {
+                EnsureCloseSocket();
+                return;
+            }
+
+            //If not connected, means it is a handshake sending
+            if (!m_Connected)
+            {
+                //Now receive hanshake response
+                StartReceive();
+            }
+            else
+            {
+                var sendContext = e.UserToken as SendMessageContext;
+                if (sendContext == null)
+                    return;
+
+                if (!sendContext.Completed)
+                {
+                    StartSend(sendContext);
+                }
+            }
+        }
+
+        void StartReceive()
+        {
+            if (!m_Socket.ReceiveAsync(m_ReceiveAsyncEventArgs))
+                ProcessReceive(m_ReceiveAsyncEventArgs);
+        }
+
+        void EnsureCloseSocket()
+        {
+            EnsureCloseSocket(true);
+        }
+
+        void EnsureCloseSocket(bool fireEvent)
+        {
+            if (m_Socket != null)
+            {
+                if (m_Socket.Connected)
+                {
+                    try
+                    {
+                        m_Socket.Shutdown(SocketShutdown.Both);
+                        m_Socket.Close();
+                    }
+                    catch
+                    {
+
+                    }
+                }
+
+                m_Socket = null;
+            }
+
+            if (m_Connected)
+            {
+                m_Connected = false;
+
+                if (fireEvent)
+                    FireOnClose();
+            }
         }
 
         private EventHandler m_OnOpen;
@@ -140,185 +263,142 @@ namespace SuperWebSocket.Client
                 handler(this, new MessageEventArgs(message));
         }
 
-        public bool Connect()
+        public void Connect()
         {
+            m_ReceiveAsyncEventArgs.RemoteEndPoint = m_RemoteEndPoint;
+#if NET35
             m_Socket = new Socket(m_RemoteEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-
-            try
-            {
-                string secKey1 = Encoding.UTF8.GetString(GenerateSecKey());
-                Console.WriteLine(secKey1);
-                string secKey2 = Encoding.UTF8.GetString(GenerateSecKey());
-                Console.WriteLine(secKey2);
-                byte[] secKey3 = GenerateSecKey(8);
-
-                byte[] expectedResponse = GetResponseSecurityKey(secKey1, secKey2, secKey3);
-
-                m_Socket.Connect(m_RemoteEndPoint);
-
-                var stream = new NetworkStream(m_Socket);
-
-                var writer = new StreamWriter(stream, Encoding.UTF8, 1024 * 10);
-
-                writer.WriteLine("GET {0} HTTP/1.1", m_Path);
-                writer.WriteLine("Upgrade: WebSocket");
-                writer.WriteLine("Connection: Upgrade");
-                writer.WriteLine("Sec-WebSocket-Key2: {0}", secKey2);
-                writer.WriteLine("Host: {0}", m_Host);
-                writer.WriteLine("Sec-WebSocket-Key1: {0}", secKey1);
-                writer.WriteLine("Origin: {0}", m_Host);
-                writer.WriteLine("WebSocket-Protocol: {0}", m_Protocol);
-
-                if (m_Cookies != null && m_Cookies.Count > 0)
-                {
-                    string[] cookiePairs = new string[m_Cookies.Count];
-                    for (int i = 0; i < m_Cookies.Count; i++)
-                    {
-                        var item = m_Cookies[i];
-                        cookiePairs[i] = item.Key + "=" + item.Value;                  
-                    }
-                    writer.WriteLine("Cookie: {0}", string.Join("&", cookiePairs));
-                }
-
-                writer.WriteLine("");
-
-                writer.Write(Encoding.UTF8.GetString(secKey3, 0, secKey3.Length));
-                writer.Flush();
-
-                byte[] challengeResponse;
-
-                string handshake = ParseServerHandshake(stream, out challengeResponse);
-
-                bool matched = false;
-
-                if (challengeResponse.Length == expectedResponse.Length)
-                {
-                    matched = true;
-
-                    for (int i = 0; i < challengeResponse.Length; i++)
-                    {
-                        if (challengeResponse[i] != expectedResponse[i])
-                        {
-                            matched = false;
-                            break;
-                        }
-                    }
-                }
-
-                if (matched)
-                {                    
-                    FireOnOpen();
-
-                    m_SocketAsyncEventArgs = new SocketAsyncEventArgs();
-                    m_SocketAsyncEventArgs.SetBuffer(m_Buffer, 0, m_Buffer.Length);
-                    m_SocketAsyncEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(m_SocketAsyncEventArgs_Completed);
-
-                    StartReceiveAsync(m_SocketAsyncEventArgs);
-                    
-                    return true;
-                }
-
-                m_Socket.Shutdown(SocketShutdown.Both);
-                m_Socket.Close();
-
-                return false;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            m_Socket.ConnectAsync(m_ReceiveAsyncEventArgs);
+#else
+            if (!Socket.ConnectAsync(SocketType.Stream, ProtocolType.Tcp, m_ReceiveAsyncEventArgs))
+                ProcessConnect(m_ReceiveAsyncEventArgs);
+#endif
         }
 
-        private static readonly byte[] m_NewLineMark = Encoding.UTF8.GetBytes(Environment.NewLine + Environment.NewLine);
-
-        private string ParseServerHandshake(Stream stream, out byte[] challengeResponse)
+        void SendHandShake()
         {
-            ArraySegmentList<byte> handshakeData = new ArraySegmentList<byte>();
-            challengeResponse = new byte[16];
-            int challengeOffset = 0;
-            string handshake = string.Empty;
-            int thisRead = 0;
-            int lastTotalRead = 0;
+            string secKey1 = Encoding.UTF8.GetString(GenerateSecKey());
+            
+            string secKey2 = Encoding.UTF8.GetString(GenerateSecKey());
+            
+            byte[] secKey3 = GenerateSecKey(8);
 
-            while (true)
+            byte[] expectedResponse = GetResponseSecurityKey(secKey1, secKey2, secKey3);
+
+            m_ReceiveAsyncEventArgs.UserToken = new HandshakeContext { ExpectedChallenge = expectedResponse };
+                
+            var handshakeBuilder = new StringBuilder();
+
+            handshakeBuilder.AppendLine(string.Format("GET {0} HTTP/1.1", m_Path));
+            handshakeBuilder.AppendLine("Upgrade: WebSocket");
+            handshakeBuilder.AppendLine("Connection: Upgrade");
+            handshakeBuilder.AppendLine(string.Format("Sec-WebSocket-Key2: {0}", secKey2));
+            handshakeBuilder.AppendLine(string.Format("Host: {0}", m_Host));
+            handshakeBuilder.AppendLine(string.Format("Sec-WebSocket-Key1: {0}", secKey1));
+            handshakeBuilder.AppendLine(string.Format("Origin: {0}", m_Host));
+            handshakeBuilder.AppendLine(string.Format("WebSocket-Protocol: {0}", m_Protocol));
+
+            if (m_Cookies != null && m_Cookies.Count > 0)
             {
-                lastTotalRead += thisRead;
-                byte[] buffer = new byte[128];
-                thisRead = stream.Read(buffer, 0, buffer.Length);
-
-                if (thisRead <= 0)
-                    break;
-
-                if (string.IsNullOrEmpty(handshake))
+                string[] cookiePairs = new string[m_Cookies.Count];
+                for (int i = 0; i < m_Cookies.Count; i++)
                 {
-                    handshakeData.AddSegment(new ArraySegment<byte>(buffer, 0, thisRead));
-                    var result = handshakeData.SearchMark(lastTotalRead, thisRead, m_NewLineMark);
-                    if (result.HasValue && result.Value >= 0)
-                    {
-                        handshake = Encoding.UTF8.GetString(handshakeData.ToArrayData(0, result.Value));
-
-                        if (result.Value + m_NewLineMark.Length < handshakeData.Count)
-                        {
-                            int leftLength = handshakeData.Count - result.Value - m_NewLineMark.Length;
-                            int thisCopy = Math.Min(challengeResponse.Length, leftLength);
-                            Array.Copy(buffer, result.Value - lastTotalRead + m_NewLineMark.Length, challengeResponse, 0, thisCopy);
-                            challengeOffset = thisCopy;
-
-                            if (thisCopy == challengeResponse.Length)
-                                return handshake;
-                        }
-                    }
-
-                    continue;
+                    var item = m_Cookies[i];
+                    //TODO: Encode cookie value? 
+                    cookiePairs[i] = item.Key + "=" + item.Value;             
                 }
-                else
-                {
-                    int left = challengeResponse.Length - challengeOffset;
-                    int thisCopy = Math.Min(left, thisRead);
-                    Array.Copy(buffer, 0, challengeResponse, challengeOffset, thisCopy);
-                    challengeOffset += thisCopy;
-
-                    if (challengeOffset == challengeResponse.Length)
-                        return handshake;
-
-                    continue;
-                }               
+                handshakeBuilder.AppendLine(string.Format("Cookie: {0}", string.Join("&", cookiePairs)));
             }
 
-            return handshake;
+            handshakeBuilder.AppendLine();
+            handshakeBuilder.Append(Encoding.UTF8.GetString(secKey3, 0, secKey3.Length));
+
+            byte[] handshakeBuffer = Encoding.UTF8.GetBytes(handshakeBuilder.ToString());
+
+            m_SendAsyncEventArgs.SetBuffer(handshakeBuffer, 0, handshakeBuffer.Length);
+
+            if (!m_Socket.SendAsync(m_SendAsyncEventArgs))
+                ProcessSend(m_SendAsyncEventArgs);
         }
 
-        void m_SocketAsyncEventArgs_Completed(object sender, SocketAsyncEventArgs e)
-        {
-            if (e.LastOperation == SocketAsyncOperation.Receive)
-                ProcessReceive(e);
-        }
+        private static readonly byte[] m_NewLineMark = Encoding.UTF8.GetBytes(Environment.NewLine + Environment.NewLine);              
 
         List<byte> m_MessBuilder = new List<byte>();
-
-        void StartReceiveAsync(SocketAsyncEventArgs e)
-        {
-            var willRaiseEvent = m_Socket.ReceiveAsync(e);
-            if (!willRaiseEvent)
-                ProcessReceive(e);
-        }
 
         void ProcessReceive(SocketAsyncEventArgs e)
         {
             if (e.SocketError != SocketError.Success)
             {
-                FireOnClose();
+                EnsureCloseSocket();
                 return;
             }
 
             if (e.BytesTransferred == 0)
             {
-                FireOnClose();
+                EnsureCloseSocket();
+                return;
+            }
+
+            if (!m_Connected)
+            {
+                ProcessHanshake(e);
                 return;
             }
 
             ProcessReceiveData(e.Buffer, e.Offset, e.BytesTransferred);
-            StartReceiveAsync(e);
+            StartReceive();
+        }
+
+        void ProcessHanshake(SocketAsyncEventArgs e)
+        {
+            var handshakeContext = e.UserToken as HandshakeContext;
+            handshakeContext.HandshakeData.AddSegment(new ArraySegment<byte>(CloneRange(e.Buffer, e.Offset, e.BytesTransferred)));
+
+            if (handshakeContext.ExpectedLength <= 0)
+            {
+                var result = handshakeContext.HandshakeData.SearchMark(m_NewLineMark);
+
+                if (result.HasValue && result.Value >= 0)
+                {
+                    handshakeContext.ExpectedLength = result.Value + m_NewLineMark.Length + 16;
+                }
+            }
+
+            if (handshakeContext.HandshakeData.Count < handshakeContext.ExpectedLength)
+            {
+                StartReceive();
+                return;
+            }
+
+            byte[] challengeResponse = handshakeContext.HandshakeData.ToArrayData(handshakeContext.ExpectedLength - 16, 16);
+
+            bool matched = false;
+
+            if (challengeResponse.Length == handshakeContext.ExpectedChallenge.Length)
+            {
+                matched = true;
+
+                for (int i = 0; i < challengeResponse.Length; i++)
+                {
+                    if (challengeResponse[i] != handshakeContext.ExpectedChallenge[i])
+                    {
+                        matched = false;
+                        break;
+                    }
+                }
+            }
+
+            if (matched)
+            {
+                m_Connected = true;
+                FireOnOpen();
+                m_ReceiveAsyncEventArgs.UserToken = null;
+                StartReceive();
+            }
+            else
+            {
+                EnsureCloseSocket();
+            }
         }
 
         void ProcessReceiveData(byte[] buffer, int offset, int length)
@@ -458,29 +538,66 @@ namespace SuperWebSocket.Client
 
         public void Send(string message)
         {
-            try
+            if (!m_Connected)
+                throw new Exception("The websocket is not open, so you can not send message now!");
+
+            var sendContext = new SendMessageContext { Message = message.ToArray(), SentLength = 0, Encoder = Encoding.UTF8.GetEncoder() };
+
+            m_SendBuffer[0] = m_StartByte;
+
+            StartSend(sendContext);       
+        }
+
+        void StartSend(SendMessageContext context)
+        {
+            int left = context.Message.Length - context.SentLength;
+            int bufferOffset = context.SentLength == 0 ? 1 : 0;
+
+            if (left == 0)
             {
-                m_Socket.Send(new byte[] { m_StartByte });
-                m_Socket.Send(Encoding.UTF8.GetBytes(message));
-                m_Socket.Send(new byte[] { m_EndByte });
+                m_SendBuffer[bufferOffset] = m_EndByte;
+                context.Completed = true;
+
+                m_SendAsyncEventArgs.SetBuffer(m_SendBuffer, 0, bufferOffset + 1);
+
+                if (!m_Socket.SendAsync(m_SendAsyncEventArgs))
+                    ProcessSend(m_SendAsyncEventArgs);
+
+                return;
             }
-            catch (Exception)
+
+            int charsUsed, bytesUsed;
+            bool completed;
+
+            context.Encoder.Convert(context.Message, context.SentLength, left,
+                m_SendBuffer, bufferOffset, m_SendBuffer.Length - bufferOffset,
+                false, out bytesUsed, out charsUsed, out completed);
+
+            context.SentLength += charsUsed;
+
+            //Finished?
+            if (context.Message.Length == context.SentLength)
             {
-                FireOnClose();
+                //Has enought buffer to send end mark?
+                if (m_SendBuffer.Length - bufferOffset - bytesUsed > 0)
+                {
+                    m_SendBuffer[bufferOffset + bytesUsed] = m_EndByte;
+                    context.Completed = true;
+                    bytesUsed++;
+                }
             }
+
+            bytesUsed += bufferOffset;
+
+            m_SendAsyncEventArgs.SetBuffer(m_SendBuffer, 0, bytesUsed);
+
+            if (!m_Socket.SendAsync(m_SendAsyncEventArgs))
+                ProcessSend(m_SendAsyncEventArgs);
         }
 
         public void Close()
         {
-            try
-            {
-                m_Socket.Shutdown(SocketShutdown.Both);
-                m_Socket.Close();
-            }
-            catch (Exception)
-            {
-
-            }
+            EnsureCloseSocket();
         }
     }
 }

@@ -68,7 +68,7 @@
     </ProjectReference>
     <ProjectReference Include="..\SuperWebSocket\SuperWebSocket.NET35.csproj">
       <Project>{2DC79E40-BB70-4F6A-B378-905F2FBC6E97}</Project>
-      <Name>SuperWebSocket</Name>
+      <Name>SuperWebSocket.NET35</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

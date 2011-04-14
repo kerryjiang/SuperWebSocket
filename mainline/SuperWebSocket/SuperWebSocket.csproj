@@ -53,6 +53,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\GlobalAssemblyInfo.cs">
+      <Link>GlobalAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Protocol\WebSocketSecKey3Reader.cs" />
     <Compile Include="SubProtocol\BasicSubCommandParser.cs" />
     <Compile Include="SubProtocol\BasicSubProtocol.cs" />

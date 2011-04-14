@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Collections.Specialized;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.IO;
-using System.Text.RegularExpressions;
 using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SuperWebSocket.Client
 {
     public class WebSocket
     {
-        private NameValueCollection m_Cookies;
+        private List<KeyValuePair<string, string>> m_Cookies;
         private EndPoint m_RemoteEndPoint;
         private string m_Path = string.Empty;
         private string m_Host = string.Empty;
@@ -43,12 +43,12 @@ namespace SuperWebSocket.Client
         }
 
         public WebSocket(string uri, string protocol)
-            : this(uri, protocol, new NameValueCollection()) 
+            : this(uri, protocol, new List<KeyValuePair<string, string>>()) 
         {
 
         }
 
-        public WebSocket(string uri, string protocol, NameValueCollection cookies)
+        public WebSocket(string uri, string protocol, List<KeyValuePair<string, string>> cookies)
         {
             if (string.IsNullOrEmpty(uri))
                 throw new ArgumentNullException("uri");
@@ -174,16 +174,15 @@ namespace SuperWebSocket.Client
                     string[] cookiePairs = new string[m_Cookies.Count];
                     for (int i = 0; i < m_Cookies.Count; i++)
                     {
-                        var key = m_Cookies.AllKeys[i];
-                        var value = m_Cookies[key];
-                        cookiePairs[i] = key + "=" + value;                  
+                        var item = m_Cookies[i];
+                        cookiePairs[i] = item.Key + "=" + item.Value;                  
                     }
                     writer.WriteLine("Cookie: {0}", string.Join("&", cookiePairs));
                 }
 
                 writer.WriteLine("");
 
-                writer.Write(Encoding.UTF8.GetString(secKey3));
+                writer.Write(Encoding.UTF8.GetString(secKey3, 0, secKey3.Length));
                 writer.Flush();
 
                 byte[] challengeResponse;

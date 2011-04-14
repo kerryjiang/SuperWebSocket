@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperWebSocketTest", "Super
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{FA1DC954-EE1A-4CC8-B0EF-A01A6ECF5189}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebSocketClient", "WebSocketClient", "{1641F6E1-B532-43E0-B76D-D6F2115CF059}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Silverlight", "Client\Client.Silverlight.csproj", "{E1DE8918-17F7-4423-9AD5-FB05C84820E4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,8 +63,20 @@ Global
 		{FA1DC954-EE1A-4CC8-B0EF-A01A6ECF5189}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FA1DC954-EE1A-4CC8-B0EF-A01A6ECF5189}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{FA1DC954-EE1A-4CC8-B0EF-A01A6ECF5189}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{E1DE8918-17F7-4423-9AD5-FB05C84820E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1DE8918-17F7-4423-9AD5-FB05C84820E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1DE8918-17F7-4423-9AD5-FB05C84820E4}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{E1DE8918-17F7-4423-9AD5-FB05C84820E4}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{E1DE8918-17F7-4423-9AD5-FB05C84820E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1DE8918-17F7-4423-9AD5-FB05C84820E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1DE8918-17F7-4423-9AD5-FB05C84820E4}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{E1DE8918-17F7-4423-9AD5-FB05C84820E4}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FA1DC954-EE1A-4CC8-B0EF-A01A6ECF5189} = {1641F6E1-B532-43E0-B76D-D6F2115CF059}
+		{E1DE8918-17F7-4423-9AD5-FB05C84820E4} = {1641F6E1-B532-43E0-B76D-D6F2115CF059}
 	EndGlobalSection
 EndGlobal

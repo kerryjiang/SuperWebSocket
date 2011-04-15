@@ -1,0 +1,11 @@
+﻿using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+[assembly: AssemblyCompany("SuperWebSocket")]
+[assembly: AssemblyProduct("SuperWebSocket")]
+[assembly: AssemblyCopyright("Copyright © SuperWebSocket 2011")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
+[assembly: AssemblyVersion("{build.version}.{head.revision}")]
+[assembly: AssemblyFileVersion("{build.version}.{head.revision}")]

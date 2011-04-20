@@ -53,15 +53,20 @@ namespace SuperWebSocketWeb
             Application["WebSocketPort"] = socketServer.Config.Port;
             Application["SecureWebSocketPort"] = secureSocketServer.Config.Port;
 
-            socketServer.CommandHandler += new CommandHandler<WebSocketSession, WebSocketCommandInfo>(socketServer_CommandHandler);
+            socketServer.NewMessageReceived += new SessionEventHandler<WebSocketSession, string>(socketServer_NewMessageReceived);
             socketServer.NewSessionConnected += new SessionEventHandler<WebSocketSession>(socketServer_NewSessionConnected);
-            socketServer.SessionClosed += new SessionClosedEventHandler<WebSocketSession>(socketServer_SessionClosed);
+            socketServer.SessionClosed += new SessionEventHandler<WebSocketSession, CloseReason>(socketServer_SessionClosed);
 
             secureSocketServer.NewSessionConnected += new SessionEventHandler<WebSocketSession>(secureSocketServer_NewSessionConnected);
-            secureSocketServer.SessionClosed += new SessionClosedEventHandler<WebSocketSession>(secureSocketServer_SessionClosed);
+            secureSocketServer.SessionClosed += new SessionEventHandler<WebSocketSession, CloseReason>(secureSocketServer_SessionClosed);
 
             if (!SocketServerManager.Start())
                 SocketServerManager.Stop();
+        }
+
+        void socketServer_NewMessageReceived(WebSocketSession session, string e)
+        {
+            SendToAll(session.Cookies["name"] + ": " + e);
         }
 
         void secureSocketServer_SessionClosed(WebSocketSession session, CloseReason reason)
@@ -91,9 +96,9 @@ namespace SuperWebSocketWeb
                     Mode = SocketMode.Async
                 }, SocketServerFactory.Instance);
 
-            socketServer.CommandHandler += new CommandHandler<WebSocketSession, WebSocketCommandInfo>(socketServer_CommandHandler);
+            socketServer.NewMessageReceived += new SessionEventHandler<WebSocketSession, string>(socketServer_NewMessageReceived);
             socketServer.NewSessionConnected += new SessionEventHandler<WebSocketSession>(socketServer_NewSessionConnected);
-            socketServer.SessionClosed += new SessionClosedEventHandler<WebSocketSession>(socketServer_SessionClosed);
+            socketServer.SessionClosed += new SessionEventHandler<WebSocketSession, CloseReason>(socketServer_SessionClosed);
 
             var secureSocketServer = new WebSocketServer();
             secureSocketServer.Setup(
@@ -113,7 +118,7 @@ namespace SuperWebSocketWeb
                 }, SocketServerFactory.Instance);
 
             secureSocketServer.NewSessionConnected += new SessionEventHandler<WebSocketSession>(secureSocketServer_NewSessionConnected);
-            secureSocketServer.SessionClosed += new SessionClosedEventHandler<WebSocketSession>(secureSocketServer_SessionClosed);
+            secureSocketServer.SessionClosed += new SessionEventHandler<WebSocketSession, CloseReason>(secureSocketServer_SessionClosed);
 
             Application["WebSocketPort"] = socketServer.Config.Port;
             Application["SecureWebSocketPort"] = secureSocketServer.Config.Port;
@@ -139,11 +144,6 @@ namespace SuperWebSocketWeb
                 return;
 
             SendToAll("System: " + session.Cookies["name"] + " disconnected");
-        }
-
-        void socketServer_CommandHandler(WebSocketSession session, WebSocketCommandInfo commandInfo)
-        {
-            SendToAll(session.Cookies["name"] + ": " + commandInfo.Data);
         }
 
         void SendToAll(string message)

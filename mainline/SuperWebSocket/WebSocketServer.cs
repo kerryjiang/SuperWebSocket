@@ -19,7 +19,7 @@ namespace SuperWebSocket
 {
     public delegate void SessionEventHandler<TWebSocketSession>(TWebSocketSession session) where TWebSocketSession : WebSocketSession<TWebSocketSession>, new();
 
-    public delegate void SessionClosedEventHandler<TWebSocketSession>(TWebSocketSession session, CloseReason reason) where TWebSocketSession : WebSocketSession<TWebSocketSession>, new();
+    public delegate void SessionEventHandler<TWebSocketSession, TEventArgs>(TWebSocketSession session, TEventArgs e) where TWebSocketSession : WebSocketSession<TWebSocketSession>, new();
 
     public class WebSocketServer : WebSocketServer<WebSocketSession>
     {
@@ -99,13 +99,37 @@ namespace SuperWebSocket
             remove { m_NewSessionConnected -= value; }
         }
 
-        private SessionClosedEventHandler<TWebSocketSession> m_SessionClosed;
+        private SessionEventHandler<TWebSocketSession, CloseReason> m_SessionClosed;
 
-        public event SessionClosedEventHandler<TWebSocketSession> SessionClosed
+        public event SessionEventHandler<TWebSocketSession, CloseReason> SessionClosed
         {
             add { m_SessionClosed += value; }
             remove { m_SessionClosed -= value; }
         }
+
+        private SessionEventHandler<TWebSocketSession, string> m_NewMessageReceived;
+
+        public event SessionEventHandler<TWebSocketSession, string> NewMessageReceived
+        {
+            add
+            {
+                m_NewMessageReceived += value;
+                this.CommandHandler += new CommandHandler<TWebSocketSession, WebSocketCommandInfo>(WebSocketServer_CommandHandler);
+            }
+            remove
+            {
+                m_NewMessageReceived -= value;
+                this.CommandHandler -= new CommandHandler<TWebSocketSession, WebSocketCommandInfo>(WebSocketServer_CommandHandler);
+            }
+        }
+
+        void WebSocketServer_CommandHandler(TWebSocketSession session, WebSocketCommandInfo commandInfo)
+        {
+            if (m_NewMessageReceived == null)
+                return;
+
+            m_NewMessageReceived(session, commandInfo.Data);
+        }        
 
         private byte[] GetResponseSecurityKey(string secKey1, string secKey2, byte[] secKey3)
         {

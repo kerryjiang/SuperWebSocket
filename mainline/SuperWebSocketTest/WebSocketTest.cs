@@ -34,9 +34,15 @@ namespace SuperWebSocketTest
                     Name = "SuperWebSocket Server"
                 }, SocketServerFactory.Instance);
 
-            m_WebSocketServer.CommandHandler += new CommandHandler<WebSocketSession, WebSocketCommandInfo>(m_WebSocketServer_CommandHandler);
+            m_WebSocketServer.NewMessageReceived += new SessionEventHandler<WebSocketSession, string>(m_WebSocketServer_NewMessageReceived);
             m_WebSocketServer.NewSessionConnected += new SessionEventHandler<WebSocketSession>(m_WebSocketServer_NewSessionConnected);
-            m_WebSocketServer.SessionClosed += new SessionClosedEventHandler<WebSocketSession>(m_WebSocketServer_SessionClosed);
+            m_WebSocketServer.SessionClosed += new SessionEventHandler<WebSocketSession, CloseReason>(m_WebSocketServer_SessionClosed);
+        }
+
+        void m_WebSocketServer_NewMessageReceived(WebSocketSession session, string e)
+        {
+            Console.WriteLine("Server:" + e);
+            session.SendResponse(e);
         }
 
         void m_WebSocketServer_SessionClosed(WebSocketSession session, CloseReason reason)
@@ -47,12 +53,6 @@ namespace SuperWebSocketTest
         void m_WebSocketServer_NewSessionConnected(WebSocketSession session)
         {
             
-        }
-
-        void m_WebSocketServer_CommandHandler(WebSocketSession session, WebSocketCommandInfo commandInfo)
-        {
-            Console.WriteLine("Server:" + commandInfo.Data);
-            session.SendResponse(commandInfo.Data);
         }
 
         [SetUp]

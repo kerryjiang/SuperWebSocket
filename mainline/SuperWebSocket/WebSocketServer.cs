@@ -203,35 +203,71 @@ namespace SuperWebSocket
             var secKey1 = session.Context.SecWebSocketKey1;
             var secKey2 = session.Context.SecWebSocketKey2;
             var secKey3 = session.Context.SecWebSocketKey3;
+            var secWebSocketVersion = session.Context.SecWebSocketVersion;
 
             var responseBuilder = new StringBuilder();
 
-            //Common for all websockets editions (v.75 & v.76)
-            responseBuilder.AppendLine("HTTP/1.1 101 Web Socket Protocol Handshake");
-            responseBuilder.AppendLine("Upgrade: WebSocket");
-            responseBuilder.AppendLine("Connection: Upgrade");
-
-            //Check if the client send Sec-WebSocket-Key1 and Sec-WebSocket-Key2
-            if (String.IsNullOrEmpty(secKey1) && String.IsNullOrEmpty(secKey2))
+            //draft-ietf-hybi-thewebsocketprotocol-06
+            if ("6".Equals(secWebSocketVersion))
             {
-                //No keys, v.75
-                if (!string.IsNullOrEmpty(session.Context.Origin))
-                    responseBuilder.AppendLine(string.Format("WebSocket-Origin: {0}", session.Context.Origin));
-                responseBuilder.AppendLine(string.Format("WebSocket-Location: {0}://{1}{2}", m_WebSocketUriSufix, session.Context.Host, session.Context.Path));
+                const string magic = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
+
+                var secWebSocketKey = session.Context[WebSocketConstant.SecWebSocketKey];
+
+                if (string.IsNullOrEmpty(secWebSocketKey))
+                {
+                    session.Close(CloseReason.ServerClosing);
+                    return;
+                }
+
+                string secKeyAccept = string.Empty;
+
+                try
+                {
+                    secKeyAccept = Convert.ToBase64String(SHA1.Create().ComputeHash(Encoding.ASCII.GetBytes(secWebSocketKey + magic)));
+                }
+                catch (Exception)
+                {
+                    session.Close(CloseReason.ServerClosing);
+                    return;
+                }
+
+                responseBuilder.AppendLine("HTTP/1.1 101 Switching Protocols");
+                responseBuilder.AppendLine("Upgrade: WebSocket");
+                responseBuilder.AppendLine("Connection: Upgrade");
+                responseBuilder.AppendLine(string.Format("Sec-WebSocket-Accept: {0}", secKeyAccept));
                 responseBuilder.AppendLine();
                 session.SendRawResponse(responseBuilder.ToString());
             }
             else
             {
-                //Have Keys, v.76
-                if (!string.IsNullOrEmpty(session.Context.Origin))
-                    responseBuilder.AppendLine(string.Format("Sec-WebSocket-Origin: {0}", session.Context.Origin));
-                responseBuilder.AppendLine(string.Format("Sec-WebSocket-Location: {0}://{1}{2}", m_WebSocketUriSufix, session.Context.Host, session.Context.Path));
-                responseBuilder.AppendLine();
-                session.SendRawResponse(responseBuilder.ToString());
-                //Encrypt message
-                byte[] secret = GetResponseSecurityKey(secKey1, secKey2, secKey3);
-                session.SendResponse(secret);
+                //Common for all websockets editions (v.75 & v.76)
+                responseBuilder.AppendLine("HTTP/1.1 101 Web Socket Protocol Handshake");
+                responseBuilder.AppendLine("Upgrade: WebSocket");
+                responseBuilder.AppendLine("Connection: Upgrade");
+
+                //Check if the client send Sec-WebSocket-Key1 and Sec-WebSocket-Key2
+                if (String.IsNullOrEmpty(secKey1) && String.IsNullOrEmpty(secKey2))
+                {
+                    //No keys, v.75
+                    if (!string.IsNullOrEmpty(session.Context.Origin))
+                        responseBuilder.AppendLine(string.Format("WebSocket-Origin: {0}", session.Context.Origin));
+                    responseBuilder.AppendLine(string.Format("WebSocket-Location: {0}://{1}{2}", m_WebSocketUriSufix, session.Context.Host, session.Context.Path));
+                    responseBuilder.AppendLine();
+                    session.SendRawResponse(responseBuilder.ToString());
+                }
+                else
+                {
+                    //Have Keys, v.76
+                    if (!string.IsNullOrEmpty(session.Context.Origin))
+                        responseBuilder.AppendLine(string.Format("Sec-WebSocket-Origin: {0}", session.Context.Origin));
+                    responseBuilder.AppendLine(string.Format("Sec-WebSocket-Location: {0}://{1}{2}", m_WebSocketUriSufix, session.Context.Host, session.Context.Path));
+                    responseBuilder.AppendLine();
+                    session.SendRawResponse(responseBuilder.ToString());
+                    //Encrypt message
+                    byte[] secret = GetResponseSecurityKey(secKey1, secKey2, secKey3);
+                    session.SendResponse(secret);
+                }
             }
         }
 

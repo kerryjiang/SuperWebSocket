@@ -18,6 +18,7 @@ namespace SuperWebSocket
         public string Connection { get { return m_Values[WebSocketConstant.Connection]; } }
         public string SecWebSocketKey1 { get { return m_Values[WebSocketConstant.SecWebSocketKey1]; } }
         public string SecWebSocketKey2 { get { return m_Values[WebSocketConstant.SecWebSocketKey2]; } }
+        public string SecWebSocketVersion { get { return m_Values[WebSocketConstant.SecWebSocketVersion]; } }
         public byte[] SecWebSocketKey3 { get; set; }
 
         public WebSocketContext()

@@ -40,6 +40,7 @@ namespace SuperWebSocket.Protocol
 
             var secWebSocketKey1 = socketContext.SecWebSocketKey1;
             var secWebSocketKey2 = socketContext.SecWebSocketKey2;
+            var secWebSocketVersion = socketContext.SecWebSocketVersion;
 
             int left = BufferSegments.Count - result.Value - m_HeaderTerminator.Length;
 
@@ -47,7 +48,15 @@ namespace SuperWebSocket.Protocol
 
             if (string.IsNullOrEmpty(secWebSocketKey1) && string.IsNullOrEmpty(secWebSocketKey2))
             {
-                //v.75
+                //draft-hixie-thewebsocketprotocol-75
+                if (left > 0)
+                    AddArraySegment(readBuffer, offset + length - left, left, isReusableBuffer);
+
+                NextCommandReader = new WebSocketDataReader(this);
+                return CreateHeadCommandInfo();
+            }
+            else if ("6".Equals(secWebSocketVersion)) //draft-ietf-hybi-thewebsocketprotocol-06
+            {
                 if (left > 0)
                     AddArraySegment(readBuffer, offset + length - left, left, isReusableBuffer);
 
@@ -56,7 +65,7 @@ namespace SuperWebSocket.Protocol
             }
             else
             {
-                //v.76
+                //draft-hixie-thewebsocketprotocol-76/draft-ietf-hybi-thewebsocketprotocol-00
                 //Read SecWebSocketKey3(8 bytes)
                 if (left == 8)
                 {

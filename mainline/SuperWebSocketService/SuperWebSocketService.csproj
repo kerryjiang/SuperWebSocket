@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net">
+      <HintPath>..\Reference\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="SuperSocket.Common, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Reference\SuperSocket\NET4.0\Debug\SuperSocket.Common.dll</HintPath>

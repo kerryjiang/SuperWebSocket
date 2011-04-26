@@ -2,17 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SuperSocket.SocketBase.Command;
-using SuperWebSocket;
 using SuperWebSocket.SubProtocol;
+using SuperSocket.SocketBase.Command;
 
-namespace SuperWebSocketTest.Command
+namespace SuperWebSocket.Samples.SimpleSubProtocol.Command
 {
-    public class QUIT : SubCommandBase
+    public class ECHO : SubCommandBase
     {
         public override void ExecuteCommand(WebSocketSession session, StringCommandInfo commandInfo)
         {
-            session.Close();
+            foreach (var p in commandInfo.Parameters)
+            {
+                session.SendResponse(p);
+            }
         }
     }
 }

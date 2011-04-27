@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperWebSocketWeb", "Sample
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSubProtocol", "Samples\SimpleSubProtocol\SimpleSubProtocol.csproj", "{AE073799-A107-4D02-9F89-2F501CAEAA89}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandAssembly", "Samples\CommandAssembly\CommandAssembly.csproj", "{4A8713F5-DF02-4424-81F2-D112C615ADC2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -88,6 +90,14 @@ Global
 		{AE073799-A107-4D02-9F89-2F501CAEAA89}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AE073799-A107-4D02-9F89-2F501CAEAA89}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{AE073799-A107-4D02-9F89-2F501CAEAA89}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{4A8713F5-DF02-4424-81F2-D112C615ADC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A8713F5-DF02-4424-81F2-D112C615ADC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A8713F5-DF02-4424-81F2-D112C615ADC2}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{4A8713F5-DF02-4424-81F2-D112C615ADC2}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{4A8713F5-DF02-4424-81F2-D112C615ADC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A8713F5-DF02-4424-81F2-D112C615ADC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A8713F5-DF02-4424-81F2-D112C615ADC2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{4A8713F5-DF02-4424-81F2-D112C615ADC2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,5 +107,6 @@ Global
 		{E1DE8918-17F7-4423-9AD5-FB05C84820E4} = {1641F6E1-B532-43E0-B76D-D6F2115CF059}
 		{9BA4110E-41D7-491B-9BAD-50C0EB10CFBC} = {60AFFD96-6CC7-41F4-A57B-A9A2952B1F25}
 		{AE073799-A107-4D02-9F89-2F501CAEAA89} = {60AFFD96-6CC7-41F4-A57B-A9A2952B1F25}
+		{4A8713F5-DF02-4424-81F2-D112C615ADC2} = {60AFFD96-6CC7-41F4-A57B-A9A2952B1F25}
 	EndGlobalSection
 EndGlobal

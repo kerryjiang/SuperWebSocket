@@ -5,7 +5,7 @@ using System.Text;
 using SuperSocket.SocketBase.Command;
 using SuperWebSocket.SubProtocol;
 
-namespace SuperWebSocket.Samples.SimpleSubProtocol.Command
+namespace SuperWebSocket.Samples.CommandAssembly
 {
     /// <summary>
     /// If the client send "QUIT" to server, the websocket connection will be closed

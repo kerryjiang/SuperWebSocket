@@ -7,6 +7,10 @@ using SuperSocket.SocketBase.Command;
 
 namespace SuperWebSocket.Samples.SimpleSubProtocol.Command
 {
+    /// <summary>
+    /// If client send "ECHO A B C" to server, the A, B and C will be sent back
+    /// A, B and C is processed as parameters list in commandInfo
+    /// </summary>
     public class ECHO : SubCommandBase
     {
         public override void ExecuteCommand(WebSocketSession session, StringCommandInfo commandInfo)

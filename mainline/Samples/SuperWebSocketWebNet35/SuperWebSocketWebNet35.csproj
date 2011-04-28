@@ -37,20 +37,20 @@
       <HintPath>..\..\Reference\log4net.dll</HintPath>
     </Reference>
     <Reference Include="SuperSocket.Common">
-      <HintPath>..\..\Reference\SuperSocket\NET3.5\Debug\SuperSocket.Common.dll</HintPath>
+      <HintPath>..\..\Reference\SuperSocket\NET3.5\$(Configuration)\SuperSocket.Common.dll</HintPath>
     </Reference>
     <Reference Include="SuperSocket.SocketBase">
-      <HintPath>..\..\Reference\SuperSocket\NET3.5\Debug\SuperSocket.SocketBase.dll</HintPath>
+      <HintPath>..\..\Reference\SuperSocket\NET3.5\$(Configuration)\SuperSocket.SocketBase.dll</HintPath>
     </Reference>
     <Reference Include="SuperSocket.SocketEngine">
-      <HintPath>..\..\Reference\SuperSocket\NET3.5\Debug\SuperSocket.SocketEngine.dll</HintPath>
+      <HintPath>..\..\Reference\SuperSocket\NET3.5\$(Configuration)\SuperSocket.SocketEngine.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Threading">
-      <HintPath>..\..\Reference\SuperSocket\NET3.5\Debug\System.Threading.dll</HintPath>
+      <HintPath>..\..\Reference\SuperSocket\NET3.5\$(Configuration)\System.Threading.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />

@@ -24,5 +24,10 @@ namespace SuperWebSocket.SubProtocol
         }
 
         protected abstract void ExecuteJsonCommand(TWebSocketSession session, TJsonCommandInfo commandInfo);
+
+        protected string SerializeObject(object value)
+        {
+            return JsonConvert.SerializeObject(value);
+        }
     }
 }

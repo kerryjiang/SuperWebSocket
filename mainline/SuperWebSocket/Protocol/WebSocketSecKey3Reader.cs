@@ -15,7 +15,7 @@ namespace SuperWebSocket.Protocol
             
         }
 
-        public override WebSocketCommandInfo FindCommand(SocketContext context, byte[] readBuffer, int offset, int length, bool isReusableBuffer)
+        public override WebSocketCommandInfo FindCommandInfo(SocketContext context, byte[] readBuffer, int offset, int length, bool isReusableBuffer)
         {
             int total = BufferSegments.Count + length;
 

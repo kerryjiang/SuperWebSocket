@@ -304,8 +304,7 @@ namespace SuperWebSocket.Client
                 for (int i = 0; i < m_Cookies.Count; i++)
                 {
                     var item = m_Cookies[i];
-                    //TODO: Encode cookie value? 
-                    cookiePairs[i] = item.Key + "=" + item.Value;             
+                    cookiePairs[i] = item.Key + "=" + Uri.EscapeUriString(item.Value);
                 }
                 handshakeBuilder.AppendLine(string.Format("Cookie: {0}", string.Join("&", cookiePairs)));
             }

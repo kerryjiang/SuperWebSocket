@@ -11,6 +11,7 @@ using SuperWebSocket;
 using SuperWebSocket.Client;
 using System.Threading;
 using SuperWebSocket.SubProtocol;
+using System.Reflection;
 
 namespace SuperWebSocketTest
 {
@@ -28,7 +29,7 @@ namespace SuperWebSocketTest
         {
             LogUtil.Setup(new ConsoleLogger());
 
-            m_WebSocketServer = new WebSocketServer(new BasicSubProtocol(this.GetType().Assembly));
+            m_WebSocketServer = new WebSocketServer(new BasicSubProtocol(new List<Assembly> { this.GetType().Assembly }));
             m_WebSocketServer.Setup(new RootConfig(), new ServerConfig
             {
                 Port = 911,

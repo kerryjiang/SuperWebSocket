@@ -6,4 +6,5 @@ How to use this CommandAssembly?
 SuperWebSocketService, SuperWebSocketWeb or your own container.
 
 2. Add attrubute commandAssembly="SuperWebSocket.Samples.CommandAssembly" to the websocket server instance's configuration element of SuperWebSocket's running container,
-like the file SuperWebSocket.Service.exe.config in current project.
+like the file SuperWebSocket.Service.exe.config in current project. SuperWebSocket also support multiple command assemblies,
+you can define many assemblies in attribute commandAssembly like commandAssembly="SuperWebSocket.Samples.CommandAssemblyA, SuperWebSocket.Samples.CommandAssemblyB".

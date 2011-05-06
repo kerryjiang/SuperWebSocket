@@ -11,8 +11,8 @@ namespace SuperWebSocket.SubProtocol
 {
     public class BasicSubProtocol : BasicSubProtocol<WebSocketSession>
     {
-        public BasicSubProtocol(Assembly commandAssembly)
-            : base(commandAssembly)
+        public BasicSubProtocol(IEnumerable<Assembly> commandAssemblies)
+            : base(commandAssemblies)
         {
         }
 
@@ -26,17 +26,18 @@ namespace SuperWebSocket.SubProtocol
     public class BasicSubProtocol<TWebSocketSession> : ISubProtocol<TWebSocketSession>
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
-        private Assembly m_CommandAssembly;
+        private List<Assembly> m_CommandAssemblies = new List<Assembly>();
 
-        public BasicSubProtocol(Assembly commandAssembly)
-            : this()
+        public BasicSubProtocol(IEnumerable<Assembly> commandAssemblies)
         {
-            m_CommandAssembly = commandAssembly;
+            m_CommandAssemblies.AddRange(commandAssemblies);
+            SubCommandParser = new BasicSubCommandParser();
         }
 
         public BasicSubProtocol()
+            : this(new List<Assembly> { Assembly.GetEntryAssembly() })
         {
-            SubCommandParser = new BasicSubCommandParser();
+
         }
 
         #region ISubProtocol Members
@@ -45,17 +46,18 @@ namespace SuperWebSocket.SubProtocol
 
         public IEnumerable<ISubCommand<TWebSocketSession>> GetSubCommands()
         {
-            if (m_CommandAssembly == null)
-                m_CommandAssembly = Assembly.GetEntryAssembly();
+            var subCommands = new List<ISubCommand<TWebSocketSession>>();
 
-            return m_CommandAssembly.GetImplementedObjectsByInterface<ISubCommand<TWebSocketSession>>();
+            foreach (var assembly in m_CommandAssemblies)
+            {
+                subCommands.AddRange(assembly.GetImplementedObjectsByInterface<ISubCommand<TWebSocketSession>>());
+            }
+
+            return subCommands;
         }
 
         public bool Initialize(IServerConfig config)
         {
-            if (m_CommandAssembly != null)
-                return true;
-
             var commandAssembly = config.Options.GetValue("commandAssembly");
 
             if (string.IsNullOrEmpty(commandAssembly))
@@ -63,7 +65,13 @@ namespace SuperWebSocket.SubProtocol
 
             try
             {
-                m_CommandAssembly = Assembly.Load(commandAssembly);
+                string[] assemblies = commandAssembly.Split(',', ';');
+
+                foreach (var a in assemblies)
+                {
+                    m_CommandAssemblies.Add(Assembly.Load(a));
+                }
+
                 return true;
             }
             catch (Exception e)

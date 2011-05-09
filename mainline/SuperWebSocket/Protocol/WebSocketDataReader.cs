@@ -26,7 +26,7 @@ namespace SuperWebSocket.Protocol
 
         }
 
-        public override WebSocketCommandInfo FindCommandInfo(SocketContext context, byte[] readBuffer, int offset, int length, bool isReusableBuffer)
+        public override WebSocketCommandInfo FindCommandInfo(IAppSession session, byte[] readBuffer, int offset, int length, bool isReusableBuffer)
         {
             AddArraySegment(readBuffer, offset, length, isReusableBuffer);
 

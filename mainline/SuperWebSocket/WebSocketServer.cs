@@ -166,7 +166,7 @@ namespace SuperWebSocket
 
         private void SetCookie(TWebSocketSession session)
         {
-            string cookieValue = session.Context[WebSocketConstant.Cookie];
+            string cookieValue = session.Items.GetValue<string>(WebSocketConstant.Cookie, string.Empty);
 
             var cookies = new StringDictionary();
 
@@ -200,10 +200,10 @@ namespace SuperWebSocket
         {
             SetCookie(session);
 
-            var secKey1 = session.Context.SecWebSocketKey1;
-            var secKey2 = session.Context.SecWebSocketKey2;
-            var secKey3 = session.Context.SecWebSocketKey3;
-            var secWebSocketVersion = session.Context.SecWebSocketVersion;
+            var secKey1 = session.SecWebSocketKey1;
+            var secKey2 = session.SecWebSocketKey2;
+            var secKey3 = session.SecWebSocketKey3;
+            var secWebSocketVersion = session.SecWebSocketVersion;
 
             var responseBuilder = new StringBuilder();
 
@@ -212,7 +212,7 @@ namespace SuperWebSocket
             {
                 const string magic = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
-                var secWebSocketKey = session.Context[WebSocketConstant.SecWebSocketKey];
+                var secWebSocketKey = session.Items.GetValue<string>(WebSocketConstant.SecWebSocketKey, string.Empty);
 
                 if (string.IsNullOrEmpty(secWebSocketKey))
                 {
@@ -250,18 +250,18 @@ namespace SuperWebSocket
                 if (String.IsNullOrEmpty(secKey1) && String.IsNullOrEmpty(secKey2))
                 {
                     //No keys, v.75
-                    if (!string.IsNullOrEmpty(session.Context.Origin))
-                        responseBuilder.AppendLine(string.Format("WebSocket-Origin: {0}", session.Context.Origin));
-                    responseBuilder.AppendLine(string.Format("WebSocket-Location: {0}://{1}{2}", m_WebSocketUriSufix, session.Context.Host, session.Context.Path));
+                    if (!string.IsNullOrEmpty(session.Origin))
+                        responseBuilder.AppendLine(string.Format("WebSocket-Origin: {0}", session.Origin));
+                    responseBuilder.AppendLine(string.Format("WebSocket-Location: {0}://{1}{2}", m_WebSocketUriSufix, session.Host, session.Path));
                     responseBuilder.AppendLine();
                     session.SendRawResponse(responseBuilder.ToString());
                 }
                 else
                 {
                     //Have Keys, v.76
-                    if (!string.IsNullOrEmpty(session.Context.Origin))
-                        responseBuilder.AppendLine(string.Format("Sec-WebSocket-Origin: {0}", session.Context.Origin));
-                    responseBuilder.AppendLine(string.Format("Sec-WebSocket-Location: {0}://{1}{2}", m_WebSocketUriSufix, session.Context.Host, session.Context.Path));
+                    if (!string.IsNullOrEmpty(session.Origin))
+                        responseBuilder.AppendLine(string.Format("Sec-WebSocket-Origin: {0}", session.Origin));
+                    responseBuilder.AppendLine(string.Format("Sec-WebSocket-Location: {0}://{1}{2}", m_WebSocketUriSufix, session.Host, session.Path));
                     responseBuilder.AppendLine();
                     session.SendRawResponse(responseBuilder.ToString());
                     //Encrypt message
@@ -271,7 +271,7 @@ namespace SuperWebSocket
             }
         }
 
-        internal static void ParseHandshake(WebSocketContext context, TextReader reader)
+        internal static void ParseHandshake(WebSocketSession session, TextReader reader)
         {
             string line;
             string firstLine = string.Empty;
@@ -287,8 +287,8 @@ namespace SuperWebSocket
 
                 if (line.StartsWith("\t") && !string.IsNullOrEmpty(prevKey))
                 {
-                    string currentValue = context[prevKey];
-                    context[prevKey] = currentValue + line.Trim();
+                    string currentValue = session.Items.GetValue<string>(prevKey, string.Empty);
+                    session.Items[prevKey] = currentValue + line.Trim();
                     continue;
                 }
 
@@ -306,15 +306,15 @@ namespace SuperWebSocket
                 if (string.IsNullOrEmpty(key))
                     continue;
 
-                context[key] = value;
+                session.Items[key] = value;
                 prevKey = key;
             }
 
             var metaInfo = firstLine.Split(' ');
 
-            context.Method = metaInfo[0];
-            context.Path = metaInfo[1];
-            context.HttpVersion = metaInfo[2];
+            session.Method = metaInfo[0];
+            session.Path = metaInfo[1];
+            session.HttpVersion = metaInfo[2];
         }
 
         public override void ExecuteCommand(TWebSocketSession session, WebSocketCommandInfo commandInfo)
@@ -346,9 +346,9 @@ namespace SuperWebSocket
 
             if (m_SubProtocolCommandDict.TryGetValue(subCommandInfo.Key, out subCommand))
             {
-                session.Context.CurrentCommand = subCommandInfo.Key;
+                session.CurrentCommand = subCommandInfo.Key;
                 subCommand.ExecuteCommand(session, subCommandInfo);
-                session.Context.PrevCommand = subCommandInfo.Key;
+                session.PrevCommand = subCommandInfo.Key;
 
                 if (Config.LogCommand)
                     Logger.LogError(session, string.Format("Command - {0} - {1}", session.IdentityKey, subCommandInfo.Key));

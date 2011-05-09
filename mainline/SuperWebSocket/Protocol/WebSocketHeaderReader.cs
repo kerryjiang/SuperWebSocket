@@ -20,7 +20,7 @@ namespace SuperWebSocket.Protocol
             
         }
 
-        public override WebSocketCommandInfo FindCommandInfo(SocketContext context, byte[] readBuffer, int offset, int length, bool isReusableBuffer)
+        public override WebSocketCommandInfo FindCommandInfo(IAppSession session, byte[] readBuffer, int offset, int length, bool isReusableBuffer)
         {
             AddArraySegment(readBuffer, offset, length, isReusableBuffer);
 
@@ -34,13 +34,13 @@ namespace SuperWebSocket.Protocol
 
             string header = Encoding.UTF8.GetString(BufferSegments.ToArrayData(0, result.Value));
 
-            var socketContext = context as WebSocketContext;
+            var webSocketSession = session as WebSocketSession;
 
-            WebSocketServer.ParseHandshake(socketContext, new StringReader(header));
+            WebSocketServer.ParseHandshake(webSocketSession, new StringReader(header));
 
-            var secWebSocketKey1 = socketContext.SecWebSocketKey1;
-            var secWebSocketKey2 = socketContext.SecWebSocketKey2;
-            var secWebSocketVersion = socketContext.SecWebSocketVersion;
+            var secWebSocketKey1 = webSocketSession.SecWebSocketKey1;
+            var secWebSocketKey2 = webSocketSession.SecWebSocketKey2;
+            var secWebSocketVersion = webSocketSession.SecWebSocketVersion;
 
             int left = BufferSegments.Count - result.Value - m_HeaderTerminator.Length;
 
@@ -69,13 +69,13 @@ namespace SuperWebSocket.Protocol
                 //Read SecWebSocketKey3(8 bytes)
                 if (left == 8)
                 {
-                    socketContext.SecWebSocketKey3 = readBuffer.Skip(offset + length - left).Take(left).ToArray();
+                    webSocketSession.SecWebSocketKey3 = readBuffer.Skip(offset + length - left).Take(left).ToArray();
                     NextCommandReader = new WebSocketDataReader(this);
                     return CreateHeadCommandInfo();
                 }
                 else if (left > 8)
                 {
-                    socketContext.SecWebSocketKey3 = readBuffer.Skip(offset + length - left).Take(8).ToArray();
+                    webSocketSession.SecWebSocketKey3 = readBuffer.Skip(offset + length - left).Take(8).ToArray();
                     AddArraySegment(readBuffer, offset + length - left + 8, left - 8, isReusableBuffer);
                     NextCommandReader = new WebSocketDataReader(this);
                     return CreateHeadCommandInfo();

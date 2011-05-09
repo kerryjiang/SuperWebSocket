@@ -66,7 +66,6 @@
     <Compile Include="SubProtocol\SubCommandBase.cs" />
     <Compile Include="WebSocketCommandInfo.cs" />
     <Compile Include="WebSocketConst.cs" />
-    <Compile Include="WebSocketContext.cs" />
     <Compile Include="WebSocketProtocol.cs" />
     <Compile Include="WebSocketServer.cs" />
     <Compile Include="WebSocketSession.cs" />

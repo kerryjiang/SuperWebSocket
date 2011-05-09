@@ -15,18 +15,18 @@ namespace SuperWebSocket.Protocol
             
         }
 
-        public override WebSocketCommandInfo FindCommandInfo(SocketContext context, byte[] readBuffer, int offset, int length, bool isReusableBuffer)
+        public override WebSocketCommandInfo FindCommandInfo(IAppSession session, byte[] readBuffer, int offset, int length, bool isReusableBuffer)
         {
-            int total = BufferSegments.Count + length;
+            var webSocketSession = session as WebSocketSession;
 
-            var socketContext = context as WebSocketContext;
+            int total = BufferSegments.Count + length;
 
             if (total == 8)
             {
                 List<byte> key = new List<byte>();
                 key.AddRange(BufferSegments.ToArrayData());
                 key.AddRange(readBuffer.Skip(offset).Take(length));
-                socketContext.SecWebSocketKey3 = key.ToArray();
+                webSocketSession.SecWebSocketKey3 = key.ToArray();
                 BufferSegments.ClearSegements();
                 NextCommandReader = new WebSocketDataReader(this);
                 return CreateHeadCommandInfo();
@@ -36,7 +36,7 @@ namespace SuperWebSocket.Protocol
                 List<byte> key = new List<byte>();
                 key.AddRange(BufferSegments.ToArrayData());
                 key.AddRange(readBuffer.Skip(offset).Take(8 - BufferSegments.Count));
-                socketContext.SecWebSocketKey3 = key.ToArray();
+                webSocketSession.SecWebSocketKey3 = key.ToArray();
                 BufferSegments.ClearSegements();
                 AddArraySegment(readBuffer, offset + 8 - BufferSegments.Count, total - 8, isReusableBuffer);
                 NextCommandReader = new WebSocketDataReader(this);

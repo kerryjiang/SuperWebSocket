@@ -178,7 +178,7 @@ namespace SuperWebSocketTest
             socket.Close();
         }
 
-        [Test, Timeout(5000)]
+        [Test]
         public virtual void MessageTransferTest()
         {
             Socket socket;
@@ -199,7 +199,7 @@ namespace SuperWebSocketTest
 
             ArraySegmentList<byte> receivedBuffer = new ArraySegmentList<byte>();
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 100; i++)
             {
                 int startPos = rd.Next(0, messageSource.Length - 2);
                 int endPos = rd.Next(startPos + 1, messageSource.Length - 1);

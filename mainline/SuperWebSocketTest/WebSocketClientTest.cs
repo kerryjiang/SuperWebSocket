@@ -82,10 +82,27 @@ namespace SuperWebSocketTest
             if (!m_OpenEvent.WaitOne(1000))
                 Assert.Fail("Failed to open session ontime");
 
+            StringBuilder sb = new StringBuilder();
+
             for (int i = 0; i < 10; i++)
             {
-                string message = Guid.NewGuid().ToString();
+                sb.Append(Guid.NewGuid().ToString());
+            }
+
+            string messageSource = sb.ToString();
+
+            Random rd = new Random();
+
+            for (int i = 0; i < 100; i++)
+            {
+                int startPos = rd.Next(0, messageSource.Length - 2);
+                int endPos = rd.Next(startPos + 1, messageSource.Length - 1);
+
+                string message = messageSource.Substring(startPos, endPos - startPos);
+
                 webSocketClient.Send("ECHO " + message);
+
+                Console.WriteLine("Client:" + message);
 
                 if (!m_MessageReceiveEvent.WaitOne(1000))
                     Assert.Fail("Cannot get response in time!");

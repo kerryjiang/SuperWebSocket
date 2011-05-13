@@ -61,6 +61,7 @@
     <Compile Include="ArraySegmentList.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="BinaryExtension.cs" />
+    <Compile Include="ConcurrentQueue.cs" />
     <Compile Include="HandshakeContext.cs" />
     <Compile Include="MD5.cs" />
     <Compile Include="MD5Managed.cs" />

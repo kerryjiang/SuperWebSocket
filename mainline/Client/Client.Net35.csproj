@@ -45,6 +45,7 @@
     </Compile>
     <Compile Include="ArraySegmentList.cs" />
     <Compile Include="BinaryExtension.cs" />
+    <Compile Include="ConcurrentQueue.cs" />
     <Compile Include="DnsEndPoint.cs" />
     <Compile Include="HandshakeContext.cs" />
     <Compile Include="MessageEventArgs.cs" />

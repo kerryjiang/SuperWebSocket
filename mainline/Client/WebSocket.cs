@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace SuperWebSocket.Client
 {
@@ -26,6 +27,8 @@ namespace SuperWebSocket.Client
         private SocketAsyncEventArgs m_ReceiveAsyncEventArgs;
         private SocketAsyncEventArgs m_SendAsyncEventArgs;
         private byte[] m_SendBuffer;
+
+        private ConcurrentQueue<string> m_MessagesBeingSent = new ConcurrentQueue<string>();
 
         /// <summary>
         /// It means whether hanshake successfully
@@ -174,6 +177,10 @@ namespace SuperWebSocket.Client
                 if (!sendContext.Completed)
                 {
                     StartSend(sendContext);
+                }
+                else
+                {
+                    StartSendFromQueue();
                 }
             }
         }
@@ -416,9 +423,7 @@ namespace SuperWebSocket.Client
                 }
                 else
                 {
-                    m_MessBuilder.AddRange(CloneRange(buffer, startPos + 1, endPos - startPos - 2));
-                    FireOnMessage(Encoding.UTF8.GetString(m_MessBuilder.Skip(1).ToArray()));
-                    m_MessBuilder.Clear();
+                    FireOnMessage(Encoding.UTF8.GetString(buffer, startPos + 1, endPos - startPos - 1));
 
                     if (endPos >= (offset + length - 1))
                         return;
@@ -535,16 +540,38 @@ namespace SuperWebSocket.Client
             return mixedChars.Select(c => (byte)c).ToArray();
         }
 
+        private bool m_InSending = false;
+
         public void Send(string message)
         {
             if (!m_Connected)
                 throw new Exception("The websocket is not open, so you can not send message now!");
 
+            m_MessagesBeingSent.Enqueue(message);
+
+            if (!m_InSending)
+                StartSendFromQueue();
+        }
+
+        private void StartSendFromQueue()
+        {
+            string message;
+
+            if (!m_MessagesBeingSent.TryDequeue(out message))
+            {
+                m_InSending = false;
+                return;
+            }
+
+            m_InSending = true;
+
             var sendContext = new SendMessageContext { Message = message.ToArray(), SentLength = 0, Encoder = Encoding.UTF8.GetEncoder() };
+
+            m_SendAsyncEventArgs.UserToken = sendContext;
 
             m_SendBuffer[0] = m_StartByte;
 
-            StartSend(sendContext);       
+            StartSend(sendContext);
         }
 
         void StartSend(SendMessageContext context)

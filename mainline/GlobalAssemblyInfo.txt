@@ -7,5 +7,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © SuperWebSocket 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("{build.version}.{head.revision}")]
-[assembly: AssemblyFileVersion("{build.version}.{head.revision}")]
+[assembly: AssemblyVersion("{build.version}.0")]
+[assembly: AssemblyFileVersion("{build.version}.0")]
+[assembly: AssemblyInformationalVersion("{build.version}.{head.revision}")]

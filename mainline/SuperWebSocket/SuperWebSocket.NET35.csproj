@@ -51,7 +51,7 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Threading">
-      <HintPath>..\Reference\SuperSocket\NET3.5\$(Configuration)\System.Threading.dll</HintPath>
+      <HintPath>..\Reference\System.Threading.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />

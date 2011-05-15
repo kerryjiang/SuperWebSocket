@@ -271,7 +271,7 @@ namespace SuperWebSocket
             }
         }
 
-        internal static void ParseHandshake(WebSocketSession session, TextReader reader)
+        internal static void ParseHandshake(IWebSocketSession session, TextReader reader)
         {
             string line;
             string firstLine = string.Empty;

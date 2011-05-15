@@ -10,6 +10,17 @@ using System.Collections.Specialized;
 
 namespace SuperWebSocket
 {
+    public interface IWebSocketSession : IAppSession
+    {
+        string Method { get; set; }
+        string Path { get; set; }
+        string HttpVersion { get; set; }
+        string SecWebSocketKey1 { get; }
+        string SecWebSocketKey2 { get; }
+        byte[] SecWebSocketKey3 { get; set; }
+        string SecWebSocketVersion { get; }
+    }
+
     public class WebSocketSession : WebSocketSession<WebSocketSession>
     {
         public new WebSocketServer AppServer
@@ -18,7 +29,7 @@ namespace SuperWebSocket
         }
     }
 
-    public class WebSocketSession<TWebSocketSession> : AppSession<TWebSocketSession, WebSocketCommandInfo>
+    public class WebSocketSession<TWebSocketSession> : AppSession<TWebSocketSession, WebSocketCommandInfo>, IWebSocketSession
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
         public string Method { get; set; }

@@ -34,7 +34,7 @@ namespace SuperWebSocket.Protocol
 
             string header = Encoding.UTF8.GetString(BufferSegments.ToArrayData(0, result.Value));
 
-            var webSocketSession = session as WebSocketSession;
+            var webSocketSession = session as IWebSocketSession;
 
             WebSocketServer.ParseHandshake(webSocketSession, new StringReader(header));
 

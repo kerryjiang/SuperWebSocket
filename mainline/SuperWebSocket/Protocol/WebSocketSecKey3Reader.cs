@@ -17,7 +17,7 @@ namespace SuperWebSocket.Protocol
 
         public override WebSocketCommandInfo FindCommandInfo(IAppSession session, byte[] readBuffer, int offset, int length, bool isReusableBuffer)
         {
-            var webSocketSession = session as WebSocketSession;
+            var webSocketSession = session as IWebSocketSession;
 
             int total = BufferSegments.Count + length;
 

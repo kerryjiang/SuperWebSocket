@@ -30,7 +30,8 @@ namespace SuperWebSocket.SubProtocol
 
         public BasicSubProtocol(IEnumerable<Assembly> commandAssemblies)
         {
-            m_CommandAssemblies.AddRange(commandAssemblies);
+            //The items in commandAssemblies may be null, so filter here
+            m_CommandAssemblies.AddRange(commandAssemblies.Where(a => a != null));
             SubCommandParser = new BasicSubCommandParser();
         }
 

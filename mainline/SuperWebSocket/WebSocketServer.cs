@@ -30,7 +30,7 @@ namespace SuperWebSocket
         }
 
         public WebSocketServer()
-            : base()
+            : base(new BasicSubProtocol())
         {
 
         }
@@ -113,6 +113,9 @@ namespace SuperWebSocket
         {
             add
             {
+                if (m_SubCommandsLoaded)
+                    throw new Exception("You cannot set the NewMessageReceived handler if you have defined the commands of your sub protocol!");
+
                 m_NewMessageReceived += value;
                 this.CommandHandler += new CommandHandler<TWebSocketSession, WebSocketCommandInfo>(WebSocketServer_CommandHandler);
             }
@@ -361,6 +364,11 @@ namespace SuperWebSocket
             session.LastActiveTime = DateTime.Now;
         }
 
+        /// <summary>
+        /// Setups the commands.
+        /// </summary>
+        /// <param name="commandDict">The command dict.</param>
+        /// <returns></returns>
         protected override bool SetupCommands(Dictionary<string, ICommand<TWebSocketSession, WebSocketCommandInfo>> commandDict)
         {
             if (m_SubProtocol != null)
@@ -376,7 +384,9 @@ namespace SuperWebSocket
                     m_SubProtocolCommandDict.Add(command.Name, command);
                 }
 
-                m_SubCommandsLoaded = true;
+                //If doesn't load any commands, also don't set m_SubCommandsLoaded to true
+                if (m_SubProtocolCommandDict.Count > 0)
+                    m_SubCommandsLoaded = true;
             }
             else
             {

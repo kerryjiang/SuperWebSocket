@@ -66,12 +66,10 @@ namespace SuperWebSocket.SubProtocol
 
             try
             {
-                string[] assemblies = commandAssembly.Split(',', ';');
+                var assemblies = AssemblyUtil.GetAssembliesFromString(commandAssembly);
 
-                foreach (var a in assemblies)
-                {
-                    m_CommandAssemblies.Add(Assembly.Load(a));
-                }
+                if (assemblies.Any())
+                    m_CommandAssemblies.AddRange(AssemblyUtil.GetAssembliesFromString(commandAssembly));
 
                 return true;
             }

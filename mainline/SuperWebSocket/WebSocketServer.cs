@@ -175,7 +175,7 @@ namespace SuperWebSocket
 
             if (!string.IsNullOrEmpty(cookieValue))
             {
-                string[] pairs = cookieValue.Split(';');
+                string[] pairs = cookieValue.Split('&');
 
                 int pos;
                 string key, value;

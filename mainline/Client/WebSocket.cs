@@ -313,7 +313,7 @@ namespace SuperWebSocket.Client
                     var item = m_Cookies[i];
                     cookiePairs[i] = item.Key + "=" + Uri.EscapeUriString(item.Value);
                 }
-                handshakeBuilder.AppendLine(string.Format("Cookie: {0}", string.Join("&", cookiePairs)));
+                handshakeBuilder.AppendLine(string.Format("Cookie: {0}", string.Join(";", cookiePairs)));
             }
 
             handshakeBuilder.AppendLine();

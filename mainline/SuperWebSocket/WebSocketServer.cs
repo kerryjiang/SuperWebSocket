@@ -17,9 +17,11 @@ using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket
 {
-    public delegate void SessionEventHandler<TWebSocketSession>(TWebSocketSession session) where TWebSocketSession : WebSocketSession<TWebSocketSession>, new();
+    public delegate void SessionEventHandler<TWebSocketSession>(TWebSocketSession session)
+        where TWebSocketSession : WebSocketSession<TWebSocketSession>, new();
 
-    public delegate void SessionEventHandler<TWebSocketSession, TEventArgs>(TWebSocketSession session, TEventArgs e) where TWebSocketSession : WebSocketSession<TWebSocketSession>, new();
+    public delegate void SessionEventHandler<TWebSocketSession, TEventArgs>(TWebSocketSession session, TEventArgs e)
+        where TWebSocketSession : WebSocketSession<TWebSocketSession>, new();
 
     public class WebSocketServer : WebSocketServer<WebSocketSession>
     {
@@ -175,7 +177,7 @@ namespace SuperWebSocket
 
             if (!string.IsNullOrEmpty(cookieValue))
             {
-                string[] pairs = cookieValue.Split('&');
+                string[] pairs = cookieValue.Split(';');
 
                 int pos;
                 string key, value;

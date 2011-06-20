@@ -91,6 +91,7 @@ namespace SuperWebSocketWeb
             socketServer.Setup(new RootConfig(),
                 new ServerConfig
                 {
+                    Name = "SuperWebSocket",
                     Ip = "Any",
                     Port = 2011,
                     Mode = SocketMode.Async
@@ -105,6 +106,7 @@ namespace SuperWebSocketWeb
                 new RootConfig(),
                 new ServerConfig
                 {
+                    Name = "SecureSuperWebSocket",
                     Ip = "Any",
                     Port = 2012,
                     Mode = SocketMode.Sync,

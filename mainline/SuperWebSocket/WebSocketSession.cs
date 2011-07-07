@@ -15,9 +15,6 @@ namespace SuperWebSocket
         string Method { get; set; }
         string Path { get; set; }
         string HttpVersion { get; set; }
-        string SecWebSocketKey1 { get; }
-        string SecWebSocketKey2 { get; }
-        byte[] SecWebSocketKey3 { get; set; }
         string SecWebSocketVersion { get; }
     }
 
@@ -39,16 +36,7 @@ namespace SuperWebSocket
         public string Origin { get { return this.Items.GetValue<string>(WebSocketConstant.Origin, string.Empty); } }
         public string Upgrade { get { return this.Items.GetValue<string>(WebSocketConstant.Upgrade, string.Empty); } }
         public string Connection { get { return this.Items.GetValue<string>(WebSocketConstant.Connection, string.Empty); } }
-        public string SecWebSocketKey1 { get { return this.Items.GetValue<string>(WebSocketConstant.SecWebSocketKey1, string.Empty); } }
-        public string SecWebSocketKey2 { get { return this.Items.GetValue<string>(WebSocketConstant.SecWebSocketKey2, string.Empty); } }
         public string SecWebSocketVersion { get { return this.Items.GetValue<string>(WebSocketConstant.SecWebSocketVersion, string.Empty); } }
-        public byte[] SecWebSocketKey3 { get; set; }
-
-        protected override void OnInit()
-        {
-            this.Charset = Encoding.UTF8;
-            base.OnInit();
-        }
 
         public new WebSocketServer<TWebSocketSession> AppServer
         {

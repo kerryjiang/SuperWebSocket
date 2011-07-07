@@ -26,7 +26,7 @@ namespace SuperWebSocket.Protocol
                 List<byte> key = new List<byte>();
                 key.AddRange(BufferSegments.ToArrayData());
                 key.AddRange(readBuffer.Skip(offset).Take(length));
-                webSocketSession.SecWebSocketKey3 = key.ToArray();
+                webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = key.ToArray();
                 BufferSegments.ClearSegements();
                 NextCommandReader = new WebSocketDataReader(this);
                 return CreateHeadCommandInfo();
@@ -36,7 +36,7 @@ namespace SuperWebSocket.Protocol
                 List<byte> key = new List<byte>();
                 key.AddRange(BufferSegments.ToArrayData());
                 key.AddRange(readBuffer.Skip(offset).Take(8 - BufferSegments.Count));
-                webSocketSession.SecWebSocketKey3 = key.ToArray();
+                webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = key.ToArray();
                 BufferSegments.ClearSegements();
                 AddArraySegment(readBuffer, offset + 8 - BufferSegments.Count, total - 8, isReusableBuffer);
                 NextCommandReader = new WebSocketDataReader(this);

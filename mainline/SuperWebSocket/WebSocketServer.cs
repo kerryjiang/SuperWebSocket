@@ -14,6 +14,7 @@ using SuperSocket.SocketBase.Command;
 using SuperSocket.SocketBase.Config;
 using SuperWebSocket.SubProtocol;
 using SuperSocket.SocketBase.Protocol;
+using SuperWebSocket.Protocol;
 
 namespace SuperWebSocket
 {
@@ -57,6 +58,13 @@ namespace SuperWebSocket
 
         private string m_WebSocketUriSufix;
 
+        internal string WebSocketUriSufix
+        {
+            get { return m_WebSocketUriSufix; }
+        }
+
+        IHandshakeProcessor<TWebSocketSession> m_HandshakeProcessor;
+
         public new WebSocketProtocol Protocol
         {
             get
@@ -85,6 +93,17 @@ namespace SuperWebSocket
                 m_WebSocketUriSufix = "ws";
             else
                 m_WebSocketUriSufix = "wss";
+
+            m_HandshakeProcessor = new DraftHybi07Processor<TWebSocketSession>
+            {
+                NextProcessor = new DraftHybi06Processor<TWebSocketSession>
+                {
+                    NextProcessor = new DraftHybi00Processor<TWebSocketSession>
+                    {
+                        NextProcessor = new DraftHixie75Processor<TWebSocketSession>()
+                    }
+                }
+            };
 
             return true;
         }
@@ -134,39 +153,6 @@ namespace SuperWebSocket
                 return;
 
             m_NewMessageReceived(session, commandInfo.Data);
-        }        
-
-        private byte[] GetResponseSecurityKey(string secKey1, string secKey2, byte[] secKey3)
-        {
-            //Remove all symbols that are not numbers
-            string k1 = Regex.Replace(secKey1, "[^0-9]", String.Empty);
-            string k2 = Regex.Replace(secKey2, "[^0-9]", String.Empty);
-
-            //Convert received string to 64 bit integer.
-            Int64 intK1 = Int64.Parse(k1);
-            Int64 intK2 = Int64.Parse(k2);
-
-            //Dividing on number of spaces
-            int k1Spaces = secKey1.Count(c => c == ' ');
-            int k2Spaces = secKey2.Count(c => c == ' ');
-            int k1FinalNum = (int)(intK1 / k1Spaces);
-            int k2FinalNum = (int)(intK2 / k2Spaces);
-
-            //Getting byte parts
-            byte[] b1 = BitConverter.GetBytes(k1FinalNum).Reverse().ToArray();
-            byte[] b2 = BitConverter.GetBytes(k2FinalNum).Reverse().ToArray();
-            //byte[] b3 = Encoding.UTF8.GetBytes(secKey3);
-            byte[] b3 = secKey3;
-
-            //Concatenating everything into 1 byte array for hashing.
-            List<byte> bChallenge = new List<byte>();
-            bChallenge.AddRange(b1);
-            bChallenge.AddRange(b2);
-            bChallenge.AddRange(b3);
-
-            //Hash and return
-            byte[] hash = MD5.Create().ComputeHash(bChallenge.ToArray());
-            return hash;
         }
 
         private void SetCookie(TWebSocketSession session)
@@ -205,74 +191,9 @@ namespace SuperWebSocket
         {
             SetCookie(session);
 
-            var secKey1 = session.SecWebSocketKey1;
-            var secKey2 = session.SecWebSocketKey2;
-            var secKey3 = session.SecWebSocketKey3;
-            var secWebSocketVersion = session.SecWebSocketVersion;
-
-            var responseBuilder = new StringBuilder();
-
-            //draft-ietf-hybi-thewebsocketprotocol-06
-            if ("6".Equals(secWebSocketVersion))
+            if (!m_HandshakeProcessor.Handshake(session))
             {
-                const string magic = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
-
-                var secWebSocketKey = session.Items.GetValue<string>(WebSocketConstant.SecWebSocketKey, string.Empty);
-
-                if (string.IsNullOrEmpty(secWebSocketKey))
-                {
-                    session.Close(CloseReason.ServerClosing);
-                    return;
-                }
-
-                string secKeyAccept = string.Empty;
-
-                try
-                {
-                    secKeyAccept = Convert.ToBase64String(SHA1.Create().ComputeHash(Encoding.ASCII.GetBytes(secWebSocketKey + magic)));
-                }
-                catch (Exception)
-                {
-                    session.Close(CloseReason.ServerClosing);
-                    return;
-                }
-
-                responseBuilder.AppendLine("HTTP/1.1 101 Switching Protocols");
-                responseBuilder.AppendLine("Upgrade: WebSocket");
-                responseBuilder.AppendLine("Connection: Upgrade");
-                responseBuilder.AppendLine(string.Format("Sec-WebSocket-Accept: {0}", secKeyAccept));
-                responseBuilder.AppendLine();
-                session.SendRawResponse(responseBuilder.ToString());
-            }
-            else
-            {
-                //Common for all websockets editions (v.75 & v.76)
-                responseBuilder.AppendLine("HTTP/1.1 101 Web Socket Protocol Handshake");
-                responseBuilder.AppendLine("Upgrade: WebSocket");
-                responseBuilder.AppendLine("Connection: Upgrade");
-
-                //Check if the client send Sec-WebSocket-Key1 and Sec-WebSocket-Key2
-                if (String.IsNullOrEmpty(secKey1) && String.IsNullOrEmpty(secKey2))
-                {
-                    //No keys, v.75
-                    if (!string.IsNullOrEmpty(session.Origin))
-                        responseBuilder.AppendLine(string.Format("WebSocket-Origin: {0}", session.Origin));
-                    responseBuilder.AppendLine(string.Format("WebSocket-Location: {0}://{1}{2}", m_WebSocketUriSufix, session.Host, session.Path));
-                    responseBuilder.AppendLine();
-                    session.SendRawResponse(responseBuilder.ToString());
-                }
-                else
-                {
-                    //Have Keys, v.76
-                    if (!string.IsNullOrEmpty(session.Origin))
-                        responseBuilder.AppendLine(string.Format("Sec-WebSocket-Origin: {0}", session.Origin));
-                    responseBuilder.AppendLine(string.Format("Sec-WebSocket-Location: {0}://{1}{2}", m_WebSocketUriSufix, session.Host, session.Path));
-                    responseBuilder.AppendLine();
-                    session.SendRawResponse(responseBuilder.ToString());
-                    //Encrypt message
-                    byte[] secret = GetResponseSecurityKey(secKey1, secKey2, secKey3);
-                    session.SendResponse(secret);
-                }
+                session.Close(CloseReason.ServerClosing);
             }
         }
 

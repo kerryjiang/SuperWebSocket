@@ -117,54 +117,54 @@ namespace SuperWebSocketTest
             Assert.AreEqual("8jKS'y:G*Co,Wxa-", new string(buffer));
         }
 
-        [Test]
-        public void HandshakeTest06()
-        {
-            Socket socket;
-            Stream stream;
+        //[Test]
+        //public void HandshakeTest06()
+        //{
+        //    Socket socket;
+        //    Stream stream;
 
-            var ip = "127.0.0.1";
-            var port = 911;
+        //    var ip = "127.0.0.1";
+        //    var port = 911;
 
-            socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        //    socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-            var address = new IPEndPoint(IPAddress.Parse(ip), port);
-            socket.Connect(address);
+        //    var address = new IPEndPoint(IPAddress.Parse(ip), port);
+        //    socket.Connect(address);
 
-            stream = new NetworkStream(socket);
+        //    stream = new NetworkStream(socket);
 
-            var reader = new StreamReader(stream, Encoding.UTF8, false);
-            var writer = new StreamWriter(stream, Encoding.UTF8, 1024 * 10);
+        //    var reader = new StreamReader(stream, Encoding.UTF8, false);
+        //    var writer = new StreamWriter(stream, Encoding.UTF8, 1024 * 10);
 
-            writer.WriteLine("GET /websock HTTP/1.1");
-            writer.WriteLine("Upgrade: WebSocket");
-            writer.WriteLine("Connection: keep-alive, Upgrade");
-            writer.WriteLine("Host: example.com");
-            writer.WriteLine("Sec-WebSocket-Version: 6");
-            writer.WriteLine("Sec-WebSocket-Key: x3JJHMbDL1EzLkh9GBhXDw==");
-            writer.WriteLine("Origin: http://example.com");
-            writer.WriteLine("WebSocket-Protocol: sample");
-            writer.WriteLine();
-            writer.Flush();
+        //    writer.WriteLine("GET /websock HTTP/1.1");
+        //    writer.WriteLine("Upgrade: WebSocket");
+        //    writer.WriteLine("Connection: keep-alive, Upgrade");
+        //    writer.WriteLine("Host: example.com");
+        //    writer.WriteLine("Sec-WebSocket-Version: 6");
+        //    writer.WriteLine("Sec-WebSocket-Key: x3JJHMbDL1EzLkh9GBhXDw==");
+        //    writer.WriteLine("Origin: http://example.com");
+        //    writer.WriteLine("WebSocket-Protocol: sample");
+        //    writer.WriteLine();
+        //    writer.Flush();
 
-            string line = string.Empty;
+        //    string line = string.Empty;
 
-            string acceptKey = "Sec-WebSocket-Accept:";
-            string acceptValue = string.Empty;
+        //    string acceptKey = "Sec-WebSocket-Accept:";
+        //    string acceptValue = string.Empty;
 
-            while (!string.IsNullOrEmpty(line = reader.ReadLine()))
-            {
-                if (line.StartsWith("Sec-WebSocket-Accept:"))
-                {
-                    acceptValue = line.Substring(acceptKey.Length).Trim();
-                }
-            }
+        //    while (!string.IsNullOrEmpty(line = reader.ReadLine()))
+        //    {
+        //        if (line.StartsWith("Sec-WebSocket-Accept:"))
+        //        {
+        //            acceptValue = line.Substring(acceptKey.Length).Trim();
+        //        }
+        //    }
 
-            Assert.AreEqual("HSmrc0sMlYUkAGmm5OPpG2HaGWk=", acceptValue);
+        //    Assert.AreEqual("HSmrc0sMlYUkAGmm5OPpG2HaGWk=", acceptValue);
 
-            socket.Shutdown(SocketShutdown.Both);
-            socket.Close();
-        }
+        //    socket.Shutdown(SocketShutdown.Both);
+        //    socket.Close();
+        //}
 
         [Test]
         public void HandshakeTest()

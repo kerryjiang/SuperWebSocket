@@ -94,15 +94,9 @@ namespace SuperWebSocket
             else
                 m_WebSocketUriSufix = "wss";
 
-            m_HandshakeProcessor = new DraftHybi07Processor<TWebSocketSession>
+            m_HandshakeProcessor = new DraftHybi00Processor<TWebSocketSession>
             {
-                NextProcessor = new DraftHybi06Processor<TWebSocketSession>
-                {
-                    NextProcessor = new DraftHybi00Processor<TWebSocketSession>
-                    {
-                        NextProcessor = new DraftHixie75Processor<TWebSocketSession>()
-                    }
-                }
+                NextProcessor = new DraftHixie75Processor<TWebSocketSession>()
             };
 
             return true;

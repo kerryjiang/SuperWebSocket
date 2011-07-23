@@ -9,10 +9,12 @@ namespace SuperWebSocket.Protocol
 {
     public class WebSocketSecKey3Reader : WebSocketReaderBase
     {
+        private IProtocolProcessor m_ProtocolProcessor;
+
         public WebSocketSecKey3Reader(WebSocketReaderBase prevReader)
             : base(prevReader)
         {
-            
+            m_ProtocolProcessor = ((IWebSocketServer)this.AppServer).WebSocketProtocolProcessor;
         }
 
         public override WebSocketCommandInfo FindCommandInfo(IAppSession session, byte[] readBuffer, int offset, int length, bool isReusableBuffer)
@@ -28,8 +30,9 @@ namespace SuperWebSocket.Protocol
                 key.AddRange(readBuffer.Skip(offset).Take(length));
                 webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = key.ToArray();
                 BufferSegments.ClearSegements();
-                NextCommandReader = new WebSocketDataReader(this);
-                return CreateHeadCommandInfo();
+
+                Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession);
+                return HandshakeCommandInfo;
             }
             else if (total > 8)
             {
@@ -39,8 +42,9 @@ namespace SuperWebSocket.Protocol
                 webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = key.ToArray();
                 BufferSegments.ClearSegements();
                 AddArraySegment(readBuffer, offset + 8 - BufferSegments.Count, total - 8, isReusableBuffer);
-                NextCommandReader = new WebSocketDataReader(this);
-                return CreateHeadCommandInfo();
+
+                Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession);
+                return HandshakeCommandInfo;
             }
             else
             {

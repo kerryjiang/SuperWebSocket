@@ -18,6 +18,11 @@ using SuperWebSocket.Protocol;
 
 namespace SuperWebSocket
 {
+    public interface IWebSocketServer : IAppServer
+    {
+        IProtocolProcessor WebSocketProtocolProcessor { get; }
+    }
+
     public delegate void SessionEventHandler<TWebSocketSession>(TWebSocketSession session)
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new();
 
@@ -39,7 +44,7 @@ namespace SuperWebSocket
         }
     }
 
-    public abstract class WebSocketServer<TWebSocketSession> : AppServer<TWebSocketSession, WebSocketCommandInfo>
+    public abstract class WebSocketServer<TWebSocketSession> : AppServer<TWebSocketSession, WebSocketCommandInfo>, IWebSocketServer
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
         public WebSocketServer(ISubProtocol<TWebSocketSession> subProtocol)
@@ -56,14 +61,19 @@ namespace SuperWebSocket
 
         private ISubProtocol<TWebSocketSession> m_SubProtocol;
 
-        private string m_WebSocketUriSufix;
+        private string m_UriScheme;
 
-        internal string WebSocketUriSufix
+        internal string UriScheme
         {
-            get { return m_WebSocketUriSufix; }
+            get { return m_UriScheme; }
         }
 
-        IHandshakeProcessor<TWebSocketSession> m_HandshakeProcessor;
+        private IProtocolProcessor m_WebSocketProtocolProcessor;
+
+        IProtocolProcessor IWebSocketServer.WebSocketProtocolProcessor
+        {
+            get { return m_WebSocketProtocolProcessor; }
+        }
 
         public new WebSocketProtocol Protocol
         {
@@ -90,13 +100,13 @@ namespace SuperWebSocket
                 return false;
 
             if (string.IsNullOrEmpty(config.Security) || "none".Equals(config.Security, StringComparison.OrdinalIgnoreCase))
-                m_WebSocketUriSufix = "ws";
+                m_UriScheme = "ws";
             else
-                m_WebSocketUriSufix = "wss";
+                m_UriScheme = "wss";
 
-            m_HandshakeProcessor = new DraftHybi00Processor<TWebSocketSession>
+            m_WebSocketProtocolProcessor = new DraftHybi00Processor
             {
-                NextProcessor = new DraftHixie75Processor<TWebSocketSession>()
+                NextProcessor = new DraftHixie75Processor()
             };
 
             return true;
@@ -149,48 +159,6 @@ namespace SuperWebSocket
             m_NewMessageReceived(session, commandInfo.Data);
         }
 
-        private void SetCookie(TWebSocketSession session)
-        {
-            string cookieValue = session.Items.GetValue<string>(WebSocketConstant.Cookie, string.Empty);
-
-            var cookies = new StringDictionary();
-
-            if (!string.IsNullOrEmpty(cookieValue))
-            {
-                string[] pairs = cookieValue.Split(';');
-
-                int pos;
-                string key, value;
-
-                foreach (var p in pairs)
-                {
-                    pos = p.IndexOf('=');
-                    if (pos > 0)
-                    {
-                        key = p.Substring(0, pos).Trim();
-                        pos += 1;
-                        if (pos < p.Length)
-                            value = p.Substring(pos).Trim();
-                        else
-                            value = string.Empty;
-                        cookies.Add(key, Uri.UnescapeDataString(value));
-                    }
-                }                
-            }
-
-            session.Cookies = cookies;
-        }
-
-        private void ProcessHandshakeRequest(TWebSocketSession session)
-        {
-            SetCookie(session);
-
-            if (!m_HandshakeProcessor.Handshake(session))
-            {
-                session.Close(CloseReason.ServerClosing);
-            }
-        }
-
         internal static void ParseHandshake(IWebSocketSession session, TextReader reader)
         {
             string line;
@@ -241,7 +209,6 @@ namespace SuperWebSocket
         {
             if (!session.Handshaked)
             {
-                ProcessHandshakeRequest(session);
                 session.Handshaked = true;
 
                 if (m_NewSessionConnected != null)

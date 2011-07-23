@@ -11,6 +11,11 @@ namespace SuperWebSocket.Protocol
 {
     public abstract class WebSocketReaderBase : CommandReaderBase<WebSocketCommandInfo>
     {
+        static WebSocketReaderBase()
+        {
+            HandshakeCommandInfo = new WebSocketCommandInfo("HANDSHAKE", string.Empty);
+        }
+
         public WebSocketReaderBase(IAppServer appServer)
             : base(appServer)
         {
@@ -23,9 +28,20 @@ namespace SuperWebSocket.Protocol
 
         }
 
-        protected WebSocketCommandInfo CreateHeadCommandInfo()
+        protected void Handshake(IProtocolProcessor protocolProcessor, IWebSocketSession session)
         {
-            return new WebSocketCommandInfo(string.Empty);
+            ICommandReader<WebSocketCommandInfo> dataFrameReader;
+
+            if (!protocolProcessor.Handshake(session, this, out dataFrameReader))
+            {
+                session.Close(CloseReason.ServerClosing);
+                return;
+            }
+
+            NextCommandReader = dataFrameReader;
+            return;
         }
+
+        protected static WebSocketCommandInfo HandshakeCommandInfo { get; private set; }
     }
 }

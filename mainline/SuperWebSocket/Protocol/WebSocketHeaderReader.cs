@@ -17,7 +17,7 @@ namespace SuperWebSocket.Protocol
         public WebSocketHeaderReader(IAppServer server)
             : base(server)
         {
-            
+
         }
 
         public override WebSocketCommandInfo FindCommandInfo(IAppSession session, byte[] readBuffer, int offset, int length, bool isReusableBuffer)
@@ -52,16 +52,16 @@ namespace SuperWebSocket.Protocol
                 if (left > 0)
                     AddArraySegment(readBuffer, offset + length - left, left, isReusableBuffer);
 
-                NextCommandReader = new WebSocketDataReader(this);
-                return CreateHeadCommandInfo();
+                Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession);
+                return HandshakeCommandInfo;
             }
             else if ("6".Equals(secWebSocketVersion)) //draft-ietf-hybi-thewebsocketprotocol-06
             {
                 if (left > 0)
                     AddArraySegment(readBuffer, offset + length - left, left, isReusableBuffer);
 
-                NextCommandReader = new WebSocketDataReader(this);
-                return CreateHeadCommandInfo();
+                Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession);
+                return HandshakeCommandInfo;
             }
             else
             {
@@ -70,15 +70,17 @@ namespace SuperWebSocket.Protocol
                 if (left == 8)
                 {
                     webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = readBuffer.Skip(offset + length - left).Take(left).ToArray();
-                    NextCommandReader = new WebSocketDataReader(this);
-                    return CreateHeadCommandInfo();
+
+                    Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession);
+                    return HandshakeCommandInfo;
                 }
                 else if (left > 8)
                 {
                     webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = readBuffer.Skip(offset + length - left).Take(8).ToArray();
                     AddArraySegment(readBuffer, offset + length - left + 8, left - 8, isReusableBuffer);
-                    NextCommandReader = new WebSocketDataReader(this);
-                    return CreateHeadCommandInfo();
+
+                    Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession);
+                    return HandshakeCommandInfo;
                 }
                 else
                 {
@@ -90,6 +92,6 @@ namespace SuperWebSocket.Protocol
                     return null;
                 }
             }
-        }    
+        }
     }
 }

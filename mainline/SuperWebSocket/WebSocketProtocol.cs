@@ -21,7 +21,7 @@ namespace SuperWebSocket
 
         public ICommandReader<WebSocketCommandInfo> CreateCommandReader(IAppServer appServer)
         {
-            return new WebSocketHeaderReader(appServer);
+            return new WebSocketHeaderReader(appServer as IWebSocketServer);
         }
 
         #endregion

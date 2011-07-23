@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket.Protocol
 {
-    class DraftHixie75Processor<TWebSocketSession> : HandshakeProcessorBase<TWebSocketSession>
-        where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
+    class DraftHixie75Processor : ProtocolProcessorBase
     {
-        public override bool Handshake(TWebSocketSession session)
+        public override bool Handshake(IWebSocketSession session, WebSocketReaderBase previousReader, out ICommandReader<WebSocketCommandInfo> dataFrameReader)
         {
             var responseBuilder = new StringBuilder();
 
@@ -18,9 +18,11 @@ namespace SuperWebSocket.Protocol
 
             if (!string.IsNullOrEmpty(session.Origin))
                 responseBuilder.AppendLine(string.Format("WebSocket-Origin: {0}", session.Origin));
-            responseBuilder.AppendLine(string.Format("WebSocket-Location: {0}://{1}{2}", session.AppServer.WebSocketUriSufix, session.Host, session.Path));
+            responseBuilder.AppendLine(string.Format("WebSocket-Location: {0}://{1}{2}", session.UriScheme, session.Host, session.Path));
             responseBuilder.AppendLine();
             session.SendRawResponse(responseBuilder.ToString());
+
+            dataFrameReader = new WebSocketDataReader(previousReader);
 
             return true;
         }

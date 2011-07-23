@@ -58,8 +58,8 @@
     </Compile>
     <Compile Include="Protocol\DraftHixie75Processor.cs" />
     <Compile Include="Protocol\DraftHybi00Processor.cs" />
-    <Compile Include="Protocol\HandshakeProcessorBase..cs" />
-    <Compile Include="Protocol\IHandshakeProcessor.cs" />
+    <Compile Include="Protocol\ProtocolProcessorBase..cs" />
+    <Compile Include="Protocol\IProtocolProcessor.cs" />
     <Compile Include="Protocol\WebSocketSecKey3Reader.cs" />
     <Compile Include="SubProtocol\BasicSubCommandParser.cs" />
     <Compile Include="SubProtocol\BasicSubProtocol.cs" />

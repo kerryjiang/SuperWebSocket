@@ -5,22 +5,22 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using SuperSocket.Common;
+using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket.Protocol
 {
-    class DraftHybi00Processor<TWebSocketSession> : HandshakeProcessorBase<TWebSocketSession>
-        where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
+    class DraftHybi00Processor : ProtocolProcessorBase
     {
         private static readonly byte[] m_ZeroKeyBytes = new byte[0];
 
-        public override bool Handshake(TWebSocketSession session)
+        public override bool Handshake(IWebSocketSession session, WebSocketReaderBase previousReader, out ICommandReader<WebSocketCommandInfo> dataFrameReader)
         {
             var secKey1 = session.Items.GetValue<string>(WebSocketConstant.SecWebSocketKey1, string.Empty);
             var secKey2 = session.Items.GetValue<string>(WebSocketConstant.SecWebSocketKey2, string.Empty);
 
             if (string.IsNullOrEmpty(secKey1) && string.IsNullOrEmpty(secKey2) && NextProcessor != null)
             {
-                return NextProcessor.Handshake(session);
+                return NextProcessor.Handshake(session, previousReader, out dataFrameReader);
             }
 
             var secKey3 = session.Items.GetValue<byte[]>(WebSocketConstant.SecWebSocketKey3, m_ZeroKeyBytes);
@@ -34,12 +34,14 @@ namespace SuperWebSocket.Protocol
             if (!string.IsNullOrEmpty(session.Origin))
                 responseBuilder.AppendLine(string.Format("Sec-WebSocket-Origin: {0}", session.Origin));
 
-            responseBuilder.AppendLine(string.Format("Sec-WebSocket-Location: {0}://{1}{2}", session.AppServer.WebSocketUriSufix, session.Host, session.Path));
+            responseBuilder.AppendLine(string.Format("Sec-WebSocket-Location: {0}://{1}{2}", session.UriScheme, session.Host, session.Path));
             responseBuilder.AppendLine();
             session.SendRawResponse(responseBuilder.ToString());
             //Encrypt message
             byte[] secret = GetResponseSecurityKey(secKey1, secKey2, secKey3);
             session.SendResponse(secret);
+
+            dataFrameReader = new WebSocketDataReader(previousReader);
 
             return true;
         }

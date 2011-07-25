@@ -187,7 +187,7 @@ namespace SuperWebSocket.Client
 
         void StartReceive()
         {
-            if (!m_Socket.ReceiveAsync(m_ReceiveAsyncEventArgs))
+            if (m_Socket != null && !m_Socket.ReceiveAsync(m_ReceiveAsyncEventArgs))
                 ProcessReceive(m_ReceiveAsyncEventArgs);
         }
 

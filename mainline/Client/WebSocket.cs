@@ -303,7 +303,9 @@ namespace SuperWebSocket.Client
             handshakeBuilder.AppendLine(string.Format("Host: {0}", m_Host));
             handshakeBuilder.AppendLine(string.Format("Sec-WebSocket-Key1: {0}", secKey1));
             handshakeBuilder.AppendLine(string.Format("Origin: {0}", m_Host));
-            handshakeBuilder.AppendLine(string.Format("WebSocket-Protocol: {0}", m_Protocol));
+
+            if (!string.IsNullOrEmpty(m_Protocol))
+                handshakeBuilder.AppendLine(string.Format("Sec-WebSocket-Protocol: {0}", m_Protocol));
 
             if (m_Cookies != null && m_Cookies.Count > 0)
             {
@@ -327,7 +329,7 @@ namespace SuperWebSocket.Client
                 ProcessSend(m_SendAsyncEventArgs);
         }
 
-        private static readonly byte[] m_NewLineMark = Encoding.UTF8.GetBytes(Environment.NewLine + Environment.NewLine);              
+        private static readonly byte[] m_NewLineMark = Encoding.UTF8.GetBytes(Environment.NewLine + Environment.NewLine);
 
         List<byte> m_MessBuilder = new List<byte>();
 

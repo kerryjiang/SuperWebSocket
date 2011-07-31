@@ -23,7 +23,7 @@ namespace SuperWebSocketTest
         {
             LogUtil.Setup(new ConsoleLogger());
 
-            m_WebSocketServer = new WebSocketServer(new BasicSubProtocol(new List<Assembly>{ this.GetType().Assembly }));
+            m_WebSocketServer = new WebSocketServer(new BasicSubProtocol("Basic", new List<Assembly>{ this.GetType().Assembly } ));
             m_WebSocketServer.Setup(new RootConfig(), new ServerConfig
             {
                 Port = 911,
@@ -34,13 +34,21 @@ namespace SuperWebSocketTest
             }, SocketServerFactory.Instance);
         }
 
+        protected override string SubProtocol
+        {
+            get
+            {
+                return "Basic";
+            }
+        }
+
         [Test]
         public void TestEcho()
         {
             Socket socket;
             Stream stream;
 
-            Handshake(out socket, out stream);
+            Handshake(SubProtocol, out socket, out stream);
 
             StringBuilder sb = new StringBuilder();
 
@@ -85,7 +93,7 @@ namespace SuperWebSocketTest
             Socket socket;
             Stream stream;
 
-            Handshake(out socket, out stream);
+            Handshake(SubProtocol, out socket, out stream);
 
             StringBuilder sb = new StringBuilder();
 

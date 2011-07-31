@@ -15,7 +15,7 @@ namespace SuperWebSocketTest.Command
             foreach(var p in commandInfo.Parameters)
             {
                 session.SendResponse(p);
-            }            
+            }
         }
     }
 }

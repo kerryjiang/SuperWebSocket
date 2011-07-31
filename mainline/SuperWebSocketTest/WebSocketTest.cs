@@ -39,6 +39,11 @@ namespace SuperWebSocketTest
             m_WebSocketServer.SessionClosed += new SessionEventHandler<WebSocketSession, CloseReason>(m_WebSocketServer_SessionClosed);
         }
 
+        protected virtual string SubProtocol
+        {
+            get { return string.Empty; }
+        }
+
         void m_WebSocketServer_NewMessageReceived(WebSocketSession session, string e)
         {
             Console.WriteLine("Server:" + e);
@@ -69,6 +74,11 @@ namespace SuperWebSocketTest
 
         protected void Handshake(out Socket socket, out Stream stream)
         {
+            Handshake(SubProtocol, out socket, out stream);
+        }
+
+        protected void Handshake(string protocol, out Socket socket, out Stream stream)
+        {
             var ip = "127.0.0.1";
             var port = 911;
 
@@ -89,7 +99,10 @@ namespace SuperWebSocketTest
             writer.WriteLine("Host: example.com");
             writer.WriteLine("Sec-WebSocket-Key1: 4 @1  46546xW%0l 1 5");
             writer.WriteLine("Origin: http://example.com");
-            writer.WriteLine("WebSocket-Protocol: sample");
+
+            if (!string.IsNullOrEmpty(protocol))
+                writer.WriteLine("Sec-WebSocket-Protocol: {0}", protocol);
+
             writer.WriteLine("");
             string secKey = "^n:ds[4U";
             writer.Write(secKey);
@@ -97,8 +110,8 @@ namespace SuperWebSocketTest
 
             //secKey.ToList().ForEach(c => Console.WriteLine((int)c));
 
-            for (var i = 0; i < 6; i++)
-                Console.WriteLine(reader.ReadLine());
+            while (!string.IsNullOrEmpty(reader.ReadLine()))
+                continue;
 
             char[] buffer = new char[16];
 

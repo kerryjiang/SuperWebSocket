@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2DC79E40-BB70-4F6A-B378-905F2FBC6E97}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SuperWebSocket</RootNamespace>
+    <AssemblyName>SuperWebSocket</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Reference\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json.Net35">
+      <HintPath>..\Reference\Newtonsoft.Json.Net35.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperSocket.Common">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Reference\SuperSocket\NET3.5\$(Configuration)\SuperSocket.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperSocket.SocketBase">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Reference\SuperSocket\NET3.5\$(Configuration)\SuperSocket.SocketBase.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Threading">
+      <HintPath>..\Reference\System.Threading.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\GlobalAssemblyInfo.cs">
+      <Link>GlobalAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Protocol\DraftHixie75Processor.cs" />
+    <Compile Include="Protocol\DraftHybi00Processor.cs" />
+    <Compile Include="Protocol\IProtocolProcessor.cs" />
+    <Compile Include="Protocol\ProtocolProcessorBase..cs" />
+    <Compile Include="Protocol\WebSocketDataReader.cs" />
+    <Compile Include="Protocol\WebSocketHeaderReader.cs" />
+    <Compile Include="Protocol\WebSocketReaderBase.cs" />
+    <Compile Include="Protocol\WebSocketSecKey3Reader.cs" />
+    <Compile Include="SubProtocol\BasicSubCommandParser.cs" />
+    <Compile Include="SubProtocol\BasicSubProtocol.cs" />
+    <Compile Include="SubProtocol\ISubCommand.cs" />
+    <Compile Include="SubProtocol\ISubProtocol.cs" />
+    <Compile Include="SubProtocol\ISubProtocolCommandParser.cs" />
+    <Compile Include="SubProtocol\JsonSubCommand.cs" />
+    <Compile Include="SubProtocol\SubCommandBase.cs" />
+    <Compile Include="WebSocketCommandInfo.cs" />
+    <Compile Include="WebSocketConst.cs" />
+    <Compile Include="WebSocketProtocol.cs" />
+    <Compile Include="WebSocketServer.cs" />
+    <Compile Include="WebSocketSession.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

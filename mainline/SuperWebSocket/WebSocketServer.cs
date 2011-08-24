@@ -12,9 +12,9 @@ using SuperSocket.Common;
 using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Command;
 using SuperSocket.SocketBase.Config;
-using SuperWebSocket.SubProtocol;
 using SuperSocket.SocketBase.Protocol;
 using SuperWebSocket.Protocol;
+using SuperWebSocket.SubProtocol;
 
 namespace SuperWebSocket
 {
@@ -31,6 +31,12 @@ namespace SuperWebSocket
 
     public class WebSocketServer : WebSocketServer<WebSocketSession>
     {
+        public WebSocketServer(IEnumerable<ISubProtocol<WebSocketSession>> subProtocols)
+            : base(subProtocols)
+        {
+
+        }
+
         public WebSocketServer(ISubProtocol<WebSocketSession> subProtocol)
             : base(subProtocol)
         {
@@ -38,7 +44,7 @@ namespace SuperWebSocket
         }
 
         public WebSocketServer()
-            : base(new BasicSubProtocol())
+            : base(new List<ISubProtocol<WebSocketSession>> { new BasicSubProtocol() })
         {
 
         }
@@ -47,10 +53,16 @@ namespace SuperWebSocket
     public abstract class WebSocketServer<TWebSocketSession> : AppServer<TWebSocketSession, WebSocketCommandInfo>, IWebSocketServer
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
-        public WebSocketServer(ISubProtocol<TWebSocketSession> subProtocol)
+        public WebSocketServer(IEnumerable<ISubProtocol<TWebSocketSession>> subProtocols)
             : this()
         {
-            m_SubProtocol = subProtocol;
+            m_SubProtocols = subProtocols.ToDictionary(p => p.Name, StringComparer.OrdinalIgnoreCase); ;
+        }
+
+        public WebSocketServer(ISubProtocol<TWebSocketSession> subProtocol)
+            : this(new List<ISubProtocol<TWebSocketSession>> { subProtocol })
+        {
+            
         }
 
         public WebSocketServer()
@@ -59,7 +71,22 @@ namespace SuperWebSocket
 
         }
 
-        private ISubProtocol<TWebSocketSession> m_SubProtocol;
+        private Dictionary<string, ISubProtocol<TWebSocketSession>> m_SubProtocols;
+
+        /// <summary>
+        /// Gets the sub protocol by sub protocol name.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
+        internal ISubProtocol<TWebSocketSession> GetSubProtocol(string name)
+        {
+            ISubProtocol<TWebSocketSession> subProtocol;
+
+            if (m_SubProtocols.TryGetValue(name, out subProtocol))
+                return subProtocol;
+            else
+                return null;
+        }
 
         private string m_UriScheme;
 
@@ -83,18 +110,49 @@ namespace SuperWebSocket
             }
         }
 
-        public override bool Setup(IRootConfig rootConfig, IServerConfig config, ISocketServerFactory socketServerFactory, ICustomProtocol<WebSocketCommandInfo> protocol)
+        private bool SetupSubProtocols(IServerConfig config)
         {
             string subProtocolValue = config.Options.GetValue("subProtocol");
-            if (!string.IsNullOrEmpty(subProtocolValue))
+
+            if (string.IsNullOrEmpty(subProtocolValue))
+                return true;
+
+            var subProtocolTypes = subProtocolValue.Split(new char[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToArray();
+
+            if (subProtocolTypes != null && subProtocolTypes.Length > 0)
             {
-                ISubProtocol<TWebSocketSession> subProtocol;
-                if (AssemblyUtil.TryCreateInstance<ISubProtocol<TWebSocketSession>>(subProtocolValue, out subProtocol))
-                    m_SubProtocol = subProtocol;
+                m_SubProtocols = new Dictionary<string, ISubProtocol<TWebSocketSession>>(subProtocolTypes.Length, StringComparer.OrdinalIgnoreCase);
             }
 
-            if (m_SubProtocol != null)
-                m_SubProtocol.Initialize(config);
+            foreach (var t in subProtocolTypes)
+            {
+                ISubProtocol<TWebSocketSession> subProtocol;
+
+                if (!AssemblyUtil.TryCreateInstance<ISubProtocol<TWebSocketSession>>(t, out subProtocol))
+                    return false;
+
+                if (m_SubProtocols.ContainsKey(subProtocol.Name))
+                {
+                    Logger.LogError(string.Format("This sub protocol '{0}' has been defined! You cannot define duplicated sub protocols!", subProtocol.Name));
+                    return false;
+                }
+
+                if (!subProtocol.Initialize(config))
+                {
+                    Logger.LogError(string.Format("Failed to initialize the sub protocol '{0}'!", subProtocol.Name));
+                    return false;
+                }
+
+                m_SubProtocols.Add(subProtocol.Name, subProtocol);
+            }
+
+            return true;
+        }
+
+        public override bool Setup(IRootConfig rootConfig, IServerConfig config, ISocketServerFactory socketServerFactory, ICustomProtocol<WebSocketCommandInfo> protocol)
+        {
+            if (!SetupSubProtocols(config))
+                return false;
 
             if (!base.Setup(rootConfig, config, socketServerFactory, protocol))
                 return false;
@@ -106,15 +164,14 @@ namespace SuperWebSocket
 
             m_WebSocketProtocolProcessor = new DraftHybi00Processor
             {
-                NextProcessor = new DraftHixie75Processor()
+                NextProcessor = new DraftHybi10Processor
+                {
+                    NextProcessor = new DraftHixie75Processor()
+                }
             };
 
             return true;
         }
-
-        private Dictionary<string, ISubCommand<TWebSocketSession>> m_SubProtocolCommandDict = new Dictionary<string, ISubCommand<TWebSocketSession>>(StringComparer.OrdinalIgnoreCase);
-
-        private bool m_SubCommandsLoaded = false;
 
         private SessionEventHandler<TWebSocketSession> m_NewSessionConnected;
 
@@ -138,9 +195,6 @@ namespace SuperWebSocket
         {
             add
             {
-                if (m_SubCommandsLoaded)
-                    throw new Exception("You cannot set the NewMessageReceived handler if you have defined the commands of your sub protocol!");
-
                 m_NewMessageReceived += value;
                 this.CommandHandler += new CommandHandler<TWebSocketSession, WebSocketCommandInfo>(WebSocketServer_CommandHandler);
             }
@@ -156,7 +210,7 @@ namespace SuperWebSocket
             if (m_NewMessageReceived == null)
                 return;
 
-            m_NewMessageReceived(session, commandInfo.Data);
+            m_NewMessageReceived(session, commandInfo.Text);
         }
 
         internal static void ParseHandshake(IWebSocketSession session, TextReader reader)
@@ -216,9 +270,9 @@ namespace SuperWebSocket
             }
             else
             {
-                if (m_SubCommandsLoaded)
+                if (m_NewMessageReceived == null)
                 {
-                    ExecuteSubCommand(session, commandInfo, m_SubProtocol.SubCommandParser.ParseSubCommand(commandInfo));
+                    ExecuteSubCommand(session, commandInfo, session.SubProtocol.SubCommandParser.ParseSubCommand(commandInfo));
                 }
                 else
                 {
@@ -231,7 +285,7 @@ namespace SuperWebSocket
         {
             ISubCommand<TWebSocketSession> subCommand;
 
-            if (m_SubProtocolCommandDict.TryGetValue(subCommandInfo.Key, out subCommand))
+            if (session.SubProtocol.TryGetCommand(subCommandInfo.Key, out subCommand))
             {
                 session.CurrentCommand = subCommandInfo.Key;
                 subCommand.ExecuteCommand(session, subCommandInfo);
@@ -255,24 +309,7 @@ namespace SuperWebSocket
         /// <returns></returns>
         protected override bool SetupCommands(Dictionary<string, ICommand<TWebSocketSession, WebSocketCommandInfo>> commandDict)
         {
-            if (m_SubProtocol != null)
-            {
-                foreach (var command in m_SubProtocol.GetSubCommands())
-                {
-                    if (m_SubProtocolCommandDict.ContainsKey(command.Name))
-                    {
-                        Logger.LogError(string.Format("You have defined duplicated command {0} in your command assembly!", command.Name));
-                        return false;
-                    }
-
-                    m_SubProtocolCommandDict.Add(command.Name, command);
-                }
-
-                //If doesn't load any commands, also don't set m_SubCommandsLoaded to true
-                if (m_SubProtocolCommandDict.Count > 0)
-                    m_SubCommandsLoaded = true;
-            }
-            else
+            if (m_SubProtocols == null || m_SubProtocols.Count <= 0)
             {
                 base.SetupCommands(commandDict);
             }

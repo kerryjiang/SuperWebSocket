@@ -12,7 +12,7 @@ namespace SuperWebSocket.SubProtocol
 
         public StringCommandInfo ParseSubCommand(WebSocketCommandInfo commandInfo)
         {
-            var cmd = commandInfo.Data.Trim();
+            var cmd = commandInfo.Text.Trim();
             int pos = cmd.IndexOf(' ');
             string name;
             string param;

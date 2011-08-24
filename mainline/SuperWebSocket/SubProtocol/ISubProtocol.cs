@@ -13,8 +13,10 @@ namespace SuperWebSocket.SubProtocol
     {
         bool Initialize(IServerConfig config);
 
+        string Name { get; }
+
         ISubProtocolCommandParser SubCommandParser { get; }
 
-        IEnumerable<ISubCommand<TWebSocketSession>> GetSubCommands();
+        bool TryGetCommand(string name, out ISubCommand<TWebSocketSession> command);
     }
 }

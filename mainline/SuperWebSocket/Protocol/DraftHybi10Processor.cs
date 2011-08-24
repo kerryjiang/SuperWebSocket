@@ -47,6 +47,12 @@ namespace SuperWebSocket.Protocol
             responseBuilder.AppendLine("Upgrade: WebSocket");
             responseBuilder.AppendLine("Connection: Upgrade");
             responseBuilder.AppendLine(string.Format("Sec-WebSocket-Accept: {0}", secKeyAccept));
+
+            var subProtocol = session.GetAvailableSubProtocol(session.Items.GetValue<string>(WebSocketConstant.SecWebSocketProtocol, string.Empty));
+
+            if (!string.IsNullOrEmpty(subProtocol))
+                responseBuilder.AppendLine(string.Format("Sec-WebSocket-Protocol: {0}", subProtocol));
+
             responseBuilder.AppendLine();
             session.SendRawResponse(responseBuilder.ToString());
 

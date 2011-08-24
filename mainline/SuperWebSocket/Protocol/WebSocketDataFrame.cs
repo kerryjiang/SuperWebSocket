@@ -6,9 +6,14 @@ using SuperSocket.Common;
 
 namespace SuperWebSocket.Protocol
 {
-    class WebSocketDataFrame
+    public class WebSocketDataFrame
     {
         private ArraySegmentList<byte> m_InnerData;
+
+        public ArraySegmentList<byte> InnerData
+        {
+            get { return m_InnerData; }
+        }
 
         public WebSocketDataFrame(ArraySegmentList<byte> data)
         {

@@ -11,9 +11,16 @@ namespace SuperWebSocket.SubProtocol
 {
     public class BasicSubProtocol : BasicSubProtocol<WebSocketSession>
     {
-        public BasicSubProtocol(IEnumerable<Assembly> commandAssemblies)
-            : base(commandAssemblies)
+        public BasicSubProtocol(string name, IEnumerable<Assembly> commandAssemblies, ISubProtocolCommandParser commandParser)
+            : base(name, commandAssemblies, commandParser)
         {
+
+        }
+
+        public BasicSubProtocol(string name, IEnumerable<Assembly> commandAssemblies)
+            : base(name, commandAssemblies)
+        {
+
         }
 
         public BasicSubProtocol()
@@ -28,24 +35,41 @@ namespace SuperWebSocket.SubProtocol
     {
         private List<Assembly> m_CommandAssemblies = new List<Assembly>();
 
+        private Dictionary<string, ISubCommand<TWebSocketSession>> m_CommandDict;
+
         public BasicSubProtocol(IEnumerable<Assembly> commandAssemblies)
+            : this("Basic", commandAssemblies, new BasicSubCommandParser())
         {
-            //The items in commandAssemblies may be null, so filter here
-            m_CommandAssemblies.AddRange(commandAssemblies.Where(a => a != null));
-            SubCommandParser = new BasicSubCommandParser();
+
         }
 
         public BasicSubProtocol()
-            : this(new List<Assembly> { Assembly.GetEntryAssembly() })
+            : this("Basic", new List<Assembly> { Assembly.GetEntryAssembly() }, new BasicSubCommandParser())
         {
 
+        }
+
+        public BasicSubProtocol(string name, IEnumerable<Assembly> commandAssemblies)
+            : this(name, commandAssemblies, new BasicSubCommandParser())
+        {
+
+        }
+
+        public BasicSubProtocol(string name, IEnumerable<Assembly> commandAssemblies, ISubProtocolCommandParser commandParser)
+        {
+            Name = name;
+            //The items in commandAssemblies may be null, so filter here
+            m_CommandAssemblies.AddRange(commandAssemblies.Where(a => a != null));
+            SubCommandParser = commandParser;
+
+            DiscoverCommands();
         }
 
         #region ISubProtocol Members
 
         public ISubProtocolCommandParser SubCommandParser { get; private set; }
 
-        public IEnumerable<ISubCommand<TWebSocketSession>> GetSubCommands()
+        private void DiscoverCommands()
         {
             var subCommands = new List<ISubCommand<TWebSocketSession>>();
 
@@ -54,7 +78,8 @@ namespace SuperWebSocket.SubProtocol
                 subCommands.AddRange(assembly.GetImplementedObjectsByInterface<ISubCommand<TWebSocketSession>>());
             }
 
-            return subCommands;
+            m_CommandDict = new Dictionary<string, ISubCommand<TWebSocketSession>>(subCommands.Count, StringComparer.OrdinalIgnoreCase);
+            subCommands.ForEach(c => m_CommandDict.Add(c.Name, c));
         }
 
         public bool Initialize(IServerConfig config)
@@ -79,6 +104,13 @@ namespace SuperWebSocket.SubProtocol
                 return false;
             }
         }
+
+        public bool TryGetCommand(string name, out ISubCommand<TWebSocketSession> command)
+        {
+            return m_CommandDict.TryGetValue(name, out command);
+        }
+
+        public string Name { get; private set; }
 
         #endregion
     }

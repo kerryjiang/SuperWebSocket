@@ -7,6 +7,7 @@ using SuperSocket.Common;
 using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Command;
 using System.Collections.Specialized;
+using SuperWebSocket.SubProtocol;
 
 namespace SuperWebSocket
 {
@@ -23,6 +24,7 @@ namespace SuperWebSocket
         void SendResponse(string message);
         void SendResponse(byte[] data);
         IWebSocketServer AppServer { get; }
+        string GetAvailableSubProtocol(string protocol);
     }
 
     public class WebSocketSession : WebSocketSession<WebSocketSession>
@@ -44,6 +46,7 @@ namespace SuperWebSocket
         public string Upgrade { get { return this.Items.GetValue<string>(WebSocketConstant.Upgrade, string.Empty); } }
         public string Connection { get { return this.Items.GetValue<string>(WebSocketConstant.Connection, string.Empty); } }
         public string SecWebSocketVersion { get { return this.Items.GetValue<string>(WebSocketConstant.SecWebSocketVersion, string.Empty); } }
+        public string SecWebSocketProtocol { get { return this.Items.GetValue<string>(WebSocketConstant.SecWebSocketProtocol, string.Empty); } }
 
         public new WebSocketServer<TWebSocketSession> AppServer
         {
@@ -55,10 +58,33 @@ namespace SuperWebSocket
             get { return (IWebSocketServer)base.AppServer; }
         }
 
+        string IWebSocketSession.GetAvailableSubProtocol(string protocol)
+        {
+            if (string.IsNullOrEmpty(protocol))
+                return string.Empty;
+
+            var arrNames = protocol.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach(var name in arrNames)
+            {
+                var subProtocol = AppServer.GetSubProtocol(name);
+
+                if(subProtocol != null)
+                {
+                    SubProtocol = subProtocol;
+                    return subProtocol.Name;
+                }
+            }
+
+            return string.Empty;
+        }
+
         public string UriScheme
         {
             get { return AppServer.UriScheme; }
         }
+
+        public ISubProtocol<TWebSocketSession> SubProtocol { get; private set; }
 
         internal void SendRawResponse(string message)
         {

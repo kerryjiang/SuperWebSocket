@@ -46,7 +46,7 @@ namespace SuperWebSocket.Protocol
                 //Means this part reader is the last one
                 if (nextPartReader == null)
                 {
-                    WebSocketCommandInfo commandInfo = new WebSocketCommandInfo(m_Frame, m_LastPartLength);
+                    WebSocketCommandInfo commandInfo = new WebSocketCommandInfo(m_Frame, left);
 
                     BufferSegments.ClearSegements();
                     m_LastPartLength = 0;

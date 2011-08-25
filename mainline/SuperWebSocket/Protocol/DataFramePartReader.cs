@@ -106,6 +106,8 @@ namespace SuperWebSocket.Protocol
                 return -1;
             }
 
+            frame.MaskKey = frame.InnerData.ToArrayData(lastLength, 4);
+
             nextPartReader = new PayloadDataReader();
 
             if (frame.Length > required)

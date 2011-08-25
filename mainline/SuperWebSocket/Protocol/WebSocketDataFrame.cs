@@ -78,7 +78,7 @@ namespace SuperWebSocket.Protocol
             }
         }
 
-        public byte[] MaskKeyOffset { get; set; }
+        public byte[] MaskKey { get; set; }
 
         public byte[] ExtensionData { get; set; }
 

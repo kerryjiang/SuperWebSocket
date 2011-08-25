@@ -33,15 +33,32 @@ namespace SuperWebSocket
         /// Initializes a new instance of the <see cref="WebSocketCommandInfo"/> class.
         /// </summary>
         /// <param name="frame">The frame.</param>
-        /// <param name="dataOffset">The payload data offset in data frame.</param>
-        public WebSocketCommandInfo(WebSocketDataFrame frame, int dataOffset)
+        /// <param name="left">The left.</param>
+        public WebSocketCommandInfo(WebSocketDataFrame frame, int left)
         {
             Key = frame.OpCode.ToString();
 
+            var data = frame.InnerData.ToArrayData(frame.InnerData.Count - (int)frame.ActualPayloadLength - left, (int)frame.ActualPayloadLength);
+
+            if (frame.HasMask)
+            {
+                data = DecodeMask(data, frame.MaskKey);
+            }
+
             if (frame.OpCode != 2)
-                Text = Encoding.UTF8.GetString(frame.InnerData.ToArrayData(dataOffset, (int)frame.ActualPayloadLength));
+                Text = Encoding.UTF8.GetString(data);
             else
-                Data = frame.InnerData.ToArrayData(dataOffset, (int)frame.ActualPayloadLength);
+                Data = data;
+        }
+
+        private byte[] DecodeMask(byte[] data, byte[] mask)
+        {
+            for (var i = 0; i < data.Length; i++)
+            {
+                data[i] = (byte)(data[i] ^ mask[i % 4]);
+            }
+
+            return data;
         }
 
         public string Key { get; private set; }

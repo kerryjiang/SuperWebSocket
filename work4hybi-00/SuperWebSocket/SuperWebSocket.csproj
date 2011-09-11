@@ -57,7 +57,6 @@
       <Link>GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Protocol\DataFramePartReader.cs" />
-    <Compile Include="Protocol\DraftHixie75Processor.cs" />
     <Compile Include="Protocol\DraftHybi00Processor.cs" />
     <Compile Include="Protocol\DraftHybi10Processor.cs" />
     <Compile Include="Protocol\ProtocolProcessorBase..cs" />

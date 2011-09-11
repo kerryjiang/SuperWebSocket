@@ -104,10 +104,7 @@ namespace SuperWebSocket
             else
                 m_UriScheme = "wss";
 
-            m_WebSocketProtocolProcessor = new DraftHybi00Processor
-            {
-                NextProcessor = new DraftHixie75Processor()
-            };
+            m_WebSocketProtocolProcessor = new DraftHybi00Processor();
 
             return true;
         }

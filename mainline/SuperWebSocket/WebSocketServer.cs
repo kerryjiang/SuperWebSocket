@@ -164,10 +164,7 @@ namespace SuperWebSocket
 
             m_WebSocketProtocolProcessor = new DraftHybi00Processor
             {
-                NextProcessor = new DraftHybi10Processor
-                {
-                    NextProcessor = new DraftHixie75Processor()
-                }
+                NextProcessor = new DraftHybi10Processor()
             };
 
             return true;

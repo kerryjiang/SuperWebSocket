@@ -11,8 +11,11 @@ namespace SuperWebSocket.Protocol
 {
     public class WebSocketDataReader : WebSocketReaderBase
     {
-        //-1 means that don't find start pos
-        private int m_StartPos = -1;
+        private byte? m_Type;
+        private int m_TempLength;
+        private int? m_Length;
+
+        private const byte m_ClosingHandshakeType = 0xFF;
 
         public WebSocketDataReader(WebSocketReaderBase prevReader)
             : base(prevReader)
@@ -24,37 +27,114 @@ namespace SuperWebSocket.Protocol
         {
             left = 0;
 
-            AddArraySegment(readBuffer, offset, length, isReusableBuffer);
+            var skipByteCount = 0;
 
-            if (m_StartPos < 0)
+            if (!m_Type.HasValue)
             {
-                m_StartPos = BufferSegments.IndexOf(WebSocketConstant.StartByte);
-
-                if (m_StartPos < 0)
-                {
-                    //Continue to read following bytes to seek start pos
-                    NextCommandReader = this;
-                    return null;
-                }
+                byte startByte = readBuffer[offset];
+                skipByteCount = 1;
+                m_Type = startByte;
             }
 
-            int endPos = BufferSegments.IndexOf(WebSocketConstant.EndByte, m_StartPos, BufferSegments.Count - m_StartPos);
-
-            if (endPos < 0)
+            //0xxxxxxx: Collect protocol data by end mark
+            if ((m_Type.Value & 0x80) == 0x00)
             {
-                //Continue to search end byte
-                NextCommandReader = this;
+                byte lookForByte = 0xFF;
+
+                int i;
+
+                for (i = offset + skipByteCount; i < offset + length; i++)
+                {
+                    if (readBuffer[i] == lookForByte)
+                    {
+                        left = length - (i - offset + 1);
+
+                        if (BufferSegments.Count <= 0)
+                        {
+                            var commandInfo = new WebSocketCommandInfo(Encoding.UTF8.GetString(readBuffer, offset + skipByteCount, i - offset - skipByteCount));
+                            Reset(false);
+                            return commandInfo;
+                        }
+                        else
+                        {
+                            AddArraySegment(readBuffer, offset + skipByteCount, i - offset - skipByteCount, isReusableBuffer);
+                            var commandInfo = new WebSocketCommandInfo(Encoding.UTF8.GetString(BufferSegments.ToArrayData()));
+                            Reset(true);
+                            return commandInfo;
+                        }
+                    }
+                }
+
+                AddArraySegment(readBuffer, offset + skipByteCount, length - skipByteCount, isReusableBuffer);
                 return null;
             }
+            else//10000000: Collect protocol data by length
+            {
+                while (!m_Length.HasValue)
+                {
+                    if (length <= skipByteCount)
+                    {
+                        //No data to read
+                        return null;
+                    }
 
-            var commandInfo = new WebSocketCommandInfo(Encoding.UTF8.GetString(BufferSegments.ToArrayData(m_StartPos + 1, endPos - m_StartPos - 1)));
-            left = BufferSegments.Count - endPos - 1;
+                    byte lengthByte = readBuffer[skipByteCount];
+                    //Closing handshake
+                    if (lengthByte == 0x00 && m_Type.Value == m_ClosingHandshakeType)
+                    {
+                        session.Close(CloseReason.ClientClosing);
+                        return null;
+                    }
 
-            BufferSegments.ClearSegements();
+                    int thisLength = (int)(lengthByte & 0x7F);
+                    m_TempLength = m_TempLength * 128 + thisLength;
+                    skipByteCount++;
 
-            m_StartPos = -1;
-            NextCommandReader = this;
-            return commandInfo;
+                    if ((lengthByte & 0x80) != 0x80)
+                    {
+                        m_Length = m_TempLength;
+                        break;
+                    }
+                }
+
+                int requiredSize = m_Length.Value - BufferSegments.Count;
+
+                int leftSize = length - skipByteCount;
+
+                if (leftSize < requiredSize)
+                {
+                    AddArraySegment(readBuffer, skipByteCount, length - skipByteCount, isReusableBuffer);
+                    return null;
+                }
+                else
+                {
+                    left = leftSize - requiredSize;
+
+                    if (BufferSegments.Count <= 0)
+                    {
+                        var commandInfo = new WebSocketCommandInfo(Encoding.UTF8.GetString(readBuffer, offset + skipByteCount, requiredSize));
+                        Reset(false);
+                        return commandInfo;
+                    }
+                    else
+                    {
+                        AddArraySegment(readBuffer, offset + skipByteCount, requiredSize, isReusableBuffer);
+                        var commandInfo = new WebSocketCommandInfo(Encoding.UTF8.GetString(BufferSegments.ToArrayData()));
+                        Reset(true);
+                        return commandInfo;
+                    }
+                }
+            }
+        }
+
+        void Reset(bool clearBuffer)
+        {
+            m_Type = null;
+            m_Length = null;
+            m_TempLength = 0;
+
+            if (clearBuffer)
+                BufferSegments.ClearSegements();
         }
     }
 }

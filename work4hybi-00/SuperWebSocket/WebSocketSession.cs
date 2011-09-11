@@ -149,5 +149,13 @@ namespace SuperWebSocket
         {
             Async.Run(() => SendResponse(message, paramValues));
         }
+
+        public override void Close(CloseReason reason)
+        {
+            if (reason != CloseReason.SocketError && reason != CloseReason.ClientClosing)
+                SocketSession.SendResponse(WebSocketConstant.ClosingHandshake);
+
+            base.Close(reason);
+        }
     }
 }

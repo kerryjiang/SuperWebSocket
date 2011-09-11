@@ -136,7 +136,8 @@ namespace SuperWebSocket
                             value = p.Substring(pos).Trim();
                         else
                             value = string.Empty;
-                        cookies.Add(key, Uri.UnescapeDataString(value));
+
+                        cookies[key] = Uri.UnescapeDataString(value);
                     }
                 }
             }

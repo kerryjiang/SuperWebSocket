@@ -29,7 +29,7 @@ namespace SuperWebSocketTest
         {
             LogUtil.Setup(new ConsoleLogger());
 
-            m_WebSocketServer = new WebSocketServer(new BasicSubProtocol("Basic", new List<Assembly> { this.GetType().Assembly }));
+            m_WebSocketServer = new WebSocketServer(new BasicSubProtocol(new List<Assembly> { this.GetType().Assembly }));
             m_WebSocketServer.Setup(new RootConfig(), new ServerConfig
             {
                 Port = 911,

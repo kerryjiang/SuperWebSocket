@@ -14,20 +14,16 @@ namespace SuperWebSocket.Protocol
         //-1 means that don't find start pos
         private int m_StartPos = -1;
 
-        public WebSocketDataReader(WebSocketReaderBase prevReader, int startPos)
-            : base(prevReader)
-        {
-            m_StartPos = startPos;
-        }
-
         public WebSocketDataReader(WebSocketReaderBase prevReader)
             : base(prevReader)
         {
 
         }
 
-        public override WebSocketCommandInfo FindCommandInfo(IAppSession session, byte[] readBuffer, int offset, int length, bool isReusableBuffer)
+        public override WebSocketCommandInfo FindCommandInfo(IAppSession session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
         {
+            left = 0;
+
             AddArraySegment(readBuffer, offset, length, isReusableBuffer);
 
             if (m_StartPos < 0)
@@ -53,12 +49,9 @@ namespace SuperWebSocket.Protocol
 
             var commandInfo = new WebSocketCommandInfo(Encoding.UTF8.GetString(BufferSegments.ToArrayData(m_StartPos + 1, endPos - m_StartPos - 1)));
 
+            left = BufferSegments.Count - endPos - 1;
+
             BufferSegments.ClearSegements();
-
-            int left = BufferSegments.Count - endPos - 1;
-
-            if (left > 0)
-                AddArraySegment(readBuffer, offset + length - left, left, isReusableBuffer);
 
             m_StartPos = -1;
             NextCommandReader = this;

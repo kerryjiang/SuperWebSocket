@@ -239,6 +239,71 @@ namespace SuperWebSocketTest
             socket.Close();
         }
 
+        [Test]
+        public virtual void MessageBatchTransferTest()
+        {
+            Socket socket;
+            Stream stream;
+
+            Handshake(out socket, out stream);
+
+            StringBuilder sb = new StringBuilder();
+
+            for (int i = 0; i < 10; i++)
+            {
+                sb.Append(Guid.NewGuid().ToString());
+            }
+
+            string messageSource = sb.ToString();
+
+            Random rd = new Random();
+
+            ArraySegmentList<byte> receivedBuffer = new ArraySegmentList<byte>();
+
+            for (int i = 0; i < 10; i++)
+            {
+                var sentMessages = new string[10];
+                var sentLengths = new int[sentMessages.Length];
+
+                for (int j = 0; j < sentMessages.Length; j++)
+                {
+                    int startPos = rd.Next(0, messageSource.Length - 2);
+                    int endPos = rd.Next(startPos + 1, Math.Min(messageSource.Length - 1, startPos + 1 + 5));
+
+                    string currentCommand = messageSource.Substring(startPos, endPos - startPos);
+                    sentMessages[j] = currentCommand;
+
+                    Console.WriteLine("Client:" + currentCommand);
+
+                    stream.Write(new byte[] { WebSocketConstant.StartByte }, 0, 1);
+                    byte[] data = Encoding.UTF8.GetBytes(currentCommand);
+                    sentLengths[j] = data.Length + 2;
+                    stream.Write(data, 0, data.Length);
+                    stream.Write(new byte[] { WebSocketConstant.EndByte }, 0, 1);
+                }
+
+                stream.Flush();
+
+                for (var j = 0; j < sentMessages.Length; j++)
+                {
+                    Console.WriteLine("Expected: " + sentLengths[j]);
+                    ReceiveMessage(stream, receivedBuffer, sentLengths[j]);
+                    string message = Encoding.UTF8.GetString(receivedBuffer.ToArrayData(1, receivedBuffer.Count - 2));
+                    Console.WriteLine("E:" + sentMessages[j]);
+                    Console.WriteLine("A:" + message);
+                    Assert.AreEqual(WebSocketConstant.StartByte, receivedBuffer[0]);
+                    Assert.AreEqual(WebSocketConstant.EndByte, receivedBuffer[receivedBuffer.Count - 1]);
+                    Assert.AreEqual(sentMessages[j], message);
+                    Assert.AreEqual(sentLengths[j], receivedBuffer.Count);
+                    receivedBuffer.ClearSegements();
+                    Console.WriteLine("Passed " + j);
+                }
+            }
+
+            socket.Shutdown(SocketShutdown.Both);
+            socket.Close();
+        }
+
         protected void ReceiveMessage(Stream stream, ArraySegmentList<byte> commandBuffer, int predictCount)
         {
             byte[] buffer = new byte[1024];

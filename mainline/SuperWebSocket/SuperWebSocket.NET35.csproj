@@ -62,10 +62,14 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Protocol\DataFramePartReader.cs" />
     <Compile Include="Protocol\DraftHixie75Processor.cs" />
     <Compile Include="Protocol\DraftHybi00Processor.cs" />
+    <Compile Include="Protocol\DraftHybi10Processor.cs" />
     <Compile Include="Protocol\IProtocolProcessor.cs" />
     <Compile Include="Protocol\ProtocolProcessorBase..cs" />
+    <Compile Include="Protocol\WebSocketDataFrame.cs" />
+    <Compile Include="Protocol\WebSocketDataFrameReader.cs" />
     <Compile Include="Protocol\WebSocketDataReader.cs" />
     <Compile Include="Protocol\WebSocketHeaderReader.cs" />
     <Compile Include="Protocol\WebSocketReaderBase.cs" />

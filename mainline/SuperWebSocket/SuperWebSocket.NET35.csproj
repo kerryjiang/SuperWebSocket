@@ -62,6 +62,12 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Command\Binary.cs" />
+    <Compile Include="Command\Close.cs" />
+    <Compile Include="Command\HandShake.cs" />
+    <Compile Include="Command\Ping.cs" />
+    <Compile Include="Command\Pong.cs" />
+    <Compile Include="Command\Text.cs" />
     <Compile Include="Protocol\DataFramePartReader.cs" />
     <Compile Include="Protocol\DraftHybi00Processor.cs" />
     <Compile Include="Protocol\DraftHybi10Processor.cs" />
@@ -77,7 +83,6 @@
     <Compile Include="SubProtocol\BasicSubProtocol.cs" />
     <Compile Include="SubProtocol\ISubCommand.cs" />
     <Compile Include="SubProtocol\ISubProtocol.cs" />
-    <Compile Include="SubProtocol\ISubProtocolCommandParser.cs" />
     <Compile Include="SubProtocol\JsonSubCommand.cs" />
     <Compile Include="SubProtocol\SubCommandBase.cs" />
     <Compile Include="WebSocketCommandInfo.cs" />

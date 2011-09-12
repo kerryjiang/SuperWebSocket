@@ -6,13 +6,13 @@ using SuperSocket.SocketBase.Command;
 
 namespace SuperWebSocket.SubProtocol
 {
-    public class BasicSubCommandParser : ISubProtocolCommandParser
+    public class BasicSubCommandParser : ICommandParser
     {
         #region ISubProtocolCommandParser Members
 
-        public StringCommandInfo ParseSubCommand(WebSocketCommandInfo commandInfo)
+        public StringCommandInfo ParseCommand(string command)
         {
-            var cmd = commandInfo.Text.Trim();
+            var cmd = command.Trim();
             int pos = cmd.IndexOf(' ');
             string name;
             string param;

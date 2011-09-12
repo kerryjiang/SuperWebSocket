@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using SuperSocket.SocketBase.Command;
 using SuperWebSocket.Protocol;
+using SuperSocket.Common;
 
 namespace SuperWebSocket
 {
@@ -27,6 +28,53 @@ namespace SuperWebSocket
         {
             Key = "1";
             Text = text;
+        }
+
+        public WebSocketCommandInfo(IList<WebSocketDataFrame> frames, int left)
+        {
+            var opCode = frames[0].OpCode;
+            Key = opCode.ToString();
+
+            if (opCode != 2)
+            {
+                var stringBuilder = new StringBuilder();
+
+                for (var i = 0; i < frames.Count; i++)
+                {
+                    var frame = frames[i];
+
+                    var data = frame.InnerData.ToArrayData(frame.InnerData.Count - (int)frame.ActualPayloadLength - left, (int)frame.ActualPayloadLength);
+
+                    if (frame.HasMask)
+                    {
+                        data = DecodeMask(data, frame.MaskKey);
+                    }
+
+                    stringBuilder.Append(Encoding.UTF8.GetString(data));
+                }
+
+                Text = stringBuilder.ToString();
+            }
+            else
+            {
+                var resultBuffer = new ArraySegmentList<byte>();
+
+                for (var i = 0; i < frames.Count; i++)
+                {
+                    var frame = frames[i];
+
+                    var data = frame.InnerData.ToArrayData(frame.InnerData.Count - (int)frame.ActualPayloadLength - left, (int)frame.ActualPayloadLength);
+
+                    if (frame.HasMask)
+                    {
+                        data = DecodeMask(data, frame.MaskKey);
+                    }
+
+                    resultBuffer.AddSegment(new ArraySegment<byte>(data));
+                }
+
+                Data = resultBuffer.ToArrayData();
+            }
         }
 
         /// <summary>

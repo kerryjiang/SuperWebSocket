@@ -11,7 +11,7 @@ namespace SuperWebSocket.SubProtocol
 {
     public class BasicSubProtocol : BasicSubProtocol<WebSocketSession>
     {
-        public BasicSubProtocol(string name, IEnumerable<Assembly> commandAssemblies, ISubProtocolCommandParser commandParser)
+        public BasicSubProtocol(string name, IEnumerable<Assembly> commandAssemblies, ICommandParser commandParser)
             : base(name, commandAssemblies, commandParser)
         {
 
@@ -55,7 +55,7 @@ namespace SuperWebSocket.SubProtocol
 
         }
 
-        public BasicSubProtocol(string name, IEnumerable<Assembly> commandAssemblies, ISubProtocolCommandParser commandParser)
+        public BasicSubProtocol(string name, IEnumerable<Assembly> commandAssemblies, ICommandParser commandParser)
         {
             Name = name;
             //The items in commandAssemblies may be null, so filter here
@@ -67,7 +67,7 @@ namespace SuperWebSocket.SubProtocol
 
         #region ISubProtocol Members
 
-        public ISubProtocolCommandParser SubCommandParser { get; private set; }
+        public ICommandParser SubCommandParser { get; private set; }
 
         private void DiscoverCommands()
         {

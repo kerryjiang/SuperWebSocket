@@ -15,7 +15,7 @@ namespace SuperWebSocket.SubProtocol
 
         string Name { get; }
 
-        ISubProtocolCommandParser SubCommandParser { get; }
+        ICommandParser SubCommandParser { get; }
 
         bool TryGetCommand(string name, out ISubCommand<TWebSocketSession> command);
     }

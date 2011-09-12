@@ -178,6 +178,12 @@ namespace SuperWebSocket
             remove { m_NewSessionConnected -= value; }
         }
 
+        internal void OnNewSessionConnected(TWebSocketSession session)
+        {
+            if (m_NewSessionConnected != null)
+                m_NewSessionConnected(session);
+        }
+
         private SessionEventHandler<TWebSocketSession, CloseReason> m_SessionClosed;
 
         public event SessionEventHandler<TWebSocketSession, CloseReason> SessionClosed
@@ -193,21 +199,45 @@ namespace SuperWebSocket
             add
             {
                 m_NewMessageReceived += value;
-                this.CommandHandler += new CommandHandler<TWebSocketSession, WebSocketCommandInfo>(WebSocketServer_CommandHandler);
             }
             remove
             {
                 m_NewMessageReceived -= value;
-                this.CommandHandler -= new CommandHandler<TWebSocketSession, WebSocketCommandInfo>(WebSocketServer_CommandHandler);
             }
         }
 
-        void WebSocketServer_CommandHandler(TWebSocketSession session, WebSocketCommandInfo commandInfo)
+        internal void OnNewMessageReceived(TWebSocketSession session, string message)
         {
             if (m_NewMessageReceived == null)
+            {
+                ExecuteSubCommand(session, session.SubProtocol.SubCommandParser.ParseCommand(message));
+            }
+            else
+            {
+                m_NewMessageReceived(session, message);
+            }
+        }
+
+        private SessionEventHandler<TWebSocketSession, byte[]> m_NewDataReceived;
+
+        public event SessionEventHandler<TWebSocketSession, byte[]> NewDataReceived
+        {
+            add
+            {
+                m_NewDataReceived += value;
+            }
+            remove
+            {
+                m_NewDataReceived -= value;
+            }
+        }
+
+        internal void OnNewDataReceived(TWebSocketSession session, byte[] data)
+        {
+            if (m_NewDataReceived == null)
                 return;
 
-            m_NewMessageReceived(session, commandInfo.Text);
+            m_NewDataReceived(session, data);
         }
 
         internal static void ParseHandshake(IWebSocketSession session, TextReader reader)
@@ -256,29 +286,7 @@ namespace SuperWebSocket
             session.HttpVersion = metaInfo[2];
         }
 
-        public override void ExecuteCommand(TWebSocketSession session, WebSocketCommandInfo commandInfo)
-        {
-            if (!session.Handshaked)
-            {
-                session.Handshaked = true;
-
-                if (m_NewSessionConnected != null)
-                    m_NewSessionConnected(session);
-            }
-            else
-            {
-                if (m_NewMessageReceived == null)
-                {
-                    ExecuteSubCommand(session, commandInfo, session.SubProtocol.SubCommandParser.ParseSubCommand(commandInfo));
-                }
-                else
-                {
-                    base.ExecuteCommand(session, commandInfo);
-                }
-            }
-        }
-
-        private void ExecuteSubCommand(TWebSocketSession session, WebSocketCommandInfo rawCommandInfo, StringCommandInfo subCommandInfo)
+        private void ExecuteSubCommand(TWebSocketSession session, StringCommandInfo subCommandInfo)
         {
             ISubCommand<TWebSocketSession> subCommand;
 
@@ -293,25 +301,10 @@ namespace SuperWebSocket
             }
             else
             {
-                session.HandleUnknownCommand(rawCommandInfo);
+                session.HandleUnknownCommand(subCommandInfo);
             }
 
             session.LastActiveTime = DateTime.Now;
-        }
-
-        /// <summary>
-        /// Setups the commands.
-        /// </summary>
-        /// <param name="commandDict">The command dict.</param>
-        /// <returns></returns>
-        protected override bool SetupCommands(Dictionary<string, ICommand<TWebSocketSession, WebSocketCommandInfo>> commandDict)
-        {
-            if (m_SubProtocols == null || m_SubProtocols.Count <= 0)
-            {
-                base.SetupCommands(commandDict);
-            }
-
-            return true;
         }
 
         protected override void OnAppSessionClosed(object sender, AppSessionClosedEventArgs<TWebSocketSession> e)

@@ -8,6 +8,7 @@ using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Command;
 using System.Collections.Specialized;
 using SuperWebSocket.SubProtocol;
+using SuperWebSocket.Protocol;
 
 namespace SuperWebSocket
 {
@@ -24,6 +25,7 @@ namespace SuperWebSocket
         void SendResponse(string message);
         void SendResponse(byte[] data);
         IWebSocketServer AppServer { get; }
+        IProtocolProcessor ProtocolProcessor { get; set; }
         string GetAvailableSubProtocol(string protocol);
     }
 
@@ -182,6 +184,13 @@ namespace SuperWebSocket
                 SocketSession.SendResponse(WebSocketConstant.ClosingHandshake);
 
             base.Close(reason);
+        }
+
+        public IProtocolProcessor ProtocolProcessor { get; set; }
+
+        internal protected virtual void HandleUnknownCommand(StringCommandInfo commandInfo)
+        {
+
         }
     }
 }

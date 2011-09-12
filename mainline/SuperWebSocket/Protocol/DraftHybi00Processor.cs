@@ -23,6 +23,8 @@ namespace SuperWebSocket.Protocol
                 return NextProcessor.Handshake(session, previousReader, out dataFrameReader);
             }
 
+            session.ProtocolProcessor = this;
+
             var secKey3 = session.Items.GetValue<byte[]>(WebSocketConstant.SecWebSocketKey3, m_ZeroKeyBytes);
 
             var responseBuilder = new StringBuilder();

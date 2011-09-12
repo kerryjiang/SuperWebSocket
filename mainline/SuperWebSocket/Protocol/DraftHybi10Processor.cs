@@ -23,6 +23,8 @@ namespace SuperWebSocket.Protocol
                 return NextProcessor.Handshake(session, previousReader, out dataFrameReader);
             }
 
+            session.ProtocolProcessor = this;
+
             var secWebSocketKey = session.Items.GetValue<string>(WebSocketConstant.SecWebSocketKey, string.Empty);
 
             if (string.IsNullOrEmpty(secWebSocketKey))
@@ -56,7 +58,7 @@ namespace SuperWebSocket.Protocol
             responseBuilder.AppendLine();
             session.SendRawResponse(responseBuilder.ToString());
 
-            dataFrameReader = new WebSocketDataFrameReader(previousReader);
+            dataFrameReader = new WebSocketDataFrameReader(session.AppServer);
 
             return true;
         }

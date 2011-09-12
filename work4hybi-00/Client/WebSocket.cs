@@ -14,6 +14,8 @@ namespace SuperWebSocket.Client
 {
     public class WebSocket
     {
+        private static byte[] m_ClosingHandshake = new byte[] { 0xFF, 0x00 };
+
         private List<KeyValuePair<string, string>> m_Cookies;
         private EndPoint m_RemoteEndPoint;
         private string m_Path = string.Empty;
@@ -26,6 +28,7 @@ namespace SuperWebSocket.Client
 
         private SocketAsyncEventArgs m_ReceiveAsyncEventArgs;
         private SocketAsyncEventArgs m_SendAsyncEventArgs;
+
         private byte[] m_SendBuffer;
 
         private ConcurrentQueue<string> m_MessagesBeingSent = new ConcurrentQueue<string>();
@@ -111,9 +114,9 @@ namespace SuperWebSocket.Client
             if (!IPAddress.TryParse(m_Host, out ipAddress))
                 m_RemoteEndPoint = new DnsEndPoint(m_Host, port);
             else
-                m_RemoteEndPoint = new IPEndPoint(ipAddress, port);          
+                m_RemoteEndPoint = new IPEndPoint(ipAddress, port);
 
-            m_Cookies = cookies;            
+            m_Cookies = cookies;
 
             byte[] buffer = new byte[receiveBufferSize];
             m_ReceiveAsyncEventArgs = new SocketAsyncEventArgs();
@@ -414,18 +417,26 @@ namespace SuperWebSocket.Client
             //First data
             if (m_MessBuilder.Count <= 0)
             {
-                int startPos = buffer.IndexOf(m_StartByte, offset, length);
-                if (startPos < 0)
+                if (buffer[offset] != m_StartByte && buffer[offset] != m_EndByte)
                     return;
 
-                int endPos = buffer.IndexOf(m_EndByte, startPos, offset + length - startPos);
+                byte loofForByte = buffer[offset] == m_StartByte ? m_EndByte : m_StartByte;
+
+                int endPos = buffer.IndexOf(loofForByte, offset + 1, length - 1);
+
                 if (endPos < 0)
                 {
-                    m_MessBuilder.AddRange(CloneRange(buffer, startPos, offset + length - startPos));
+                    m_MessBuilder.AddRange(CloneRange(buffer, offset, length));
                 }
                 else
                 {
-                    FireOnMessage(Encoding.UTF8.GetString(buffer, startPos + 1, endPos - startPos - 1));
+                    if (loofForByte == m_StartByte)
+                    {
+                        EnsureCloseSocket(true);
+                        return;
+                    }
+
+                    FireOnMessage(Encoding.UTF8.GetString(buffer, offset + 1, endPos - offset - 1));
 
                     if (endPos >= (offset + length - 1))
                         return;
@@ -435,11 +446,21 @@ namespace SuperWebSocket.Client
             }
             else
             {
-                int endPos = buffer.IndexOf(m_EndByte, offset, length);
+                byte loofForByte = m_MessBuilder[0] == m_StartByte ? m_EndByte : m_StartByte;
+
+                int endPos = buffer.IndexOf(loofForByte, offset, length);
 
                 if (endPos < 0)
                 {
                     m_MessBuilder.AddRange(CloneRange(buffer, offset, length));
+                    return;
+                }
+
+                //Closing handshake from server side
+                if (loofForByte == m_StartByte)
+                {
+                    m_MessBuilder.Clear();
+                    EnsureCloseSocket(true);
                     return;
                 }
 
@@ -625,7 +646,12 @@ namespace SuperWebSocket.Client
 
         public void Close()
         {
-            EnsureCloseSocket();
+            if (m_Socket != null && m_Socket.Connected)
+            {
+                var eventArgs = new SocketAsyncEventArgs();
+                eventArgs.SetBuffer(m_ClosingHandshake, 0, m_ClosingHandshake.Length);
+                m_Socket.SendAsync(eventArgs);
+            }
         }
     }
 }

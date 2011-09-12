@@ -620,7 +620,7 @@ namespace SuperWebSocket.Client
 
             context.Encoder.Convert(context.Message, context.SentLength, left,
                 m_SendBuffer, bufferOffset, m_SendBuffer.Length - bufferOffset,
-                false, out bytesUsed, out charsUsed, out completed);
+                false, out charsUsed, out bytesUsed, out completed);
 
             context.SentLength += charsUsed;
 

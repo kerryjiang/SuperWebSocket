@@ -18,6 +18,7 @@ namespace SuperWebSocket.Command
 
         public override void ExecuteCommand(WebSocketSession session, WebSocketCommandInfo commandInfo)
         {
+            session.Handshaked = true;
             session.AppServer.OnNewSessionConnected(session);
         }
     }

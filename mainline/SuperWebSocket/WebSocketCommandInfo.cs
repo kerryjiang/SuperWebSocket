@@ -30,7 +30,7 @@ namespace SuperWebSocket
             Text = text;
         }
 
-        public WebSocketCommandInfo(IList<WebSocketDataFrame> frames, int left)
+        public WebSocketCommandInfo(IList<WebSocketDataFrame> frames)
         {
             var opCode = frames[0].OpCode;
             Key = opCode.ToString();
@@ -43,7 +43,7 @@ namespace SuperWebSocket
                 {
                     var frame = frames[i];
 
-                    var data = frame.InnerData.ToArrayData(frame.InnerData.Count - (int)frame.ActualPayloadLength - left, (int)frame.ActualPayloadLength);
+                    var data = frame.InnerData.ToArrayData(frame.InnerData.Count - (int)frame.ActualPayloadLength, (int)frame.ActualPayloadLength);
 
                     if (frame.HasMask)
                     {
@@ -63,7 +63,7 @@ namespace SuperWebSocket
                 {
                     var frame = frames[i];
 
-                    var data = frame.InnerData.ToArrayData(frame.InnerData.Count - (int)frame.ActualPayloadLength - left, (int)frame.ActualPayloadLength);
+                    var data = frame.InnerData.ToArrayData(frame.InnerData.Count - (int)frame.ActualPayloadLength, (int)frame.ActualPayloadLength);
 
                     if (frame.HasMask)
                     {
@@ -82,11 +82,11 @@ namespace SuperWebSocket
         /// </summary>
         /// <param name="frame">The frame.</param>
         /// <param name="left">The left.</param>
-        public WebSocketCommandInfo(WebSocketDataFrame frame, int left)
+        public WebSocketCommandInfo(WebSocketDataFrame frame)
         {
             Key = frame.OpCode.ToString();
 
-            var data = frame.InnerData.ToArrayData(frame.InnerData.Count - (int)frame.ActualPayloadLength - left, (int)frame.ActualPayloadLength);
+            var data = frame.InnerData.ToArrayData(frame.InnerData.Count - (int)frame.ActualPayloadLength, (int)frame.ActualPayloadLength);
 
             if (frame.HasMask)
             {

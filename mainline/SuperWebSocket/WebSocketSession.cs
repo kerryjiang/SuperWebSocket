@@ -74,7 +74,7 @@ namespace SuperWebSocket
                 if(subProtocol != null)
                 {
                     SubProtocol = subProtocol;
-                    return subProtocol.Name;
+                    return name;
                 }
             }
 
@@ -156,16 +156,12 @@ namespace SuperWebSocket
 
         public override void SendResponse(string message)
         {
-            SocketSession.SendResponse(new byte[] { WebSocketConstant.StartByte });
-            base.SendResponse(message);
-            SocketSession.SendResponse(new byte[] { WebSocketConstant.EndByte });
+            ProtocolProcessor.SendMessage(this, message);
         }
 
         public override void SendResponse(string message, params object[] paramValues)
         {
-            SocketSession.SendResponse(new byte[] { WebSocketConstant.StartByte });
-            base.SendResponse(message, paramValues);
-            SocketSession.SendResponse(new byte[] { WebSocketConstant.EndByte });
+            ProtocolProcessor.SendMessage(this, string.Format(message, paramValues));
         }
 
         public void SendResponseAsync(string message)
@@ -181,7 +177,7 @@ namespace SuperWebSocket
         public override void Close(CloseReason reason)
         {
             if (reason != CloseReason.SocketError && reason != CloseReason.ClientClosing)
-                SocketSession.SendResponse(WebSocketConstant.ClosingHandshake);
+                ProtocolProcessor.SendCloseHandshake(this);
 
             base.Close(reason);
         }

@@ -59,6 +59,9 @@ namespace SuperWebSocket.Protocol
             {
                 left = thisLength;
 
+                if (left > 0)
+                    m_Frame.InnerData.TrimEnd(left);
+
                 //Means this part reader is the last one
                 if (nextPartReader == null)
                 {
@@ -70,12 +73,12 @@ namespace SuperWebSocket.Protocol
                         {
                             m_PreviousFrames.Add(m_Frame);
                             m_Frame = new WebSocketDataFrame(new ArraySegmentList<byte>());
-                            commandInfo = new WebSocketCommandInfo(m_PreviousFrames, left);
+                            commandInfo = new WebSocketCommandInfo(m_PreviousFrames);
                             m_PreviousFrames = null;
                         }
                         else
                         {
-                            commandInfo = new WebSocketCommandInfo(m_Frame, left);
+                            commandInfo = new WebSocketCommandInfo(m_Frame);
                             m_Frame.InnerData.ClearSegements();
                         }
                     }

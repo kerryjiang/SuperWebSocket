@@ -62,5 +62,45 @@ namespace SuperWebSocket.Protocol
 
             return true;
         }
+
+        public override void SendMessage(IWebSocketSession session, string message)
+        {
+            SendMessage(session, 1, message);
+        }
+
+        public override void SendCloseHandshake(IWebSocketSession session)
+        {
+            SendMessage(session, 8, string.Empty);
+        }
+
+        private void SendMessage(IWebSocketSession session, int opCode, string message)
+        {
+            byte[] playloadData = Encoding.UTF8.GetBytes(message);
+
+            int length = playloadData.Length;
+
+            byte[] headData;
+
+            if (length < 126)
+            {
+                headData = new byte[2];
+                headData[1] = (byte)length;
+            }
+            else if (length < 65536)
+            {
+                headData = new byte[4];
+                headData[1] = (byte)126;
+            }
+            else
+            {
+                headData = new byte[10];
+                headData[1] = (byte)127;
+            }
+
+            headData[0] = (byte)(opCode | 0x80);
+
+            session.SocketSession.SendResponse(headData);
+            session.SocketSession.SendResponse(playloadData);
+        }
     }
 }

@@ -1,7 +1,7 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="LiveChat.aspx.cs" Inherits="SuperWebSocketWeb.LiveChat" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head id="Head1" runat="server">
+<head runat="server">
     <title>Live Chat</title>
     <script type="text/javascript" src="Scripts/jquery.js"></script>
     <style type="text/css">
@@ -58,16 +58,17 @@
         function connectSocketServer() {
             var messageBoard = $('#messageBoard');
 
-            if (!("WebSocket" in window)) {
+            var support = "MozWebSocket" in window ? 'MozWebSocket' : ("WebSocket" in window ? 'WebSocket' : null);
+
+            if (support == null) {
                 alert(noSupportMessage);
                 messageBoard.append("* " + noSupportMessage + "<br/>");
                 return;
             }
 
             messageBoard.append("* Connecting to server ..<br/>");
-
             // create a new websocket and connect
-            ws = new WebSocket('ws://<%= Request.Url.Host %>:<%= WebSocketPort %>/sample');
+            ws = new window[support]('ws://<%= Request.Url.Host %>:<%= WebSocketPort %>/sample', 'basic');
 
             // when data is comming from the server, this metod is called
             ws.onmessage = function (evt) {
@@ -86,7 +87,7 @@
             }
 
             //setup secure websocket
-            var wss = new WebSocket('wss://<%= Request.Url.Host %>:<%= SecureWebSocketPort %>/sample');
+            var wss = new window[support]('wss://<%= Request.Url.Host %>:<%= SecureWebSocketPort %>/sample');
 
             // when data is comming from the server, this metod is called
             wss.onmessage = function (evt) {

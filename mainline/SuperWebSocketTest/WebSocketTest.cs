@@ -77,7 +77,7 @@ namespace SuperWebSocketTest
             Handshake(SubProtocol, out socket, out stream);
         }
 
-        protected void Handshake(string protocol, out Socket socket, out Stream stream)
+        protected virtual void Handshake(string protocol, out Socket socket, out Stream stream)
         {
             var ip = "127.0.0.1";
             var port = 911;

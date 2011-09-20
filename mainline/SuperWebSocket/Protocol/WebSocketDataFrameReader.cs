@@ -79,7 +79,7 @@ namespace SuperWebSocket.Protocol
                         else
                         {
                             commandInfo = new WebSocketCommandInfo(m_Frame);
-                            m_Frame.InnerData.ClearSegements();
+                            m_Frame.Clear();
                         }
                     }
                     else

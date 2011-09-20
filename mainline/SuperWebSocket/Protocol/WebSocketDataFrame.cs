@@ -70,9 +70,25 @@ namespace SuperWebSocket.Protocol
                 if (payloadLength < 126)
                     m_ActualPayloadLength = payloadLength;
                 else if (payloadLength == 126)
-                    m_ActualPayloadLength = BitConverter.ToUInt16(m_InnerData.ToArrayData(2, 2), 0);
+                {
+                    var sizeData = m_InnerData.ToArrayData(2, 2);
+                    m_ActualPayloadLength = (int)sizeData[0] * 256 + (int)sizeData[1];
+                }
                 else
-                    m_ActualPayloadLength = BitConverter.ToInt64(m_InnerData.ToArrayData(2, 8), 0);
+                {
+                    var sizeData = m_InnerData.ToArrayData(2, 8);
+
+                    long len = 0;
+                    int n = 1;
+
+                    for (int i = 7; i >= 0; i--)
+                    {
+                        len += (int)sizeData[i] * n;
+                        n *= 256;
+                    }
+
+                    m_ActualPayloadLength = n;
+                }
 
                 return m_ActualPayloadLength;
             }
@@ -87,6 +103,14 @@ namespace SuperWebSocket.Protocol
         public int Length
         {
             get { return m_InnerData.Count; }
+        }
+
+        public void Clear()
+        {
+            m_InnerData.ClearSegements();
+            ExtensionData = new byte[0];
+            ApplicationData = new byte[0];
+            m_ActualPayloadLength = -1;
         }
     }
 }

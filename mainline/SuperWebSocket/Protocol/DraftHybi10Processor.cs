@@ -90,11 +90,25 @@ namespace SuperWebSocket.Protocol
             {
                 headData = new byte[4];
                 headData[1] = (byte)126;
+                headData[2] = (byte)(length / 256);
+                headData[3] = (byte)(length % 256);
             }
             else
             {
                 headData = new byte[10];
                 headData[1] = (byte)127;
+
+                int left = length;
+                int unit = 256;
+
+                for (int i = 10; i > 1; i--)
+                {
+                    headData[i] = (byte)(left % unit);
+                    left = left / unit;
+
+                    if (left == 0)
+                        break;
+                }
             }
 
             headData[0] = (byte)(opCode | 0x80);

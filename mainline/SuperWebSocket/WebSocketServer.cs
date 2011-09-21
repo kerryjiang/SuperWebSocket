@@ -211,6 +211,13 @@ namespace SuperWebSocket
         {
             if (m_NewMessageReceived == null)
             {
+                if (session.SubProtocol == null)
+                {
+                    Logger.LogError("No SubProtocol selected! This session cannot process any message!");
+                    session.Close("No SubProtocol selected");
+                    return;
+                }
+
                 ExecuteSubCommand(session, session.SubProtocol.SubCommandParser.ParseCommand(message));
             }
             else

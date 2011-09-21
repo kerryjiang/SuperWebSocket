@@ -6,7 +6,8 @@ using SuperSocket.SocketBase.Command;
 
 namespace SuperWebSocket.Command
 {
-    public class Text : CommandBase<WebSocketSession, WebSocketCommandInfo>
+    public class Text<TWebSocketSession> : CommandBase<TWebSocketSession, WebSocketCommandInfo>
+        where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
         public override string Name
         {
@@ -16,7 +17,7 @@ namespace SuperWebSocket.Command
             }
         }
 
-        public override void ExecuteCommand(WebSocketSession session, WebSocketCommandInfo commandInfo)
+        public override void ExecuteCommand(TWebSocketSession session, WebSocketCommandInfo commandInfo)
         {
             session.AppServer.OnNewMessageReceived(session, commandInfo.Text);
         }

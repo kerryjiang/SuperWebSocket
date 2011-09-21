@@ -15,6 +15,7 @@ using SuperSocket.SocketBase.Config;
 using SuperSocket.SocketBase.Protocol;
 using SuperWebSocket.Protocol;
 using SuperWebSocket.SubProtocol;
+using SuperWebSocket.Command;
 
 namespace SuperWebSocket
 {
@@ -284,6 +285,32 @@ namespace SuperWebSocket
             session.Method = metaInfo[0];
             session.Path = metaInfo[1];
             session.HttpVersion = metaInfo[2];
+        }
+
+        protected override bool SetupCommands(Dictionary<string, ICommand<TWebSocketSession, WebSocketCommandInfo>> commandDict)
+        {
+            var commands = new List<ICommand<TWebSocketSession, WebSocketCommandInfo>>
+                {
+                    new HandShake<TWebSocketSession>(),
+                    new Text<TWebSocketSession>(),  
+                    new Binary<TWebSocketSession>(),
+                    new Close<TWebSocketSession>(),
+                    new Ping<TWebSocketSession>(),
+                    new Pong<TWebSocketSession>()
+                };
+
+            commands.ForEach(c => commandDict.Add(c.Name, c));
+
+            try
+            {
+                //Still require it because we need to ensure commandfilters dictionary is not null
+                base.SetupCommands(new Dictionary<string, ICommand<TWebSocketSession, WebSocketCommandInfo>>());
+            }
+            catch
+            {
+            }
+
+            return true;
         }
 
         private void ExecuteSubCommand(TWebSocketSession session, StringCommandInfo subCommandInfo)

@@ -7,7 +7,8 @@ using SuperSocket.SocketBase.Command;
 
 namespace SuperWebSocket.Command
 {
-    public class Close : CommandBase<WebSocketSession, WebSocketCommandInfo>
+    public class Close<TWebSocketSession> : CommandBase<TWebSocketSession, WebSocketCommandInfo>
+        where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
         public override string Name
         {
@@ -17,7 +18,7 @@ namespace SuperWebSocket.Command
             }
         }
 
-        public override void ExecuteCommand(WebSocketSession session, WebSocketCommandInfo commandInfo)
+        public override void ExecuteCommand(TWebSocketSession session, WebSocketCommandInfo commandInfo)
         {
             session.Close(CloseReason.ClientClosing);
         }

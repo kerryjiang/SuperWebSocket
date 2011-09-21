@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SuperSocket.SocketBase.Command;
+using SuperWebSocket.Protocol;
 
 namespace SuperWebSocket.Command
 {
@@ -13,13 +14,13 @@ namespace SuperWebSocket.Command
         {
             get
             {
-                return "9";
+                return OpCode.Ping.ToString();
             }
         }
 
         public override void ExecuteCommand(TWebSocketSession session, WebSocketCommandInfo commandInfo)
         {
-            throw new NotImplementedException();
+            session.ProtocolProcessor.SendPong(session, commandInfo.Text);
         }
     }
 }

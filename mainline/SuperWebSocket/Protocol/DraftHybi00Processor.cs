@@ -98,9 +98,14 @@ namespace SuperWebSocket.Protocol
             session.SocketSession.SendResponse(sendBuffer, 0, bytesCount + 2);
         }
 
-        public override void SendCloseHandshake(IWebSocketSession session)
+        public override void SendCloseHandshake(IWebSocketSession session, string closeReason)
         {
             session.SendResponse(WebSocketConstant.ClosingHandshake);
+        }
+
+        public override void SendPong(IWebSocketSession session, string ping)
+        {
+
         }
     }
 }

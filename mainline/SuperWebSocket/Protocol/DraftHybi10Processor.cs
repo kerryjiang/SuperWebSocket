@@ -65,12 +65,17 @@ namespace SuperWebSocket.Protocol
 
         public override void SendMessage(IWebSocketSession session, string message)
         {
-            SendMessage(session, 1, message);
+            SendMessage(session, OpCode.Text, message);
         }
 
-        public override void SendCloseHandshake(IWebSocketSession session)
+        public override void SendCloseHandshake(IWebSocketSession session, string closeReason)
         {
-            SendMessage(session, 8, string.Empty);
+            SendMessage(session, OpCode.Close, closeReason);
+        }
+
+        public override void SendPong(IWebSocketSession session, string ping)
+        {
+            SendMessage(session, OpCode.Pong, ping);
         }
 
         private void SendMessage(IWebSocketSession session, int opCode, string message)

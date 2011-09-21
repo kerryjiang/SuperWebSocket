@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Command;
+using SuperWebSocket.Protocol;
 
 namespace SuperWebSocket.Command
 {
@@ -14,7 +15,7 @@ namespace SuperWebSocket.Command
         {
             get
             {
-                return "8";
+                return OpCode.Close.ToString();
             }
         }
 

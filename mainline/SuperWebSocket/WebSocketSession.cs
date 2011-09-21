@@ -174,10 +174,39 @@ namespace SuperWebSocket
             Async.Run(() => SendResponse(message, paramValues));
         }
 
+        public void Close(string reasonText)
+        {
+            this.Close(CloseReason.ServerClosing, reasonText);
+        }
+
+        public void Close(CloseReason reason, string reasonText)
+        {
+            ProtocolProcessor.SendCloseHandshake(this, reasonText);
+            base.Close(reason);
+        }
+
         public override void Close(CloseReason reason)
         {
-            if (reason != CloseReason.SocketError && reason != CloseReason.ClientClosing)
-                ProtocolProcessor.SendCloseHandshake(this);
+            if (reason == CloseReason.ServerClosing)
+            {
+                Close(reason, string.Empty);
+                return;
+            }
+            else if (reason == CloseReason.ServerShutdown)
+            {
+                Close(reason, "Server shutdown");
+                return;
+            }
+            else if (reason == CloseReason.TimeOut)
+            {
+                Close(reason, "Session timeout");
+                return;
+            }
+            else if (reason == CloseReason.Unknown)
+            {
+                Close(reason, string.Empty);
+                return;
+            }
 
             base.Close(reason);
         }

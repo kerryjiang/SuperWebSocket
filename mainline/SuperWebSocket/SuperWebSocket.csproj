@@ -65,6 +65,7 @@
     <Compile Include="Protocol\DataFramePartReader.cs" />
     <Compile Include="Protocol\DraftHybi00Processor.cs" />
     <Compile Include="Protocol\DraftHybi10Processor.cs" />
+    <Compile Include="Protocol\OpCode.cs" />
     <Compile Include="Protocol\ProtocolProcessorBase..cs" />
     <Compile Include="Protocol\IProtocolProcessor.cs" />
     <Compile Include="Protocol\WebSocketDataFrame.cs" />

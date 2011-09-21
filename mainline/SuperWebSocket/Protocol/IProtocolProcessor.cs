@@ -15,6 +15,8 @@ namespace SuperWebSocket.Protocol
 
         void SendMessage(IWebSocketSession session, string message);
 
-        void SendCloseHandshake(IWebSocketSession session);
+        void SendCloseHandshake(IWebSocketSession session, string closeReason);
+
+        void SendPong(IWebSocketSession session, string ping);
     }
 }

@@ -13,7 +13,7 @@ namespace SuperWebSocket.Protocol
     {
         static WebSocketReaderBase()
         {
-            HandshakeCommandInfo = new WebSocketCommandInfo("0", string.Empty);
+            HandshakeCommandInfo = new WebSocketCommandInfo(OpCode.Handshake.ToString(), string.Empty);
         }
 
         public WebSocketReaderBase(IAppServer appServer)

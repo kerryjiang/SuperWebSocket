@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SuperSocket.SocketBase.Command;
+using SuperWebSocket.Protocol;
 
 namespace SuperWebSocket.Command
 {
@@ -13,7 +14,7 @@ namespace SuperWebSocket.Command
         {
             get
             {
-                return "2";
+                return OpCode.Binary.ToString();
             }
         }
 

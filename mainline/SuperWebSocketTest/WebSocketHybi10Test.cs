@@ -279,7 +279,7 @@ namespace SuperWebSocketTest
                 int left = length;
                 int unit = 256;
 
-                for (int i = 10; i > 1; i--)
+                for (int i = 9; i > 1; i--)
                 {
                     headData[i] = (byte)(left % unit);
                     left = left / unit;

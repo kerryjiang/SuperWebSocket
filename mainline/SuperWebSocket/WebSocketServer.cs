@@ -149,9 +149,6 @@ namespace SuperWebSocket
                 m_SubProtocols.Add(subProtocol.Name, subProtocol);
             }
 
-            if (m_SubProtocols.Count > 0)
-                DefaultSubProtocol = m_SubProtocols.Values.FirstOrDefault();
-
             return true;
         }
 
@@ -159,6 +156,9 @@ namespace SuperWebSocket
         {
             if (!SetupSubProtocols(config))
                 return false;
+
+            if (m_SubProtocols != null && m_SubProtocols.Count > 0)
+                DefaultSubProtocol = m_SubProtocols.Values.FirstOrDefault();
 
             if (!base.Setup(rootConfig, config, socketServerFactory, protocol))
                 return false;

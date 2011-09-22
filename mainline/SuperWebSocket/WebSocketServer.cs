@@ -74,6 +74,8 @@ namespace SuperWebSocket
 
         private Dictionary<string, ISubProtocol<TWebSocketSession>> m_SubProtocols;
 
+        internal ISubProtocol<TWebSocketSession> DefaultSubProtocol { get; private set; }
+
         /// <summary>
         /// Gets the sub protocol by sub protocol name.
         /// </summary>
@@ -120,7 +122,7 @@ namespace SuperWebSocket
 
             var subProtocolTypes = subProtocolValue.Split(new char[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
-            if (subProtocolTypes != null && subProtocolTypes.Length > 0)
+            if (subProtocolTypes != null && subProtocolTypes.Length > 0 && m_SubProtocols == null)
             {
                 m_SubProtocols = new Dictionary<string, ISubProtocol<TWebSocketSession>>(subProtocolTypes.Length, StringComparer.OrdinalIgnoreCase);
             }
@@ -146,6 +148,9 @@ namespace SuperWebSocket
 
                 m_SubProtocols.Add(subProtocol.Name, subProtocol);
             }
+
+            if (m_SubProtocols.Count > 0)
+                DefaultSubProtocol = m_SubProtocols.Values.FirstOrDefault();
 
             return true;
         }

@@ -63,7 +63,10 @@ namespace SuperWebSocket
         string IWebSocketSession.GetAvailableSubProtocol(string protocol)
         {
             if (string.IsNullOrEmpty(protocol))
+            {
+                SubProtocol = AppServer.DefaultSubProtocol;
                 return string.Empty;
+            }
 
             var arrNames = protocol.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 

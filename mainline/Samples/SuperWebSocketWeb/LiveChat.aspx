@@ -68,7 +68,7 @@
 
             messageBoard.append("* Connecting to server ..<br/>");
             // create a new websocket and connect
-            ws = new window[support]('ws://<%= Request.Url.Host %>:<%= WebSocketPort %>/sample', 'basic');
+            ws = new window[support]('ws://<%= Request.Url.Host %>:<%= WebSocketPort %>/sample');
 
             // when data is comming from the server, this metod is called
             ws.onmessage = function (evt) {

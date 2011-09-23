@@ -87,7 +87,7 @@ namespace SuperWebSocket.Protocol
                         n *= 256;
                     }
 
-                    m_ActualPayloadLength = n;
+                    m_ActualPayloadLength = len;
                 }
 
                 return m_ActualPayloadLength;

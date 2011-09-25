@@ -148,7 +148,10 @@ namespace SuperWebSocket.Client
         void ProcessConnect(SocketAsyncEventArgs e)
         {
             if (e.SocketError != SocketError.Success)
+            {
+                FireOnError(new ErrorEventArgs(e.SocketError));
                 return;
+            }
 #if NET35
             //Do nothing
 #else
@@ -161,6 +164,7 @@ namespace SuperWebSocket.Client
         {
             if (e.SocketError != SocketError.Success)
             {
+                FireOnError(new ErrorEventArgs(e.SocketError));
                 EnsureCloseSocket();
                 return;
             }
@@ -273,6 +277,22 @@ namespace SuperWebSocket.Client
                 handler(this, new MessageEventArgs(message));
         }
 
+        private EventHandler<ErrorEventArgs> m_OnError;
+
+        public event EventHandler<ErrorEventArgs> OnError
+        {
+            add { m_OnError += value; }
+            remove { m_OnError -= value; }
+        }
+
+        private void FireOnError(ErrorEventArgs e)
+        {
+            if (m_OnError == null)
+                return;
+
+            m_OnError(this, e);
+        }
+
         public void Connect()
         {
             m_ReceiveAsyncEventArgs.RemoteEndPoint = m_RemoteEndPoint;
@@ -340,6 +360,7 @@ namespace SuperWebSocket.Client
         {
             if (e.SocketError != SocketError.Success)
             {
+                FireOnError(new ErrorEventArgs(e.SocketError));
                 EnsureCloseSocket();
                 return;
             }

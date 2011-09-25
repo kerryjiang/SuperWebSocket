@@ -51,7 +51,15 @@ namespace SuperWebSocket.Protocol
                 if (frame.HasMask)
                     nextPartReader = MaskKeyReader;
                 else
+                {
+                    if (frame.ActualPayloadLength == 0)
+                    {
+                        nextPartReader = null;
+                        return (int)((long)frame.Length - 2);
+                    }
+
                     nextPartReader = PayloadDataReader;
+                }
             }
             else
             {
@@ -85,7 +93,15 @@ namespace SuperWebSocket.Protocol
             if (frame.HasMask)
                 nextPartReader = MaskKeyReader;
             else
+            {
+                if (frame.ActualPayloadLength == 0)
+                {
+                    nextPartReader = null;
+                    return (int)((long)frame.Length - required);
+                }
+
                 nextPartReader = PayloadDataReader;
+            }
 
             if (frame.Length > required)
                 return nextPartReader.Process(required, frame, out nextPartReader);
@@ -107,6 +123,12 @@ namespace SuperWebSocket.Protocol
             }
 
             frame.MaskKey = frame.InnerData.ToArrayData(lastLength, 4);
+
+            if (frame.ActualPayloadLength == 0)
+            {
+                nextPartReader = null;
+                return (int)((long)frame.Length - required);
+            }
 
             nextPartReader = new PayloadDataReader();
 

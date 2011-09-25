@@ -47,6 +47,7 @@
     <Compile Include="BinaryExtension.cs" />
     <Compile Include="ConcurrentQueue.cs" />
     <Compile Include="DnsEndPoint.cs" />
+    <Compile Include="ErrorEventArgs.cs" />
     <Compile Include="HandshakeContext.cs" />
     <Compile Include="MessageEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

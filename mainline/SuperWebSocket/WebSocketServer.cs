@@ -117,30 +117,30 @@ namespace SuperWebSocket
         {
             string subProtocolValue = config.Options.GetValue("subProtocol");
 
-            if (string.IsNullOrEmpty(subProtocolValue))
-                return true;
-
-            var subProtocolTypes = subProtocolValue.Split(new char[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToArray();
-
-            if (subProtocolTypes != null && subProtocolTypes.Length > 0 && m_SubProtocols == null)
+            if (!string.IsNullOrEmpty(subProtocolValue))
             {
-                m_SubProtocols = new Dictionary<string, ISubProtocol<TWebSocketSession>>(subProtocolTypes.Length, StringComparer.OrdinalIgnoreCase);
-            }
+                var subProtocolTypes = subProtocolValue.Split(new char[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
-            foreach (var t in subProtocolTypes)
-            {
-                ISubProtocol<TWebSocketSession> subProtocol;
-
-                if (!AssemblyUtil.TryCreateInstance<ISubProtocol<TWebSocketSession>>(t, out subProtocol))
-                    return false;
-
-                if (m_SubProtocols.ContainsKey(subProtocol.Name))
+                if (subProtocolTypes != null && subProtocolTypes.Length > 0 && m_SubProtocols == null)
                 {
-                    Logger.LogError(string.Format("This sub protocol '{0}' has been defined! You cannot define duplicated sub protocols!", subProtocol.Name));
-                    return false;
+                    m_SubProtocols = new Dictionary<string, ISubProtocol<TWebSocketSession>>(subProtocolTypes.Length, StringComparer.OrdinalIgnoreCase);
                 }
 
-                m_SubProtocols.Add(subProtocol.Name, subProtocol);
+                foreach (var t in subProtocolTypes)
+                {
+                    ISubProtocol<TWebSocketSession> subProtocol;
+
+                    if (!AssemblyUtil.TryCreateInstance<ISubProtocol<TWebSocketSession>>(t, out subProtocol))
+                        return false;
+
+                    if (m_SubProtocols.ContainsKey(subProtocol.Name))
+                    {
+                        Logger.LogError(string.Format("This sub protocol '{0}' has been defined! You cannot define duplicated sub protocols!", subProtocol.Name));
+                        return false;
+                    }
+
+                    m_SubProtocols.Add(subProtocol.Name, subProtocol);
+                }
             }
 
             foreach (var subProtocol in m_SubProtocols.Values)

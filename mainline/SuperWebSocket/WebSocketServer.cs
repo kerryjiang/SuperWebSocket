@@ -140,13 +140,16 @@ namespace SuperWebSocket
                     return false;
                 }
 
+                m_SubProtocols.Add(subProtocol.Name, subProtocol);
+            }
+
+            foreach (var subProtocol in m_SubProtocols.Values)
+            {
                 if (!subProtocol.Initialize(config))
                 {
                     Logger.LogError(string.Format("Failed to initialize the sub protocol '{0}'!", subProtocol.Name));
                     return false;
                 }
-
-                m_SubProtocols.Add(subProtocol.Name, subProtocol);
             }
 
             return true;

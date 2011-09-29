@@ -33,18 +33,20 @@ namespace SuperWebSocket.SubProtocol
     public class BasicSubProtocol<TWebSocketSession> : ISubProtocol<TWebSocketSession>
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
+        public const string DefaultName = "Basic";
+
         private List<Assembly> m_CommandAssemblies = new List<Assembly>();
 
         private Dictionary<string, ISubCommand<TWebSocketSession>> m_CommandDict;
 
         public BasicSubProtocol(IEnumerable<Assembly> commandAssemblies)
-            : this("Basic", commandAssemblies, new BasicSubCommandParser())
+            : this(DefaultName, commandAssemblies, new BasicSubCommandParser())
         {
 
         }
 
         public BasicSubProtocol()
-            : this("Basic", new List<Assembly> { Assembly.GetEntryAssembly() }, new BasicSubCommandParser())
+            : this(DefaultName, new List<Assembly> { Assembly.GetEntryAssembly() }, new BasicSubCommandParser())
         {
 
         }
@@ -89,12 +91,45 @@ namespace SuperWebSocket.SubProtocol
             if (string.IsNullOrEmpty(commandAssembly))
                 return true;
 
+            var protocolAssemblies = commandAssembly.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+
+            for (var i = 0; i < protocolAssemblies.Length; i++)
+            {
+                var p = protocolAssemblies[i].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (p.Length == 1)
+                {
+                    if(Name.Equals(DefaultName, StringComparison.OrdinalIgnoreCase))
+                        return ResolveCommmandAssembly(p[0]);
+                }
+                else if (p.Length == 2)
+                {
+                    if (string.IsNullOrEmpty(p[0]) || string.IsNullOrEmpty(p[1]))
+                        continue;
+
+                    if (Name.Equals(p[0].Trim(), StringComparison.OrdinalIgnoreCase))
+                    {
+                        return ResolveCommmandAssembly(p[1]);
+                    }
+                }
+                else
+                {
+                    LogUtil.LogError("Invalid command assembly: " + commandAssembly);
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private bool ResolveCommmandAssembly(string definition)
+        {
             try
             {
-                var assemblies = AssemblyUtil.GetAssembliesFromString(commandAssembly);
+                var assemblies = AssemblyUtil.GetAssembliesFromString(definition);
 
                 if (assemblies.Any())
-                    m_CommandAssemblies.AddRange(AssemblyUtil.GetAssembliesFromString(commandAssembly));
+                    m_CommandAssemblies.AddRange(assemblies);
 
                 return true;
             }

@@ -63,8 +63,6 @@ namespace SuperWebSocket.SubProtocol
             //The items in commandAssemblies may be null, so filter here
             m_CommandAssemblies.AddRange(commandAssemblies.Where(a => a != null));
             SubCommandParser = commandParser;
-
-            DiscoverCommands();
         }
 
         #region ISubProtocol Members
@@ -99,8 +97,13 @@ namespace SuperWebSocket.SubProtocol
 
                 if (p.Length == 1)
                 {
-                    if(Name.Equals(DefaultName, StringComparison.OrdinalIgnoreCase))
-                        return ResolveCommmandAssembly(p[0]);
+                    if (Name.Equals(DefaultName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (!ResolveCommmandAssembly(p[0]))
+                            return false;
+
+                        continue;
+                    }
                 }
                 else if (p.Length == 2)
                 {
@@ -109,7 +112,10 @@ namespace SuperWebSocket.SubProtocol
 
                     if (Name.Equals(p[0].Trim(), StringComparison.OrdinalIgnoreCase))
                     {
-                        return ResolveCommmandAssembly(p[1]);
+                        if (!ResolveCommmandAssembly(p[1]))
+                            return false;
+
+                        continue;
                     }
                 }
                 else
@@ -118,6 +124,8 @@ namespace SuperWebSocket.SubProtocol
                     return false;
                 }
             }
+
+            DiscoverCommands();
 
             return true;
         }

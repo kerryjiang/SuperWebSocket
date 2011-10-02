@@ -86,42 +86,42 @@ namespace SuperWebSocket.SubProtocol
         {
             var commandAssembly = config.Options.GetValue("commandAssembly");
 
-            if (string.IsNullOrEmpty(commandAssembly))
-                return true;
-
-            var protocolAssemblies = commandAssembly.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-
-            for (var i = 0; i < protocolAssemblies.Length; i++)
+            if (!string.IsNullOrEmpty(commandAssembly))
             {
-                var p = protocolAssemblies[i].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                var protocolAssemblies = commandAssembly.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 
-                if (p.Length == 1)
+                for (var i = 0; i < protocolAssemblies.Length; i++)
                 {
-                    if (Name.Equals(DefaultName, StringComparison.OrdinalIgnoreCase))
+                    var p = protocolAssemblies[i].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    if (p.Length == 1)
                     {
-                        if (!ResolveCommmandAssembly(p[0]))
-                            return false;
+                        if (Name.Equals(DefaultName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (!ResolveCommmandAssembly(p[0]))
+                                return false;
 
-                        continue;
+                            continue;
+                        }
                     }
-                }
-                else if (p.Length == 2)
-                {
-                    if (string.IsNullOrEmpty(p[0]) || string.IsNullOrEmpty(p[1]))
-                        continue;
-
-                    if (Name.Equals(p[0].Trim(), StringComparison.OrdinalIgnoreCase))
+                    else if (p.Length == 2)
                     {
-                        if (!ResolveCommmandAssembly(p[1]))
-                            return false;
+                        if (string.IsNullOrEmpty(p[0]) || string.IsNullOrEmpty(p[1]))
+                            continue;
 
-                        continue;
+                        if (Name.Equals(p[0].Trim(), StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (!ResolveCommmandAssembly(p[1]))
+                                return false;
+
+                            continue;
+                        }
                     }
-                }
-                else
-                {
-                    LogUtil.LogError("Invalid command assembly: " + commandAssembly);
-                    return false;
+                    else
+                    {
+                        LogUtil.LogError("Invalid command assembly: " + commandAssembly);
+                        return false;
+                    }
                 }
             }
 

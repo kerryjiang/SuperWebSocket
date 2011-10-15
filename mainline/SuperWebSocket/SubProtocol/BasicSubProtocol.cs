@@ -6,13 +6,20 @@ using SuperSocket.SocketBase.Config;
 using System.Reflection;
 using SuperSocket.Common;
 using SuperSocket.SocketBase.Command;
+using SuperWebSocket.Config;
 
 namespace SuperWebSocket.SubProtocol
 {
     public class BasicSubProtocol : BasicSubProtocol<WebSocketSession>
     {
-        public BasicSubProtocol(string name, IEnumerable<Assembly> commandAssemblies, ICommandParser commandParser)
-            : base(name, commandAssemblies, commandParser)
+        public BasicSubProtocol()
+            : base()
+        {
+
+        }
+
+        public BasicSubProtocol(IEnumerable<Assembly> commandAssemblies)
+            : base(commandAssemblies)
         {
 
         }
@@ -23,14 +30,14 @@ namespace SuperWebSocket.SubProtocol
 
         }
 
-        public BasicSubProtocol()
-            : base()
+        public BasicSubProtocol(string name, IEnumerable<Assembly> commandAssemblies, ICommandParser commandParser)
+            : base(name, commandAssemblies, commandParser)
         {
-
+            
         }
     }
 
-    public class BasicSubProtocol<TWebSocketSession> : ISubProtocol<TWebSocketSession>
+    public class BasicSubProtocol<TWebSocketSession> : SubProtocolBase<TWebSocketSession>
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
         public const string DefaultName = "Basic";
@@ -39,6 +46,13 @@ namespace SuperWebSocket.SubProtocol
 
         private Dictionary<string, ISubCommand<TWebSocketSession>> m_CommandDict;
 
+        public static BasicSubProtocol<TWebSocketSession> DefaultInstance { get; private set; }
+
+        static BasicSubProtocol()
+        {
+            DefaultInstance = new BasicSubProtocol<TWebSocketSession>();
+        }
+
         public BasicSubProtocol(IEnumerable<Assembly> commandAssemblies)
             : this(DefaultName, commandAssemblies, new BasicSubCommandParser())
         {
@@ -46,7 +60,13 @@ namespace SuperWebSocket.SubProtocol
         }
 
         public BasicSubProtocol()
-            : this(DefaultName, new List<Assembly> { Assembly.GetEntryAssembly() }, new BasicSubCommandParser())
+            : this(DefaultName)
+        {
+
+        }
+
+        public BasicSubProtocol(string name)
+            : this(name, new List<Assembly>() )
         {
 
         }
@@ -58,16 +78,14 @@ namespace SuperWebSocket.SubProtocol
         }
 
         public BasicSubProtocol(string name, IEnumerable<Assembly> commandAssemblies, ICommandParser commandParser)
+            : base(name)
         {
-            Name = name;
             //The items in commandAssemblies may be null, so filter here
             m_CommandAssemblies.AddRange(commandAssemblies.Where(a => a != null));
             SubCommandParser = commandParser;
         }
 
         #region ISubProtocol Members
-
-        public ICommandParser SubCommandParser { get; private set; }
 
         private void DiscoverCommands()
         {
@@ -78,53 +96,50 @@ namespace SuperWebSocket.SubProtocol
                 subCommands.AddRange(assembly.GetImplementedObjectsByInterface<ISubCommand<TWebSocketSession>>());
             }
 
+#if DEBUG
+            var cmdbuilder = new StringBuilder();
+            cmdbuilder.AppendLine(string.Format("SubProtocol {0} found the commands below:", this.Name));
+
+            foreach (var c in subCommands)
+            {
+                cmdbuilder.AppendLine(c.Name);
+            }
+
+            LogUtil.LogDebug(cmdbuilder.ToString());
+#endif
+
             m_CommandDict = new Dictionary<string, ISubCommand<TWebSocketSession>>(subCommands.Count, StringComparer.OrdinalIgnoreCase);
             subCommands.ForEach(c => m_CommandDict.Add(c.Name, c));
         }
 
-        public bool Initialize(IServerConfig config)
+        public override bool Initialize(IServerConfig config, SubProtocolConfig protocolConfig)
         {
-            var commandAssembly = config.Options.GetValue("commandAssembly");
-
-            if (!string.IsNullOrEmpty(commandAssembly))
+            if (Name.Equals(DefaultName, StringComparison.OrdinalIgnoreCase))
             {
-                var protocolAssemblies = commandAssembly.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                var commandAssembly = config.Options.GetValue("commandAssembly");
 
-                for (var i = 0; i < protocolAssemblies.Length; i++)
+                if (!string.IsNullOrEmpty(commandAssembly))
                 {
-                    var p = protocolAssemblies[i].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-
-                    if (p.Length == 1)
-                    {
-                        if (Name.Equals(DefaultName, StringComparison.OrdinalIgnoreCase))
-                        {
-                            if (!ResolveCommmandAssembly(p[0]))
-                                return false;
-
-                            continue;
-                        }
-                    }
-                    else if (p.Length == 2)
-                    {
-                        if (string.IsNullOrEmpty(p[0]) || string.IsNullOrEmpty(p[1]))
-                            continue;
-
-                        if (Name.Equals(p[0].Trim(), StringComparison.OrdinalIgnoreCase))
-                        {
-                            if (!ResolveCommmandAssembly(p[1]))
-                                return false;
-
-                            continue;
-                        }
-                    }
-                    else
-                    {
-                        LogUtil.LogError("Invalid command assembly: " + commandAssembly);
+                    if (!ResolveCommmandAssembly(commandAssembly))
                         return false;
+                }
+            }
+
+            if (protocolConfig != null && protocolConfig.Commands != null)
+            {
+                foreach (var commandConfig in protocolConfig.Commands)
+                {
+                    var assembly = commandConfig.Options.GetValue("assembly");
+
+                    if (!string.IsNullOrEmpty(assembly))
+                    {
+                        if (!ResolveCommmandAssembly(assembly))
+                            return false;
                     }
                 }
             }
 
+            //Always discover commands
             DiscoverCommands();
 
             return true;
@@ -148,12 +163,10 @@ namespace SuperWebSocket.SubProtocol
             }
         }
 
-        public bool TryGetCommand(string name, out ISubCommand<TWebSocketSession> command)
+        public override bool TryGetCommand(string name, out ISubCommand<TWebSocketSession> command)
         {
             return m_CommandDict.TryGetValue(name, out command);
         }
-
-        public string Name { get; private set; }
 
         #endregion
     }

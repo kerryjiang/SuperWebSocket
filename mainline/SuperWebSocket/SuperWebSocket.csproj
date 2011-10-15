@@ -62,6 +62,10 @@
     <Compile Include="Command\Ping.cs" />
     <Compile Include="Command\Pong.cs" />
     <Compile Include="Command\Text.cs" />
+    <Compile Include="Config\CommandConfig.cs" />
+    <Compile Include="Config\CommandConfigCollection.cs" />
+    <Compile Include="Config\SubProtocolConfig.cs" />
+    <Compile Include="Config\SubProtocolConfigCollection.cs" />
     <Compile Include="Protocol\DataFramePartReader.cs" />
     <Compile Include="Protocol\DraftHybi00Processor.cs" />
     <Compile Include="Protocol\DraftHybi10Processor.cs" />
@@ -77,6 +81,7 @@
     <Compile Include="SubProtocol\ISubProtocol.cs" />
     <Compile Include="SubProtocol\JsonSubCommand.cs" />
     <Compile Include="SubProtocol\SubCommandBase.cs" />
+    <Compile Include="SubProtocol\SubProtocolBase.cs" />
     <Compile Include="WebSocketCommandInfo.cs" />
     <Compile Include="WebSocketConst.cs" />
     <Compile Include="WebSocketProtocol.cs" />

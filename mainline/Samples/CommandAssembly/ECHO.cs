@@ -15,10 +15,7 @@ namespace SuperWebSocket.Samples.CommandAssembly
     {
         public override void ExecuteCommand(WebSocketSession session, StringCommandInfo commandInfo)
         {
-            foreach (var p in commandInfo.Parameters)
-            {
-                session.SendResponse(p);
-            }
+            session.SendResponse(commandInfo.Data);
         }
     }
 }

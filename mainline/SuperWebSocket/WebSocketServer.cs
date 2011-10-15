@@ -16,6 +16,7 @@ using SuperSocket.SocketBase.Protocol;
 using SuperWebSocket.Protocol;
 using SuperWebSocket.SubProtocol;
 using SuperWebSocket.Command;
+using SuperWebSocket.Config;
 
 namespace SuperWebSocket
 {
@@ -45,7 +46,7 @@ namespace SuperWebSocket
         }
 
         public WebSocketServer()
-            : base(new List<ISubProtocol<WebSocketSession>> { new BasicSubProtocol() })
+            : base(new List<ISubProtocol<WebSocketSession>>())
         {
 
         }
@@ -57,7 +58,11 @@ namespace SuperWebSocket
         public WebSocketServer(IEnumerable<ISubProtocol<TWebSocketSession>> subProtocols)
             : this()
         {
-            m_SubProtocols = subProtocols.ToDictionary(p => p.Name, StringComparer.OrdinalIgnoreCase); ;
+            foreach (var protocol in subProtocols)
+            {
+                if (!RegisterSubProtocol(protocol))
+                    throw new Exception("Failed to register sub protocol!");
+            }
         }
 
         public WebSocketServer(ISubProtocol<TWebSocketSession> subProtocol)
@@ -72,7 +77,7 @@ namespace SuperWebSocket
 
         }
 
-        private Dictionary<string, ISubProtocol<TWebSocketSession>> m_SubProtocols;
+        private Dictionary<string, ISubProtocol<TWebSocketSession>> m_SubProtocols = new Dictionary<string, ISubProtocol<TWebSocketSession>>(StringComparer.OrdinalIgnoreCase);
 
         internal ISubProtocol<TWebSocketSession> DefaultSubProtocol { get; private set; }
 
@@ -113,58 +118,102 @@ namespace SuperWebSocket
             }
         }
 
+        bool RegisterSubProtocol(ISubProtocol<TWebSocketSession> subProtocol)
+        {
+            if (m_SubProtocols.ContainsKey(subProtocol.Name))
+            {
+                Logger.LogError(string.Format("Cannot register duplicate name sub protocol! Duplicate name: {0}.", subProtocol.Name));
+                return false;
+            }
+
+            m_SubProtocols.Add(subProtocol.Name, subProtocol);
+            return true;
+        }
+
         private bool SetupSubProtocols(IServerConfig config)
         {
-            string subProtocolValue = config.Options.GetValue("subProtocol");
+            //Preparing sub protocols' configuration
+            var subProtocolConfigSection = config.GetChildConfig<SubProtocolConfigCollection>("subProtocols");
 
-            if (!string.IsNullOrEmpty(subProtocolValue))
+            var subProtocolConfigDict = new Dictionary<string, SubProtocolConfig>(subProtocolConfigSection == null ? 0 : subProtocolConfigSection.Count, StringComparer.OrdinalIgnoreCase);
+
+            if (subProtocolConfigSection != null)
             {
-                var subProtocolTypes = subProtocolValue.Split(new char[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToArray();
-
-                if (subProtocolTypes != null && subProtocolTypes.Length > 0 && m_SubProtocols == null)
+                foreach (var protocolConfig in subProtocolConfigSection)
                 {
-                    m_SubProtocols = new Dictionary<string, ISubProtocol<TWebSocketSession>>(subProtocolTypes.Length, StringComparer.OrdinalIgnoreCase);
-                }
+                    string originalProtocolName = protocolConfig.Name;
+                    string protocolName;
+                    ISubProtocol<TWebSocketSession> subProtocolInstance;
 
-                foreach (var t in subProtocolTypes)
-                {
-                    ISubProtocol<TWebSocketSession> subProtocol;
-
-                    if (!AssemblyUtil.TryCreateInstance<ISubProtocol<TWebSocketSession>>(t, out subProtocol))
-                        return false;
-
-                    if (m_SubProtocols.ContainsKey(subProtocol.Name))
+                    if (!string.IsNullOrEmpty(protocolConfig.Name))
                     {
-                        Logger.LogError(string.Format("This sub protocol '{0}' has been defined! You cannot define duplicated sub protocols!", subProtocol.Name));
-                        return false;
+                        protocolName = protocolConfig.Name;
+
+                        if (!string.IsNullOrEmpty(protocolConfig.Type))
+                        {
+                            Exception exception;
+                            if (!AssemblyUtil.TryCreateInstance<ISubProtocol<TWebSocketSession>>(protocolConfig.Type, new object[] { protocolConfig.Name }, out subProtocolInstance, out exception))
+                                return false;
+
+                            if (!RegisterSubProtocol(subProtocolInstance))
+                                return false;
+                        }
+                        else
+                        {
+                            if (!m_SubProtocols.ContainsKey(protocolName))
+                            {
+                                subProtocolInstance = new BasicSubProtocol<TWebSocketSession>(protocolName);
+
+                                if (!RegisterSubProtocol(subProtocolInstance))
+                                    return false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        protocolName = BasicSubProtocol<TWebSocketSession>.DefaultName;
+
+                        if (!string.IsNullOrEmpty(protocolConfig.Type))
+                        {
+                            Logger.LogError("You needn't set Type attribute for SubProtocol, if you don't set Name attribute!");
+                            return false;
+                        }
                     }
 
-                    m_SubProtocols.Add(subProtocol.Name, subProtocol);
+                    subProtocolConfigDict[protocolName] = protocolConfig;
                 }
             }
 
+            if (m_SubProtocols.Count <= 0 || (subProtocolConfigDict.ContainsKey(BasicSubProtocol<TWebSocketSession>.DefaultName) && m_SubProtocols.ContainsKey(BasicSubProtocol<TWebSocketSession>.DefaultName)))
+            {
+                if (!RegisterSubProtocol(BasicSubProtocol<TWebSocketSession>.DefaultInstance))
+                    return false;
+            }
+
+            //Initialize sub protocols
             foreach (var subProtocol in m_SubProtocols.Values)
             {
-                if (!subProtocol.Initialize(config))
+                SubProtocolConfig protocolConfig = null;
+
+                subProtocolConfigDict.TryGetValue(subProtocol.Name, out protocolConfig);
+
+                if (!subProtocol.Initialize(config, protocolConfig))
                 {
                     Logger.LogError(string.Format("Failed to initialize the sub protocol '{0}'!", subProtocol.Name));
                     return false;
                 }
             }
-
+            
             return true;
         }
 
         public override bool Setup(IRootConfig rootConfig, IServerConfig config, ISocketServerFactory socketServerFactory, ICustomProtocol<WebSocketCommandInfo> protocol)
         {
-            if (!SetupSubProtocols(config))
+            if (!base.Setup(rootConfig, config, socketServerFactory, protocol))
                 return false;
 
             if (m_SubProtocols != null && m_SubProtocols.Count > 0)
                 DefaultSubProtocol = m_SubProtocols.Values.FirstOrDefault();
-
-            if (!base.Setup(rootConfig, config, socketServerFactory, protocol))
-                return false;
 
             if (string.IsNullOrEmpty(config.Security) || "none".Equals(config.Security, StringComparison.OrdinalIgnoreCase))
                 m_UriScheme = "ws";
@@ -324,6 +373,9 @@ namespace SuperWebSocket
             catch
             {
             }
+
+            if (!SetupSubProtocols(Config))
+                return false;
 
             return true;
         }

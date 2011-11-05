@@ -58,7 +58,17 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\WebSocketClient\WebSocket.cs">
+      <Link>WebSocket.cs</Link>
+    </Compile>
+    <Compile Include="..\WebSocketClient\WebSocketCommandInfo.cs">
+      <Link>WebSocketCommandInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\WebSocketClient\WebSocketContext.cs">
+      <Link>WebSocketContext.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebSocket.Silverlight.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <ProjectExtensions>

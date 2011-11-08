@@ -64,6 +64,9 @@
     <Compile Include="..\WebSocketClient\WebSocketCommandInfo.cs">
       <Link>WebSocketCommandInfo.cs</Link>
     </Compile>
+    <Compile Include="..\WebSocketClient\WebSocketCommandReader.cs">
+      <Link>WebSocketCommandReader.cs</Link>
+    </Compile>
     <Compile Include="..\WebSocketClient\WebSocketContext.cs">
       <Link>WebSocketContext.cs</Link>
     </Compile>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using SuperSocket.ClientEngine;
+using System.Net;
 
 namespace SuperWebSocket.WebSocketClient
 {
@@ -35,6 +36,15 @@ namespace SuperWebSocket.WebSocketClient
             {
                 throw new ArgumentException("Invalid websocket address's schema.", "uri");
             }
+
+            IPAddress ipAddress;
+
+            if (IPAddress.TryParse(targetUri.Host, out ipAddress))
+                RemoteEndPoint = new IPEndPoint(ipAddress, targetUri.Port);
+            else
+                RemoteEndPoint = new DnsEndPoint(targetUri.Host, targetUri.Port);
+
+            Connect();
         }
     }
 }

@@ -58,6 +58,39 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\WebSocketClient\Command\Binary.cs">
+      <Link>Command\Binary.cs</Link>
+    </Compile>
+    <Compile Include="..\WebSocketClient\Command\Close.cs">
+      <Link>Command\Close.cs</Link>
+    </Compile>
+    <Compile Include="..\WebSocketClient\Command\Pong.cs">
+      <Link>Command\Pong.cs</Link>
+    </Compile>
+    <Compile Include="..\WebSocketClient\Command\Text.cs">
+      <Link>Command\Text.cs</Link>
+    </Compile>
+    <Compile Include="..\WebSocketClient\Command\WebSocketCommandBase.cs">
+      <Link>Command\WebSocketCommandBase.cs</Link>
+    </Compile>
+    <Compile Include="..\WebSocketClient\OpCode.cs">
+      <Link>OpCode.cs</Link>
+    </Compile>
+    <Compile Include="..\WebSocketClient\Protocol\DraftHybi00Processor.cs">
+      <Link>Protocol\DraftHybi00Processor.cs</Link>
+    </Compile>
+    <Compile Include="..\WebSocketClient\Protocol\DraftHybi10Processor.cs">
+      <Link>Protocol\DraftHybi10Processor.cs</Link>
+    </Compile>
+    <Compile Include="..\WebSocketClient\Protocol\IProtocolProcessor.cs">
+      <Link>Protocol\IProtocolProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\WebSocketClient\Reader\HandshakeReader.cs">
+      <Link>Reader\HandshakeReader.cs</Link>
+    </Compile>
+    <Compile Include="..\WebSocketClient\Reader\ReaderBase.cs">
+      <Link>Reader\ReaderBase.cs</Link>
+    </Compile>
     <Compile Include="..\WebSocketClient\WebSocket.cs">
       <Link>WebSocket.cs</Link>
     </Compile>
@@ -69,6 +102,9 @@
     </Compile>
     <Compile Include="..\WebSocketClient\WebSocketContext.cs">
       <Link>WebSocketContext.cs</Link>
+    </Compile>
+    <Compile Include="..\WebSocketClient\WebSocketVersion.cs">
+      <Link>WebSocketVersion.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebSocket.Silverlight.cs" />

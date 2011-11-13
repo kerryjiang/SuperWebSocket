@@ -2,29 +2,33 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SuperWebSocket.WebSocketClient.Reader;
 using SuperSocket.ClientEngine;
 
 namespace SuperWebSocket.WebSocketClient.Protocol
 {
     class DraftHybi10Processor : IProtocolProcessor
     {
-        public HandshakeReader CreateHandshakeReader()
+        public void SendHandshake(WebSocket websocket)
         {
             throw new NotImplementedException();
         }
 
-        public void SendMessage(IClientSession session, string message)
+        public ReaderBase CreateHandshakeReader()
         {
             throw new NotImplementedException();
         }
 
-        public void SendCloseHandshake(IClientSession session, string closeReason)
+        public void SendMessage(WebSocket websocket, string message)
         {
             throw new NotImplementedException();
         }
 
-        public void SendPing(IClientSession session, string ping)
+        public void SendCloseHandshake(WebSocket websocket, string closeReason)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SendPing(WebSocket websocket, string ping)
         {
             throw new NotImplementedException();
         }

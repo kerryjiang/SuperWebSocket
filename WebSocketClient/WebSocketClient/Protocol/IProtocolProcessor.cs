@@ -2,19 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SuperWebSocket.WebSocketClient.Reader;
 using SuperSocket.ClientEngine;
 
 namespace SuperWebSocket.WebSocketClient.Protocol
 {
-    interface IProtocolProcessor
+    public interface IProtocolProcessor
     {
-        HandshakeReader CreateHandshakeReader();
+        void SendHandshake(WebSocket websocket);
 
-        void SendMessage(IClientSession session, string message);
+        ReaderBase CreateHandshakeReader();
 
-        void SendCloseHandshake(IClientSession session, string closeReason);
+        void SendMessage(WebSocket websocket, string message);
 
-        void SendPing(IClientSession session, string ping);
+        void SendCloseHandshake(WebSocket websocket, string closeReason);
+
+        void SendPing(WebSocket websocket, string ping);
     }
 }

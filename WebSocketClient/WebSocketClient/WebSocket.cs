@@ -13,7 +13,13 @@ namespace SuperWebSocket.WebSocketClient
     {
         public WebSocketVersion Version { get; private set; }
 
-        private IProtocolProcessor m_ProtocolProcessor;
+        public DateTime LastActiveTime { get; internal set; }
+
+        internal IProtocolProcessor ProtocolProcessor { get; private set; }
+
+        internal Uri TargetUri { get; private set; }
+
+        internal string SubProtocol { get; private set; }
 
         public WebSocket(string uri)
             : this(uri, string.Empty)
@@ -34,34 +40,41 @@ namespace SuperWebSocket.WebSocketClient
         }
 
         public WebSocket(string uri, string subProtocol, WebSocketVersion version)
-            : base(new WebSocketCommandReader(), new List<Assembly> { typeof(WebSocket).Assembly })
+            : this(uri, subProtocol, GetProtocolProcessor(version))
         {
             Version = version;
-            m_ProtocolProcessor = GetProtocolProcessor(version);
+        }
 
-            var targetUri = new Uri(uri);
+        public WebSocket(string uri, string subProtocol, IProtocolProcessor protocolProcessor)
+            : base(protocolProcessor.CreateHandshakeReader(), new List<Assembly> { typeof(WebSocket).Assembly })
+        {
+            ProtocolProcessor = protocolProcessor;
 
-            if ("wss".Equals(targetUri.Scheme, StringComparison.OrdinalIgnoreCase))
+            TargetUri = new Uri(uri);
+
+            SubProtocol = subProtocol;
+
+            if ("wss".Equals(TargetUri.Scheme, StringComparison.OrdinalIgnoreCase))
             {
                 throw new ArgumentException("SuperWebSocket cannot support wss yet.", "uri");
             }
 
-            if (!"ws".Equals(targetUri.Scheme, StringComparison.OrdinalIgnoreCase))
+            if (!"ws".Equals(TargetUri.Scheme, StringComparison.OrdinalIgnoreCase))
             {
                 throw new ArgumentException("Invalid websocket address's schema.", "uri");
             }
 
             IPAddress ipAddress;
 
-            if (IPAddress.TryParse(targetUri.Host, out ipAddress))
-                RemoteEndPoint = new IPEndPoint(ipAddress, targetUri.Port);
+            if (IPAddress.TryParse(TargetUri.Host, out ipAddress))
+                RemoteEndPoint = new IPEndPoint(ipAddress, TargetUri.Port);
             else
-                RemoteEndPoint = new DnsEndPoint(targetUri.Host, targetUri.Port);
+                RemoteEndPoint = new DnsEndPoint(TargetUri.Host, TargetUri.Port);
 
             Connect();
         }
 
-        private IProtocolProcessor GetProtocolProcessor(WebSocketVersion version)
+        private static IProtocolProcessor GetProtocolProcessor(WebSocketVersion version)
         {
             switch (version)
             {
@@ -72,6 +85,16 @@ namespace SuperWebSocket.WebSocketClient
             }
 
             throw new ArgumentException("Invalid websocket version");
+        }
+
+        protected override void OnConnected()
+        {
+            ProtocolProcessor.SendHandshake(this);
+        }
+
+        protected virtual void OnHandshaked()
+        {
+
         }
     }
 }

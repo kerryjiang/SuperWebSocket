@@ -8,9 +8,9 @@ namespace SuperWebSocket.WebSocketClient.Command
 {
     public class Close : WebSocketCommandBase
     {
-        public override void ExecuteCommand(IClientSession<WebSocketCommandInfo, WebSocketContext> session, WebSocketCommandInfo commandInfo)
+        public override void ExecuteCommand(WebSocket session, WebSocketCommandInfo commandInfo)
         {
-            throw new NotImplementedException();
+            session.Close();
         }
 
         public override string Name

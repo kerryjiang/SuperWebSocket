@@ -5,9 +5,9 @@ using System.Text;
 using SuperSocket.ClientEngine;
 using SuperSocket.Common;
 
-namespace SuperWebSocket.WebSocketClient.Reader
+namespace SuperWebSocket.WebSocketClient.Protocol
 {
-    abstract class ReaderBase : IClientCommandReader<WebSocketCommandInfo>
+    public abstract class ReaderBase : IClientCommandReader<WebSocketCommandInfo>
     {
         private readonly ArraySegmentList<byte> m_BufferSegments;
 

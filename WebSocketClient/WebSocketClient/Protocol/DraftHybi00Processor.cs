@@ -6,7 +6,7 @@ using SuperSocket.ClientEngine;
 
 namespace SuperWebSocket.WebSocketClient.Protocol
 {
-    class DraftHybi00Processor : IProtocolProcessor
+    class DraftHybi00Processor : ProtocolProcessorBase
     {
         private static List<char> m_CharLib = new List<char>();
         private static List<char> m_DigLib = new List<char>();
@@ -25,27 +25,27 @@ namespace SuperWebSocket.WebSocketClient.Protocol
             }
         }
 
-        public ReaderBase CreateHandshakeReader()
+        public override ReaderBase CreateHandshakeReader()
+        {
+            return new DraftHybi00HandshakeReader(WebSocket);
+        }
+
+        public override void SendMessage(string message)
         {
             throw new NotImplementedException();
         }
 
-        public void SendMessage(WebSocket websocket, string message)
+        public override void SendCloseHandshake(string closeReason)
         {
             throw new NotImplementedException();
         }
 
-        public void SendCloseHandshake(WebSocket websocket, string closeReason)
+        public override void SendPing(string ping)
         {
             throw new NotImplementedException();
         }
 
-        public void SendPing(WebSocket websocket, string ping)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SendHandshake(WebSocket websocket)
+        public override void SendHandshake()
         {
             string secKey1 = Encoding.UTF8.GetString(GenerateSecKey());
 
@@ -56,27 +56,27 @@ namespace SuperWebSocket.WebSocketClient.Protocol
             var handshakeBuilder = new StringBuilder();
 
 #if SILVERLIGHT
-            handshakeBuilder.AppendLine(string.Format("GET {0} HTTP/1.1", websocket.TargetUri.GetPathAndQuery()));
+            handshakeBuilder.AppendLine(string.Format("GET {0} HTTP/1.1", WebSocket.TargetUri.GetPathAndQuery()));
 #else
-            handshakeBuilder.AppendLine(string.Format("GET {0} HTTP/1.1", websocket.TargetUri.PathAndQuery));
+            handshakeBuilder.AppendLine(string.Format("GET {0} HTTP/1.1", WebSocket.TargetUri.PathAndQuery));
 #endif
 
             handshakeBuilder.AppendLine("Upgrade: WebSocket");
             handshakeBuilder.AppendLine("Connection: Upgrade");
             handshakeBuilder.AppendLine(string.Format("Sec-WebSocket-Key1: {0}", secKey1));
             handshakeBuilder.AppendLine(string.Format("Sec-WebSocket-Key2: {0}", secKey2));
-            handshakeBuilder.AppendLine(string.Format("Host: {0}", websocket.TargetUri.Host));
-            handshakeBuilder.AppendLine(string.Format("Origin: {0}", websocket.TargetUri.Host));
+            handshakeBuilder.AppendLine(string.Format("Host: {0}", WebSocket.TargetUri.Host));
+            handshakeBuilder.AppendLine(string.Format("Origin: {0}", WebSocket.TargetUri.Host));
 
-            if (!string.IsNullOrEmpty(websocket.SubProtocol))
-                handshakeBuilder.AppendLine(string.Format("Sec-WebSocket-Protocol: {0}", websocket.SubProtocol));
+            if (!string.IsNullOrEmpty(WebSocket.SubProtocol))
+                handshakeBuilder.AppendLine(string.Format("Sec-WebSocket-Protocol: {0}", WebSocket.SubProtocol));
 
             handshakeBuilder.AppendLine();
             handshakeBuilder.Append(Encoding.UTF8.GetString(secKey3, 0, secKey3.Length));
 
             byte[] handshakeBuffer = Encoding.UTF8.GetBytes(handshakeBuilder.ToString());
 
-            websocket.Send(handshakeBuffer, 0, handshakeBuffer.Length);
+            WebSocket.Send(handshakeBuffer, 0, handshakeBuffer.Length);
         }
 
         private byte[] GenerateSecKey()

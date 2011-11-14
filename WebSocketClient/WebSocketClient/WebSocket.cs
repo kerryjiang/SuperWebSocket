@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -20,6 +22,8 @@ namespace SuperWebSocket.WebSocketClient
         internal Uri TargetUri { get; private set; }
 
         internal string SubProtocol { get; private set; }
+
+        internal IDictionary<object, object> Items { get; private set; }
 
         public WebSocket(string uri)
             : this(uri, string.Empty)
@@ -49,10 +53,13 @@ namespace SuperWebSocket.WebSocketClient
             : base(protocolProcessor.CreateHandshakeReader(), new List<Assembly> { typeof(WebSocket).Assembly })
         {
             ProtocolProcessor = protocolProcessor;
+            ProtocolProcessor.Initialize(this);
 
             TargetUri = new Uri(uri);
 
             SubProtocol = subProtocol;
+
+            Items = new Dictionary<object, object>();
 
             if ("wss".Equals(TargetUri.Scheme, StringComparison.OrdinalIgnoreCase))
             {
@@ -89,7 +96,7 @@ namespace SuperWebSocket.WebSocketClient
 
         protected override void OnConnected()
         {
-            ProtocolProcessor.SendHandshake(this);
+            ProtocolProcessor.SendHandshake();
         }
 
         protected virtual void OnHandshaked()

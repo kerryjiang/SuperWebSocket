@@ -58,6 +58,9 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\WebSocketClient\BinaryUtil.cs">
+      <Link>BinaryUtil.cs</Link>
+    </Compile>
     <Compile Include="..\WebSocketClient\Command\Binary.cs">
       <Link>Command\Binary.cs</Link>
     </Compile>
@@ -76,20 +79,29 @@
     <Compile Include="..\WebSocketClient\OpCode.cs">
       <Link>OpCode.cs</Link>
     </Compile>
+    <Compile Include="..\WebSocketClient\Protocol\DraftHybi00HandshakeReader.cs">
+      <Link>Protocol\DraftHybi00HandshakeReader.cs</Link>
+    </Compile>
     <Compile Include="..\WebSocketClient\Protocol\DraftHybi00Processor.cs">
       <Link>Protocol\DraftHybi00Processor.cs</Link>
+    </Compile>
+    <Compile Include="..\WebSocketClient\Protocol\DraftHybi10HandshakeReader.cs">
+      <Link>Protocol\DraftHybi10HandshakeReader.cs</Link>
     </Compile>
     <Compile Include="..\WebSocketClient\Protocol\DraftHybi10Processor.cs">
       <Link>Protocol\DraftHybi10Processor.cs</Link>
     </Compile>
+    <Compile Include="..\WebSocketClient\Protocol\HandshakeReader.cs">
+      <Link>Protocol\HandshakeReader.cs</Link>
+    </Compile>
     <Compile Include="..\WebSocketClient\Protocol\IProtocolProcessor.cs">
       <Link>Protocol\IProtocolProcessor.cs</Link>
     </Compile>
-    <Compile Include="..\WebSocketClient\Reader\HandshakeReader.cs">
-      <Link>Reader\HandshakeReader.cs</Link>
+    <Compile Include="..\WebSocketClient\Protocol\ProtocolProcessorBase.cs">
+      <Link>Protocol\ProtocolProcessorBase.cs</Link>
     </Compile>
-    <Compile Include="..\WebSocketClient\Reader\ReaderBase.cs">
-      <Link>Reader\ReaderBase.cs</Link>
+    <Compile Include="..\WebSocketClient\Protocol\ReaderBase.cs">
+      <Link>Protocol\ReaderBase.cs</Link>
     </Compile>
     <Compile Include="..\WebSocketClient\WebSocket.cs">
       <Link>WebSocket.cs</Link>
@@ -106,6 +118,9 @@
     <Compile Include="..\WebSocketClient\WebSocketVersion.cs">
       <Link>WebSocketVersion.cs</Link>
     </Compile>
+    <Compile Include="Extensions.cs" />
+    <Compile Include="MD5.cs" />
+    <Compile Include="MD5Managed.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebSocket.Silverlight.cs" />
   </ItemGroup>

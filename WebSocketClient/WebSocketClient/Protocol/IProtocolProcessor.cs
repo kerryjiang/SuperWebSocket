@@ -8,14 +8,16 @@ namespace SuperWebSocket.WebSocketClient.Protocol
 {
     public interface IProtocolProcessor
     {
-        void SendHandshake(WebSocket websocket);
+        void Initialize(WebSocket websocket);
+
+        void SendHandshake();
 
         ReaderBase CreateHandshakeReader();
 
-        void SendMessage(WebSocket websocket, string message);
+        void SendMessage(string message);
 
-        void SendCloseHandshake(WebSocket websocket, string closeReason);
+        void SendCloseHandshake(string closeReason);
 
-        void SendPing(WebSocket websocket, string ping);
+        void SendPing(string ping);
     }
 }

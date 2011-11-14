@@ -9,6 +9,13 @@ namespace SuperWebSocket.WebSocketClient.Protocol
 {
     public abstract class ReaderBase : IClientCommandReader<WebSocketCommandInfo>
     {
+        protected WebSocket WebSocket { get; private set; }
+
+        public ReaderBase(WebSocket websocket)
+        {
+            WebSocket = websocket;
+        }
+
         private readonly ArraySegmentList<byte> m_BufferSegments;
 
         /// <summary>

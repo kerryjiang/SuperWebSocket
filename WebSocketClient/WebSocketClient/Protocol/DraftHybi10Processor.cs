@@ -6,29 +6,29 @@ using SuperSocket.ClientEngine;
 
 namespace SuperWebSocket.WebSocketClient.Protocol
 {
-    class DraftHybi10Processor : IProtocolProcessor
+    class DraftHybi10Processor : ProtocolProcessorBase
     {
-        public void SendHandshake(WebSocket websocket)
+        public override void SendHandshake()
         {
             throw new NotImplementedException();
         }
 
-        public ReaderBase CreateHandshakeReader()
+        public override ReaderBase CreateHandshakeReader()
+        {
+            return new DraftHybi10HandshakeReader(WebSocket);
+        }
+
+        public override void SendMessage(string message)
         {
             throw new NotImplementedException();
         }
 
-        public void SendMessage(WebSocket websocket, string message)
+        public override void SendCloseHandshake(string closeReason)
         {
             throw new NotImplementedException();
         }
 
-        public void SendCloseHandshake(WebSocket websocket, string closeReason)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SendPing(WebSocket websocket, string ping)
+        public override void SendPing(string ping)
         {
             throw new NotImplementedException();
         }

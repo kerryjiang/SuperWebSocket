@@ -67,6 +67,9 @@
     <Compile Include="..\WebSocketClient\Command\Close.cs">
       <Link>Command\Close.cs</Link>
     </Compile>
+    <Compile Include="..\WebSocketClient\Command\Handshake.cs">
+      <Link>Command\Handshake.cs</Link>
+    </Compile>
     <Compile Include="..\WebSocketClient\Command\Pong.cs">
       <Link>Command\Pong.cs</Link>
     </Compile>

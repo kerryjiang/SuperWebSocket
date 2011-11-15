@@ -7,13 +7,20 @@ namespace SuperWebSocket.WebSocketClient.Protocol
 {
     class HandshakeReader : ReaderBase
     {
+        static HandshakeReader()
+        {
+            DefaultHandshakeCommandInfo = new WebSocketCommandInfo();
+        }
+
         public HandshakeReader(WebSocket websocket)
             : base(websocket)
         {
 
         }
 
-        private static readonly byte[] m_HeaderTerminator = Encoding.UTF8.GetBytes(Environment.NewLine + Environment.NewLine);
+        protected static readonly byte[] HeaderTerminator = Encoding.UTF8.GetBytes(Environment.NewLine + Environment.NewLine);
+
+        protected static WebSocketCommandInfo DefaultHandshakeCommandInfo { get; private set; }
 
         public override WebSocketCommandInfo GetCommandInfo(byte[] readBuffer, int offset, int length, out int left)
         {
@@ -21,7 +28,7 @@ namespace SuperWebSocket.WebSocketClient.Protocol
 
             this.AddArraySegment(readBuffer, offset, length);
 
-            int? result = BufferSegments.SearchMark(m_HeaderTerminator);
+            int? result = BufferSegments.SearchMark(HeaderTerminator);
 
             if (!result.HasValue || result.Value <= 0)
                 return null;
@@ -33,7 +40,7 @@ namespace SuperWebSocket.WebSocketClient.Protocol
             left = BufferSegments.Count - result.Value;
             BufferSegments.ClearSegements();
 
-            return new WebSocketCommandInfo();
+            return DefaultHandshakeCommandInfo;
         }
 
         private void ParseHandshake(string handshake)

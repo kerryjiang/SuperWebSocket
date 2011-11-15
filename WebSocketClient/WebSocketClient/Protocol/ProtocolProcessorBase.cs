@@ -18,6 +18,8 @@ namespace SuperWebSocket.WebSocketClient.Protocol
 
         public abstract ReaderBase CreateHandshakeReader();
 
+        public abstract bool VerifyHandshake(WebSocketCommandInfo handshakeInfo);
+
         public abstract void SendMessage(string message);
 
         public abstract void SendCloseHandshake(string closeReason);

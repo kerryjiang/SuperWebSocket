@@ -32,5 +32,10 @@ namespace SuperWebSocket.WebSocketClient.Protocol
         {
             throw new NotImplementedException();
         }
+
+        public override bool VerifyHandshake(WebSocketCommandInfo handshakeInfo)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

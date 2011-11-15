@@ -12,6 +12,8 @@ namespace SuperWebSocket.WebSocketClient.Protocol
 
         void SendHandshake();
 
+        bool VerifyHandshake(WebSocketCommandInfo handshakeInfo);
+
         ReaderBase CreateHandshakeReader();
 
         void SendMessage(string message);

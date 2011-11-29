@@ -101,12 +101,20 @@ namespace SuperWebSocket.Client
 
             string[] hostInfo = host.Split(':');
 
-            if (hostInfo.Length != 2)
+            if (hostInfo.Length < 1 || hostInfo.Length > 2)
                 throw new ArgumentException("Invalid websocket address!");
 
             int port;
-            if (!int.TryParse(hostInfo[1], out port))
-                throw new ArgumentException("Invalid websocket address!");
+
+            if (hostInfo.Length > 1)
+            {
+                if (!int.TryParse(hostInfo[1], out port))
+                    throw new ArgumentException("Invalid websocket address!");
+            }
+            else
+            {
+                port = 80;
+            }
 
             m_Host = hostInfo[0];
 

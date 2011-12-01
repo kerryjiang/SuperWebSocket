@@ -35,9 +35,9 @@ namespace SuperWebSocketWeb
 
         void OnSecureSocketPushTimerCallback(object state)
         {
-            lock (m_SessionSyncRoot)
+            lock (m_SecureSessionSyncRoot)
             {
-                m_Sessions.ForEach(s => s.SendResponseAsync("Push data from WebSocket. Current Time: " + DateTime.Now));
+                m_SecureSessions.ForEach(s => s.SendResponseAsync("Push data from WebSocket. Current Time: " + DateTime.Now));
             }
         }
 

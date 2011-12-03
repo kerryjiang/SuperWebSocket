@@ -1,0 +1,42 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" ActiveRuntime="Mono 2.10.6" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="..\..\SuperSocket\v1.4\Test\SecureSocketServerTest.cs">
+    <Files>
+      <File FileName="..\..\SuperSocket\v1.4\SocketEngine\SocketServerFactory.cs" Line="43" Column="36" />
+      <File FileName="..\..\SuperSocket\v1.4\Test\Common\ArraySegmentTest.cs" Line="1" Column="1" />
+      <File FileName="..\..\SuperSocket\v1.4\Test\Common\PerformanceTest.cs" Line="1" Column="1" />
+      <File FileName="..\..\SuperSocket\v1.4\SocketBase\ISocketSession.cs" Line="1" Column="1" />
+      <File FileName="..\..\SuperSocket\v1.4\SocketEngine\AsyncSocketSession.cs" Line="1" Column="1" />
+      <File FileName="..\..\SuperSocket\v1.4\SocketEngine\AsyncStreamSocketSession.cs" Line="1" Column="1" />
+      <File FileName="..\..\SuperSocket\v1.4\SocketEngine\SyncSocketSession.cs" Line="1" Column="1" />
+      <File FileName="..\..\SuperSocket\v1.4\SocketEngine\UdpSocketSession.cs" Line="1" Column="1" />
+      <File FileName="..\..\SuperSocket\v1.4\SocketEngine\SocketSession.cs" Line="1" Column="1" />
+      <File FileName="..\..\SuperSocket\v1.4\Test\Command\RECEL.cs" Line="1" Column="1" />
+      <File FileName="..\..\SuperSocket\v1.4\Test\Command\RECEM.cs" Line="1" Column="1" />
+      <File FileName="..\..\SuperSocket\v1.4\Test\AsyncSecureSocketServerTest.cs" Line="1" Column="1" />
+      <File FileName="..\..\SuperSocket\v1.4\SocketBase\IAppSession.cs" Line="1" Column="1" />
+      <File FileName="..\..\SuperSocket\v1.4\SocketBase\AppSession.cs" Line="1" Column="1" />
+      <File FileName="..\..\SuperSocket\v1.4\SocketEngine\UdpSocketServer.cs" Line="1" Column="1" />
+      <File FileName="..\..\SuperSocket\v1.4\SocketBase\AppServerBase.cs" Line="1" Column="1" />
+      <File FileName="..\..\SuperSocket\v1.4\Test\SecureSocketServerTest.cs" Line="44" Column="3" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True" selected="True" />
+      </Pad>
+      <Pad Id="ClassPad">
+        <State expanded="True" selected="True" />
+      </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State />
+      </Pad>
+      <Pad Id="MonoDevelop.NUnit.TestPad">
+        <State expanded="True" selected="True" />
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

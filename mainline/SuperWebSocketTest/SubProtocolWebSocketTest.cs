@@ -64,8 +64,6 @@ namespace SuperWebSocketTest
                 parameters.Add(p);
             }
 
-            string messageSource = sb.ToString();
-
             stream.Write(new byte[] { WebSocketConstant.StartByte }, 0, 1);
             byte[] data = Encoding.UTF8.GetBytes(sb.ToString());
             stream.Write(data, 0, data.Length);

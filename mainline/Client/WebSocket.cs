@@ -163,7 +163,11 @@ namespace SuperWebSocket.Client
 #if NET35
             //Do nothing
 #else
-            m_Socket = e.ConnectSocket;
+			#if MONO
+			//Do nothing
+			#else
+				m_Socket = e.ConnectSocket;
+			#endif
 #endif
             SendHandShake();
         }
@@ -307,9 +311,17 @@ namespace SuperWebSocket.Client
 #if NET35
             m_Socket = new Socket(m_RemoteEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             m_Socket.ConnectAsync(m_ReceiveAsyncEventArgs);
+			return;
 #else
-            if (!Socket.ConnectAsync(SocketType.Stream, ProtocolType.Tcp, m_ReceiveAsyncEventArgs))
-                ProcessConnect(m_ReceiveAsyncEventArgs);
+	#if MONO
+			
+
+			m_Socket = new Socket(m_RemoteEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            m_Socket.ConnectAsync(m_ReceiveAsyncEventArgs);
+	#else
+			if (!Socket.ConnectAsync(SocketType.Stream, ProtocolType.Tcp, m_ReceiveAsyncEventArgs))
+                ProcessConnect(m_ReceiveAsyncEventArgs);			
+	#endif
 #endif
         }
 

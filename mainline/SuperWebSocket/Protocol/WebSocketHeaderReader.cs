@@ -12,7 +12,7 @@ namespace SuperWebSocket.Protocol
 {
     public class WebSocketHeaderReader : WebSocketReaderBase
     {
-        private static readonly byte[] m_HeaderTerminator = Encoding.UTF8.GetBytes(Environment.NewLine + Environment.NewLine);
+        private static readonly byte[] m_HeaderTerminator = Encoding.UTF8.GetBytes("\r\n\r\n");
 
         public WebSocketHeaderReader(IAppServer server)
             : base(server)

@@ -65,14 +65,14 @@ namespace SuperWebSocket.Protocol
                 //Read SecWebSocketKey3(8 bytes)
                 if (left == 8)
                 {
-                    webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = readBuffer.Skip(offset + length - left).Take(left).ToArray();
+                    webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = readBuffer.CloneRange(offset + length - left, left);
                     left = 0;
                     Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession);
                     return HandshakeCommandInfo;
                 }
                 else if (left > 8)
                 {
-                    webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = readBuffer.Skip(offset + length - left).Take(8).ToArray();
+                    webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = readBuffer.CloneRange(offset + length - left, 8);
                     left -= 8;
                     Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession);
                     return HandshakeCommandInfo;

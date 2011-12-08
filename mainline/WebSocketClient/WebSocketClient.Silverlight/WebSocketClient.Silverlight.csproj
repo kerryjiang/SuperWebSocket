@@ -48,7 +48,7 @@
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="SuperSocket.ClientEngine.Silverlight">
-      <HintPath>..\References\SuperSocket.ClientEngine\Debug\SuperSocket.ClientEngine.Silverlight.dll</HintPath>
+      <HintPath>..\..\Reference\SuperSocket\Silverlight\Debug\SuperSocket.ClientEngine.Silverlight.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows" />
     <Reference Include="system" />
@@ -79,8 +79,17 @@
     <Compile Include="..\WebSocketClient\Command\WebSocketCommandBase.cs">
       <Link>Command\WebSocketCommandBase.cs</Link>
     </Compile>
+    <Compile Include="..\WebSocketClient\DataReceivedEventArgs.cs">
+      <Link>DataReceivedEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\WebSocketClient\MessageReceivedEventArgs.cs">
+      <Link>MessageReceivedEventArgs.cs</Link>
+    </Compile>
     <Compile Include="..\WebSocketClient\OpCode.cs">
       <Link>OpCode.cs</Link>
+    </Compile>
+    <Compile Include="..\WebSocketClient\Protocol\DraftHybi00DataReader.cs">
+      <Link>Protocol\DraftHybi00DataReader.cs</Link>
     </Compile>
     <Compile Include="..\WebSocketClient\Protocol\DraftHybi00HandshakeReader.cs">
       <Link>Protocol\DraftHybi00HandshakeReader.cs</Link>
@@ -112,11 +121,11 @@
     <Compile Include="..\WebSocketClient\WebSocketCommandInfo.cs">
       <Link>WebSocketCommandInfo.cs</Link>
     </Compile>
-    <Compile Include="..\WebSocketClient\WebSocketCommandReader.cs">
-      <Link>WebSocketCommandReader.cs</Link>
-    </Compile>
     <Compile Include="..\WebSocketClient\WebSocketContext.cs">
       <Link>WebSocketContext.cs</Link>
+    </Compile>
+    <Compile Include="..\WebSocketClient\WebSocketState.cs">
+      <Link>WebSocketState.cs</Link>
     </Compile>
     <Compile Include="..\WebSocketClient\WebSocketVersion.cs">
       <Link>WebSocketVersion.cs</Link>

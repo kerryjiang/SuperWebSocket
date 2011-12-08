@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SuperSocket.ClientEngine;
 
 namespace SuperWebSocket.WebSocketClient.Protocol
 {
@@ -37,7 +38,7 @@ namespace SuperWebSocket.WebSocketClient.Protocol
 
             ParseHandshake(handshake);
 
-            left = BufferSegments.Count - result.Value;
+            left = BufferSegments.Count - result.Value - HeaderTerminator.Length;
             BufferSegments.ClearSegements();
 
             return DefaultHandshakeCommandInfo;

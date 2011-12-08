@@ -11,7 +11,7 @@ using SuperWebSocket.WebSocketClient.Protocol;
 
 namespace SuperWebSocket.WebSocketClient
 {
-    public partial class WebSocket : TcpClientSession<WebSocketCommandInfo, WebSocketContext>
+    public partial class WebSocket : TcpClientSession
     {
         public WebSocketVersion Version { get; private set; }
 
@@ -24,6 +24,13 @@ namespace SuperWebSocket.WebSocketClient
         internal string SubProtocol { get; private set; }
 
         internal IDictionary<object, object> Items { get; private set; }
+
+        public WebSocketState State { get; private set; }
+
+        protected IClientCommandReader<WebSocketCommandInfo> CommandReader { get; private set; }
+
+        private Dictionary<string, ICommand<WebSocket, WebSocketCommandInfo>> m_CommandDict
+            = new Dictionary<string, ICommand<WebSocket, WebSocketCommandInfo>>(StringComparer.OrdinalIgnoreCase);
 
         public WebSocket(string uri)
             : this(uri, string.Empty)
@@ -50,8 +57,22 @@ namespace SuperWebSocket.WebSocketClient
         }
 
         public WebSocket(string uri, string subProtocol, IProtocolProcessor protocolProcessor)
-            : base(protocolProcessor.CreateHandshakeReader(), new List<Assembly> { typeof(WebSocket).Assembly })
         {
+            CommandReader = protocolProcessor.CreateHandshakeReader();
+
+            var handshakeCmd = new Command.Handshake();
+            m_CommandDict.Add(handshakeCmd.Name, handshakeCmd);
+            var textCmd = new Command.Text();
+            m_CommandDict.Add(textCmd.Name, textCmd);
+            var dataCmd = new Command.Binary();
+            m_CommandDict.Add(dataCmd.Name, dataCmd);
+            var closeCmd = new Command.Close();
+            m_CommandDict.Add(closeCmd.Name, closeCmd);
+            var pongCmd = new Command.Pong();
+            m_CommandDict.Add(pongCmd.Name, pongCmd);
+            
+            State = WebSocketState.Disconnected;
+
             ProtocolProcessor = protocolProcessor;
             ProtocolProcessor.Initialize(this);
 
@@ -76,8 +97,11 @@ namespace SuperWebSocket.WebSocketClient
             if (IPAddress.TryParse(TargetUri.Host, out ipAddress))
                 RemoteEndPoint = new IPEndPoint(ipAddress, TargetUri.Port);
             else
-                RemoteEndPoint = new DnsEndPoint(TargetUri.Host, TargetUri.Port);
+                RemoteEndPoint = new DnsEndPoint(TargetUri.Host, TargetUri.Port);         
+        }
 
+        public void Open()
+        {
             Connect();
         }
 
@@ -99,9 +123,110 @@ namespace SuperWebSocket.WebSocketClient
             ProtocolProcessor.SendHandshake();
         }
 
-        protected virtual void OnHandshaked()
+        protected internal virtual void OnHandshaked()
         {
+            State = WebSocketState.Opened;
 
+            if (m_Opened == null)
+                return;
+
+            m_Opened(this, EventArgs.Empty);
+        }
+
+        private EventHandler m_Opened;
+
+        public event EventHandler Opened
+        {
+            add { m_Opened += value; }
+            remove { m_Opened -= value; }
+        }
+
+        private EventHandler<MessageReceivedEventArgs> m_MessageReceived;
+
+        public event EventHandler<MessageReceivedEventArgs> MessageReceived
+        {
+            add { m_MessageReceived += value; }
+            remove { m_MessageReceived -= value; }
+        }
+
+        internal void FireMessageReceived(string message)
+        {
+            if (m_MessageReceived == null)
+                return;
+
+            m_MessageReceived(this, new MessageReceivedEventArgs(message));
+        }
+
+        private EventHandler<DataReceivedEventArgs> m_DataReceived;
+
+        public event EventHandler<DataReceivedEventArgs> DataReceived
+        {
+            add { m_DataReceived += value; }
+            remove { m_DataReceived -= value; }
+        }
+
+        internal void FireDataReceived(byte[] data)
+        {
+            if (m_DataReceived == null)
+                return;
+
+            m_DataReceived(this, new DataReceivedEventArgs(data));
+        }
+
+        public void Send(string message)
+        {
+            ProtocolProcessor.SendMessage(message);
+        }
+
+        protected override void OnClosed()
+        {
+            if(State == WebSocketState.Opened)
+                base.OnClosed();
+        }
+
+        public override void Close()
+        {
+            Close(string.Empty);
+        }
+
+        public void Close(string reason)
+        {
+            ProtocolProcessor.SendCloseHandshake(reason);
+            base.Close();
+        }
+
+        protected void ExecuteCommand(WebSocketCommandInfo commandInfo)
+        {
+            ICommand<WebSocket, WebSocketCommandInfo> command;
+
+            if (m_CommandDict.TryGetValue(commandInfo.Key, out command))
+            {
+                command.ExecuteCommand(this, commandInfo);
+            }
+        }
+
+        protected override void OnDataReceived(byte[] data, int offset, int length)
+        {
+            while (true)
+            {
+                int left;
+
+                var commandInfo = CommandReader.GetCommandInfo(data, offset, length, out left);
+
+                if (CommandReader.NextCommandReader != null)
+                    CommandReader = CommandReader.NextCommandReader;
+
+                if (commandInfo == null)
+                    break;
+
+                ExecuteCommand(commandInfo);
+
+                if (left <= 0)
+                    break;
+
+                offset = offset + length - left;
+                length = left;
+            }
         }
     }
 }

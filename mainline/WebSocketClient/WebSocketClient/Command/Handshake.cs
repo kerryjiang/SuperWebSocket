@@ -12,7 +12,10 @@ namespace SuperWebSocket.WebSocketClient.Command
             if (!session.ProtocolProcessor.VerifyHandshake(commandInfo))
             {
                 session.Close();
+                return;
             }
+
+            session.OnHandshaked();
         }
 
         public override string Name

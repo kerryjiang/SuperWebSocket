@@ -6,7 +6,7 @@ using SuperSocket.ClientEngine;
 
 namespace SuperWebSocket.WebSocketClient.Command
 {
-    public abstract class WebSocketCommandBase : ICommand<WebSocket, WebSocketCommandInfo, WebSocketContext>
+    public abstract class WebSocketCommandBase : ICommand<WebSocket, WebSocketCommandInfo>
     {
         public abstract void ExecuteCommand(WebSocket session, WebSocketCommandInfo commandInfo);
 

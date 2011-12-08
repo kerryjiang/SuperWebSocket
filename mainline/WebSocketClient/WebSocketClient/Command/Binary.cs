@@ -10,7 +10,7 @@ namespace SuperWebSocket.WebSocketClient.Command
     {
         public override void ExecuteCommand(WebSocket session, WebSocketCommandInfo commandInfo)
         {
-            throw new NotImplementedException();
+            session.FireDataReceived(commandInfo.Data);
         }
 
         public override string Name

@@ -12,5 +12,7 @@ namespace SuperWebSocket.WebSocketClient
         {
             throw new NotImplementedException();
         }
+
+        public IClientCommandReader<WebSocketCommandInfo> NextCommandReader { get; protected set; }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SuperSocket.ClientEngine;
 
 namespace SuperWebSocket.WebSocketClient.Protocol
 {
@@ -17,6 +18,11 @@ namespace SuperWebSocket.WebSocketClient.Protocol
 
         }
 
+        void SetDataReader()
+        {
+            NextCommandReader = new DraftHybi00DataReader(this);
+        }
+
         public override WebSocketCommandInfo GetCommandInfo(byte[] readBuffer, int offset, int length, out int left)
         {
             if (m_ReceivedChallengeLength < 0)
@@ -29,12 +35,14 @@ namespace SuperWebSocket.WebSocketClient.Protocol
                 if (left < m_ExpectedChallengeLength)
                 {
                     m_ReceivedChallengeLength = left;
-                    this.AddArraySegment(readBuffer, offset + length - left, left);
+                    if (left > 0)
+                        this.AddArraySegment(readBuffer, offset + length - left, left);
                     return null;
                 }
                 else if (left == m_ExpectedChallengeLength)
                 {
                     byte[] challenges = readBuffer.CloneRange(offset + length - left, left);
+                    SetDataReader();
                     return new WebSocketCommandInfo
                         {
                             Key = OpCode.Handshake.ToString(),
@@ -46,6 +54,7 @@ namespace SuperWebSocket.WebSocketClient.Protocol
                     byte[] challenges = readBuffer.CloneRange(offset + length - left, m_ExpectedChallengeLength);
                     left -= m_ExpectedChallengeLength;
 
+                    SetDataReader();
                     return new WebSocketCommandInfo
                     {
                         Key = OpCode.Handshake.ToString(),
@@ -70,6 +79,7 @@ namespace SuperWebSocket.WebSocketClient.Protocol
                     byte[] challenges = BufferSegments.ToArrayData();
                     BufferSegments.ClearSegements();
 
+                    SetDataReader();
                     return new WebSocketCommandInfo
                     {
                         Key = OpCode.Handshake.ToString(),
@@ -83,6 +93,7 @@ namespace SuperWebSocket.WebSocketClient.Protocol
                     BufferSegments.ClearSegements();
                     left = length - (m_ExpectedChallengeLength - m_ReceivedChallengeLength);
 
+                    SetDataReader();
                     return new WebSocketCommandInfo
                     {
                         Key = OpCode.Handshake.ToString(),

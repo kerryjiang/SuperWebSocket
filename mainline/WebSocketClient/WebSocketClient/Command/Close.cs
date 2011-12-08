@@ -10,7 +10,7 @@ namespace SuperWebSocket.WebSocketClient.Command
     {
         public override void ExecuteCommand(WebSocket session, WebSocketCommandInfo commandInfo)
         {
-            session.Close();
+
         }
 
         public override string Name

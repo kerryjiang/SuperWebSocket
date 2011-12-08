@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SuperSocket.ClientEngine;
-using SuperSocket.Common;
 
 namespace SuperWebSocket.WebSocketClient.Protocol
 {
@@ -11,9 +10,14 @@ namespace SuperWebSocket.WebSocketClient.Protocol
     {
         protected WebSocket WebSocket { get; private set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ReaderBase"/> class.
+        /// </summary>
+        /// <param name="websocket">The websocket.</param>
         public ReaderBase(WebSocket websocket)
         {
             WebSocket = websocket;
+            m_BufferSegments = new ArraySegmentList<byte>();
         }
 
         private readonly ArraySegmentList<byte> m_BufferSegments;
@@ -24,14 +28,6 @@ namespace SuperWebSocket.WebSocketClient.Protocol
         protected ArraySegmentList<byte> BufferSegments
         {
             get { return m_BufferSegments; }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ReaderBase"/> class.
-        /// </summary>
-        public ReaderBase()
-        {
-            m_BufferSegments = new ArraySegmentList<byte>();
         }
 
         /// <summary>
@@ -51,7 +47,7 @@ namespace SuperWebSocket.WebSocketClient.Protocol
         /// <value>
         /// The next command reader.
         /// </value>
-        internal IClientCommandReader<WebSocketCommandInfo> NextCommandReader { get; set; }
+        public IClientCommandReader<WebSocketCommandInfo> NextCommandReader { get; internal set; }
 
         /// <summary>
         /// Adds the array segment into BufferSegment.

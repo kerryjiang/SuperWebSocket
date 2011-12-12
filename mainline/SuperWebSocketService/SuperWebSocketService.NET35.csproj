@@ -35,15 +35,15 @@
   <ItemGroup>
     <Reference Include="SuperSocket.Common">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference\SuperSocket\NET3.5\$(Configuration)\SuperSocket.Common.dll</HintPath>
+      <HintPath>..\Reference\SuperSocket\NET35\$(Configuration)\SuperSocket.Common.dll</HintPath>
     </Reference>
     <Reference Include="SuperSocket.SocketBase">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference\SuperSocket\NET3.5\$(Configuration)\SuperSocket.SocketBase.dll</HintPath>
+      <HintPath>..\Reference\SuperSocket\NET35\$(Configuration)\SuperSocket.SocketBase.dll</HintPath>
     </Reference>
     <Reference Include="SuperSocket.SocketEngine">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference\SuperSocket\NET3.5\$(Configuration)\SuperSocket.SocketEngine.dll</HintPath>
+      <HintPath>..\Reference\SuperSocket\NET35\$(Configuration)\SuperSocket.SocketEngine.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -83,6 +83,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\log4net.config">
+      <Link>Config\log4net.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
@@ -98,10 +102,8 @@
     <Content Include="supersocket.pfx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Config\log4net.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

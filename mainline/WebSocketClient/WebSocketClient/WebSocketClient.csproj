@@ -31,7 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SuperSocket.ClientEngine">
-      <HintPath>..\..\Reference\SuperSocket\NET4.0\$(Configuration)\SuperSocket.ClientEngine.dll</HintPath>
+      <HintPath>..\..\Reference\SuperSocket\NET40\$(Configuration)\SuperSocket.ClientEngine.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

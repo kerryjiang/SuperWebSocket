@@ -38,13 +38,13 @@
     </Reference>
     <Reference Include="SuperSocket.Common">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference\SuperSocket\NET4.0\$(Configuration)\SuperSocket.Common.dll</HintPath>
+      <HintPath>..\Reference\SuperSocket\NET40\$(Configuration)\SuperSocket.Common.dll</HintPath>
     </Reference>
     <Reference Include="SuperSocket.SocketBase">
-      <HintPath>..\Reference\SuperSocket\NET4.0\$(Configuration)\SuperSocket.SocketBase.dll</HintPath>
+      <HintPath>..\Reference\SuperSocket\NET40\$(Configuration)\SuperSocket.SocketBase.dll</HintPath>
     </Reference>
     <Reference Include="SuperSocket.SocketEngine">
-      <HintPath>..\Reference\SuperSocket\NET4.0\$(Configuration)\SuperSocket.SocketEngine.dll</HintPath>
+      <HintPath>..\Reference\SuperSocket\NET40\$(Configuration)\SuperSocket.SocketEngine.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -85,6 +85,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\log4net.config">
+      <Link>Config\log4net.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\log4net.unix.config">
+      <Link>Config\log4net.unix.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="App.config" />
     <Content Include="InstallService.bat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -96,9 +104,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="supersocket.pfx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Config\log4net.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -7,7 +7,10 @@ namespace SuperWebSocket.WebSocketClient
 {
     public enum WebSocketState
     {
-        Disconnected,
-        Opened
+        None = -1,
+        Connecting = 0,
+        Open = 1,
+        Closing = 2,
+        Closed = 3
     }
 }

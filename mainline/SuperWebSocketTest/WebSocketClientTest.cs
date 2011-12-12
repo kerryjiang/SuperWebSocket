@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Threading;
 using NUnit.Framework;
 using SuperSocket.Common;
 using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Config;
 using SuperSocket.SocketEngine;
 using SuperWebSocket;
-using SuperWebSocket.Client;
-using System.Threading;
 using SuperWebSocket.SubProtocol;
-using System.Reflection;
+using SuperWebSocket.WebSocketClient;
 
 namespace SuperWebSocketTest
 {
@@ -20,7 +20,7 @@ namespace SuperWebSocketTest
     {
         protected WebSocketServer m_WebSocketServer;
         private AutoResetEvent m_MessageReceiveEvent = new AutoResetEvent(false);
-        private AutoResetEvent m_OpenEvent = new AutoResetEvent(false);
+        private AutoResetEvent m_OpenedEvent = new AutoResetEvent(false);
         private AutoResetEvent m_CloseEvent = new AutoResetEvent(false);
         private string m_CurrentMessage = string.Empty;
 
@@ -32,10 +32,10 @@ namespace SuperWebSocketTest
             m_WebSocketServer = new WebSocketServer(new BasicSubProtocol("Basic", new List<Assembly> { this.GetType().Assembly }));
             m_WebSocketServer.Setup(new RootConfig(), new ServerConfig
             {
-                Port = 911,
+                Port = 1026,
                 Ip = "Any",
                 MaxConnectionNumber = 100,
-                Mode = SocketMode.Sync,
+                Mode = SocketMode.Async,
                 Name = "SuperWebSocket Server"
             }, SocketServerFactory.Instance);
         }
@@ -55,32 +55,52 @@ namespace SuperWebSocketTest
         [Test]
         public void ConnectionTest()
         {
-            WebSocket webSocketClient = new WebSocket("ws://127.0.0.1:911/websocket", "basic");
-            webSocketClient.OnClose += new EventHandler(webSocketClient_OnClose);
-            webSocketClient.OnOpen += new EventHandler(webSocketClient_OnOpen);
-            webSocketClient.OnMessage += new EventHandler<MessageEventArgs>(webSocketClient_OnMessage);
-            webSocketClient.Connect();
+            WebSocket webSocketClient = new WebSocket(string.Format("ws://127.0.0.1:{0}/websocket", m_WebSocketServer.Config.Port), "basic", WebSocketVersion.DraftHybi00);
+            webSocketClient.Opened += new EventHandler(webSocketClient_Opened);
+            webSocketClient.Closed += new EventHandler(webSocketClient_Closed);
+            webSocketClient.MessageReceived += new EventHandler<MessageReceivedEventArgs>(webSocketClient_MessageReceived);
+            webSocketClient.Open();
 
-            if(!m_OpenEvent.WaitOne(1000))
-                Assert.Fail("Failed to open session ontime");
+            if (!m_OpenedEvent.WaitOne(1000))
+                Assert.Fail("Failed to Opened session ontime");
+
+            Assert.AreEqual(WebSocketState.Open, webSocketClient.State);
 
             webSocketClient.Close();
 
             if (!m_CloseEvent.WaitOne(1000))
                 Assert.Fail("Failed to close session ontime");
+
+            Assert.AreEqual(WebSocketState.Closed, webSocketClient.State);
         }
 
-        [Test]
+        void webSocketClient_MessageReceived(object sender, MessageReceivedEventArgs e)
+        {
+            m_CurrentMessage = e.Message;
+            m_MessageReceiveEvent.Set();
+        }
+
+        void webSocketClient_Closed(object sender, EventArgs e)
+        {
+            m_CloseEvent.Set();
+        }
+
+        void webSocketClient_Opened(object sender, EventArgs e)
+        {
+            m_OpenedEvent.Set();
+        }
+
+        [Test, Repeat(10)]
         public void SendMessageTest()
         {
-            WebSocket webSocketClient = new WebSocket("ws://127.0.0.1:911/websocket", "basic");
-            webSocketClient.OnClose += new EventHandler(webSocketClient_OnClose);
-            webSocketClient.OnOpen += new EventHandler(webSocketClient_OnOpen);
-            webSocketClient.OnMessage += new EventHandler<MessageEventArgs>(webSocketClient_OnMessage);
-            webSocketClient.Connect();
+            WebSocket webSocketClient = new WebSocket(string.Format("ws://127.0.0.1:{0}/websocket", m_WebSocketServer.Config.Port), "basic", WebSocketVersion.DraftHybi00);
+            webSocketClient.Opened += new EventHandler(webSocketClient_Opened);
+            webSocketClient.Closed += new EventHandler(webSocketClient_Closed);
+            webSocketClient.MessageReceived += new EventHandler<MessageReceivedEventArgs>(webSocketClient_MessageReceived);
+            webSocketClient.Open();
 
-            if (!m_OpenEvent.WaitOne(1000))
-                Assert.Fail("Failed to open session ontime");
+            if (!m_OpenedEvent.WaitOne(1000))
+                Assert.Fail("Failed to Opened session ontime");
 
             StringBuilder sb = new StringBuilder();
 
@@ -117,38 +137,26 @@ namespace SuperWebSocketTest
         }
 
 
-        [Test]
+        [Test, Repeat(10)]
         public void CloseWebSocketTest()
         {
-            WebSocket webSocketClient = new WebSocket("ws://127.0.0.1:911/websocket", "basic");
-            webSocketClient.OnClose += new EventHandler(webSocketClient_OnClose);
-            webSocketClient.OnOpen += new EventHandler(webSocketClient_OnOpen);
-            webSocketClient.OnMessage += new EventHandler<MessageEventArgs>(webSocketClient_OnMessage);
-            webSocketClient.Connect();
+            WebSocket webSocketClient = new WebSocket(string.Format("ws://127.0.0.1:{0}/websocket", m_WebSocketServer.Config.Port), "basic", WebSocketVersion.DraftHybi00);
+            webSocketClient.Opened += new EventHandler(webSocketClient_Opened);
+            webSocketClient.Closed += new EventHandler(webSocketClient_Closed);
+            webSocketClient.MessageReceived += new EventHandler<MessageReceivedEventArgs>(webSocketClient_MessageReceived);
+            webSocketClient.Open();
 
-            if (!m_OpenEvent.WaitOne(1000))
-                Assert.Fail("Failed to open session ontime");
+            if (!m_OpenedEvent.WaitOne(1000))
+                Assert.Fail("Failed to Opened session ontime");
+
+            Assert.AreEqual(WebSocketState.Open, webSocketClient.State);
 
             webSocketClient.Send("QUIT");
 
             if (!m_CloseEvent.WaitOne(1000))
                 Assert.Fail("Failed to close session ontime");
-        }
 
-        void webSocketClient_OnOpen(object sender, EventArgs e)
-        {
-            m_OpenEvent.Set();
-        }
-
-        void webSocketClient_OnMessage(object sender, MessageEventArgs e)
-        {
-            m_CurrentMessage = e.Message;
-            m_MessageReceiveEvent.Set();
-        }
-
-        void webSocketClient_OnClose(object sender, EventArgs e)
-        {
-            m_CloseEvent.Set();
+            Assert.AreEqual(WebSocketState.Closed, webSocketClient.State);
         }
     }
 }

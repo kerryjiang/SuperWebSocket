@@ -37,6 +37,9 @@
     <Reference Include="nunit.framework">
       <HintPath>..\Reference\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="SuperSocket.ClientEngine">
+      <HintPath>..\Reference\SuperSocket\NET4.0\Debug\SuperSocket.ClientEngine.dll</HintPath>
+    </Reference>
     <Reference Include="SuperSocket.Common">
       <HintPath>..\Reference\SuperSocket\NET4.0\$(Configuration)\SuperSocket.Common.dll</HintPath>
     </Reference>
@@ -65,16 +68,15 @@
     <Compile Include="WebSocketTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Client\Client.csproj">
-      <Project>{FA1DC954-EE1A-4CC8-B0EF-A01A6ECF5189}</Project>
-      <Name>Client</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SuperWebSocket\SuperWebSocket.csproj">
       <Project>{2DC79E40-BB70-4F6A-B378-905F2FBC6E97}</Project>
       <Name>SuperWebSocket</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WebSocketClient\WebSocketClient\WebSocketClient.csproj">
+      <Project>{6920447F-76B1-4739-822E-9CE3A2882718}</Project>
+      <Name>WebSocketClient %28WebSocketClient\WebSocketClient%29</Name>
+    </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -71,7 +71,7 @@ namespace SuperWebSocket.WebSocketClient
             var pongCmd = new Command.Pong();
             m_CommandDict.Add(pongCmd.Name, pongCmd);
             
-            State = WebSocketState.Disconnected;
+            State = WebSocketState.None;
 
             ProtocolProcessor = protocolProcessor;
             ProtocolProcessor.Initialize(this);
@@ -102,6 +102,7 @@ namespace SuperWebSocket.WebSocketClient
 
         public void Open()
         {
+            State = WebSocketState.Connecting;
             Connect();
         }
 
@@ -125,7 +126,7 @@ namespace SuperWebSocket.WebSocketClient
 
         protected internal virtual void OnHandshaked()
         {
-            State = WebSocketState.Opened;
+            State = WebSocketState.Open;
 
             if (m_Opened == null)
                 return;
@@ -180,7 +181,14 @@ namespace SuperWebSocket.WebSocketClient
 
         protected override void OnClosed()
         {
-            if(State == WebSocketState.Opened)
+            var fireBaseClose = false;
+
+            if (State == WebSocketState.Closing || State == WebSocketState.Open)
+                fireBaseClose = true;
+
+            State = WebSocketState.Closed;
+
+            if (fireBaseClose)
                 base.OnClosed();
         }
 
@@ -191,6 +199,7 @@ namespace SuperWebSocket.WebSocketClient
 
         public void Close(string reason)
         {
+            State = WebSocketState.Closing;
             ProtocolProcessor.SendCloseHandshake(reason);
             base.Close();
         }

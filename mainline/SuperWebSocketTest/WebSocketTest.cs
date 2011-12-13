@@ -80,7 +80,7 @@ namespace SuperWebSocketTest
         protected virtual void Handshake(string protocol, out Socket socket, out Stream stream)
         {
             var ip = "127.0.0.1";
-            var port = 911;
+            var port = m_WebSocketServer.Config.Port;
 
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 

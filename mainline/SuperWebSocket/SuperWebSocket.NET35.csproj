@@ -39,13 +39,13 @@
     <Reference Include="Newtonsoft.Json.Net35">
       <HintPath>..\Reference\Newtonsoft.Json.Net35.dll</HintPath>
     </Reference>
-    <Reference Include="SuperSocket.Common">
+    <Reference Include="SuperSocket.Common, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference\SuperSocket\NET35\$(Configuration)\SuperSocket.Common.dll</HintPath>
+      <HintPath>..\Reference\SuperSocket\Net35\SuperSocket.Common.dll</HintPath>
     </Reference>
-    <Reference Include="SuperSocket.SocketBase">
+    <Reference Include="SuperSocket.SocketBase, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference\SuperSocket\NET35\$(Configuration)\SuperSocket.SocketBase.dll</HintPath>
+      <HintPath>..\Reference\SuperSocket\Net35\SuperSocket.SocketBase.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />

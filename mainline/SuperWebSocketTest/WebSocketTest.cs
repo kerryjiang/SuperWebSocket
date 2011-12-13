@@ -27,7 +27,7 @@ namespace SuperWebSocketTest
             m_WebSocketServer = new WebSocketServer();
             m_WebSocketServer.Setup(new RootConfig(), new ServerConfig
                 {
-                    Port = 911,
+                    Port = 1026,
                     Ip = "Any",
                     MaxConnectionNumber = 100,
                     Mode = SocketMode.Sync,

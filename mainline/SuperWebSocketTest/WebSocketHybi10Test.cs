@@ -29,23 +29,33 @@ namespace SuperWebSocketTest
 
             stream = new NetworkStream(socket);
 
-            var reader = new StreamReader(stream, Encoding.UTF8, false);
-            var writer = new StreamWriter(stream, Encoding.UTF8, 1024 * 10);
+            var reader = new StreamReader(stream, new UTF8Encoding(), false);
+            var writer = new StreamWriter(stream, new UTF8Encoding(), 1024 * 10);
 
             var secKey = Guid.NewGuid().ToString().Substring(0, 5);
 
-            writer.WriteLine("GET /websock HTTP/1.1");
-            writer.WriteLine("Upgrade: WebSocket");
-            writer.WriteLine("Sec-WebSocket-Version: 8");
-            writer.WriteLine("Connection: Upgrade");
-            writer.WriteLine("Sec-WebSocket-Key: " + secKey);
-            writer.WriteLine("Host: example.com");
-            writer.WriteLine("Origin: http://example.com");
+            writer.Write("GET /websock HTTP/1.1");
+			writer.Write(NewLine);
+            writer.Write("Upgrade: WebSocket");
+            writer.Write(NewLine);
+			writer.Write("Sec-WebSocket-Version: 8");
+			writer.Write(NewLine);
+            writer.Write("Connection: Upgrade");
+			writer.Write(NewLine);
+            writer.Write("Sec-WebSocket-Key: " + secKey);
+            writer.Write(NewLine);
+			writer.Write("Host: example.com");
+			writer.Write(NewLine);
+            writer.Write("Origin: http://example.com");
+			writer.Write(NewLine);
 
             if (!string.IsNullOrEmpty(protocol))
-                writer.WriteLine("Sec-WebSocket-Protocol: {0}", protocol);
+			{
+                writer.Write("Sec-WebSocket-Protocol: {0}", protocol);
+				writer.Write(NewLine);
+			}
 
-            writer.WriteLine("");
+            writer.Write(NewLine);
             writer.Flush();
 
             reader.ReadLine();

@@ -20,6 +20,12 @@ namespace SuperWebSocketTest
     {
 		private Encoding m_Encoding;
 		
+		public SubProtocolWebSocketTest()
+			: base()
+		{
+			
+		}
+		
         [TestFixtureSetUp]
         public override void Setup()
         {

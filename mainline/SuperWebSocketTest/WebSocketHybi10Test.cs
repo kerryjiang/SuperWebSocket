@@ -20,7 +20,7 @@ namespace SuperWebSocketTest
         protected override void Handshake(string protocol, out Socket socket, out System.IO.Stream stream)
         {
             var ip = "127.0.0.1";
-            var port = 1026;
+            var port = 2012;
 
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 

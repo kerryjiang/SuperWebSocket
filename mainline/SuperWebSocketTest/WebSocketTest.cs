@@ -18,16 +18,22 @@ namespace SuperWebSocketTest
     public class WebSocketTest
     {
         protected WebSocketServer m_WebSocketServer;
+		private Encoding m_Encoding;
+
+        public WebSocketTest()
+        {
+            m_Encoding = new UTF8Encoding();
+        }
 
         [TestFixtureSetUp]
         public virtual void Setup()
         {
-            LogUtil.Setup(new ConsoleLogger());
+            LogUtil.Setup(new ConsoleLogger());			
 
             m_WebSocketServer = new WebSocketServer();
             m_WebSocketServer.Setup(new RootConfig(), new ServerConfig
                 {
-                    Port = 1026,
+                    Port = 2012,
                     Ip = "Any",
                     MaxConnectionNumber = 100,
                     Mode = SocketMode.Sync,
@@ -38,6 +44,11 @@ namespace SuperWebSocketTest
             m_WebSocketServer.NewSessionConnected += new SessionEventHandler<WebSocketSession>(m_WebSocketServer_NewSessionConnected);
             m_WebSocketServer.SessionClosed += new SessionEventHandler<WebSocketSession, CloseReason>(m_WebSocketServer_SessionClosed);
         }
+		
+		protected WebSocketServer Server
+		{
+			get { return m_WebSocketServer; }
+		}
 
         protected virtual string SubProtocol
         {
@@ -78,7 +89,7 @@ namespace SuperWebSocketTest
         }
 
         protected virtual void Handshake(string protocol, out Socket socket, out Stream stream)
-        {
+        {			
             var ip = "127.0.0.1";
             var port = m_WebSocketServer.Config.Port;
 
@@ -89,8 +100,8 @@ namespace SuperWebSocketTest
 
             stream = new NetworkStream(socket);
 
-            var reader = new StreamReader(stream, Encoding.UTF8, false);
-            var writer = new StreamWriter(stream, Encoding.UTF8, 1024 * 10);
+            var reader = new StreamReader(stream, m_Encoding, false);
+            var writer = new StreamWriter(stream, m_Encoding, 1024 * 10);
 
             writer.WriteLine("GET /websock HTTP/1.1");
             writer.WriteLine("Upgrade: WebSocket");
@@ -222,7 +233,7 @@ namespace SuperWebSocketTest
                 Console.WriteLine("Client:" + currentCommand);
 
                 stream.Write(new byte[] { WebSocketConstant.StartByte }, 0, 1);
-                byte[] data = Encoding.UTF8.GetBytes(currentCommand);
+                byte[] data = m_Encoding.GetBytes(currentCommand);
                 stream.Write(data, 0, data.Length);
                 stream.Write(new byte[] { WebSocketConstant.EndByte }, 0, 1);
                 stream.Flush();
@@ -231,7 +242,7 @@ namespace SuperWebSocketTest
                 Assert.AreEqual(data.Length + 2, receivedBuffer.Count);
                 Assert.AreEqual(WebSocketConstant.StartByte, receivedBuffer[0]);
                 Assert.AreEqual(WebSocketConstant.EndByte, receivedBuffer[receivedBuffer.Count - 1]);
-                Assert.AreEqual(currentCommand, Encoding.UTF8.GetString(receivedBuffer.ToArrayData(1, receivedBuffer.Count - 2)));
+                Assert.AreEqual(currentCommand, m_Encoding.GetString(receivedBuffer.ToArrayData(1, receivedBuffer.Count - 2)));
                 receivedBuffer.ClearSegements();
             }
 
@@ -276,7 +287,7 @@ namespace SuperWebSocketTest
                     Console.WriteLine("Client:" + currentCommand);
 
                     stream.Write(new byte[] { WebSocketConstant.StartByte }, 0, 1);
-                    byte[] data = Encoding.UTF8.GetBytes(currentCommand);
+                    byte[] data = m_Encoding.GetBytes(currentCommand);
                     sentLengths[j] = data.Length + 2;
                     stream.Write(data, 0, data.Length);
                     stream.Write(new byte[] { WebSocketConstant.EndByte }, 0, 1);
@@ -288,7 +299,7 @@ namespace SuperWebSocketTest
                 {
                     Console.WriteLine("Expected: " + sentLengths[j]);
                     ReceiveMessage(stream, receivedBuffer, sentLengths[j]);
-                    string message = Encoding.UTF8.GetString(receivedBuffer.ToArrayData(1, receivedBuffer.Count - 2));
+                    string message = m_Encoding.GetString(receivedBuffer.ToArrayData(1, receivedBuffer.Count - 2));
                     Console.WriteLine("E:" + sentMessages[j]);
                     Console.WriteLine("A:" + message);
                     Assert.AreEqual(WebSocketConstant.StartByte, receivedBuffer[0]);

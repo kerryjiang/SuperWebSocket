@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
 using NUnit.Framework;
 using SuperSocket.Common;
@@ -11,27 +12,26 @@ using SuperSocket.SocketBase.Config;
 using SuperSocket.SocketEngine;
 using SuperWebSocket;
 using SuperWebSocket.SubProtocol;
-using System.Reflection;
 
 namespace SuperWebSocketTest
 {
     [TestFixture]
     public class SubProtocolWebSocketTest : WebSocketTest
     {
-		private Encoding m_Encoding;
-		
-		public SubProtocolWebSocketTest()
-			: base()
-		{
-			
-		}
-		
+        private Encoding m_Encoding;
+        
+        public SubProtocolWebSocketTest()
+            : base()
+        {
+        
+        }
+        
         [TestFixtureSetUp]
         public override void Setup()
         {
             LogUtil.Setup(new ConsoleLogger());
-			
-			m_Encoding = new UTF8Encoding();
+
+            m_Encoding = new UTF8Encoding();
 
             m_WebSocketServer = new WebSocketServer(new BasicSubProtocol("Basic", new List<Assembly>{ this.GetType().Assembly } ));
             m_WebSocketServer.Setup(new RootConfig(), new ServerConfig

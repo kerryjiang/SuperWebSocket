@@ -10,12 +10,10 @@ namespace SuperWebSocket.Protocol
 {
     public class WebSocketSecKey3Reader : WebSocketReaderBase
     {
-        private IProtocolProcessor m_ProtocolProcessor;
-
         public WebSocketSecKey3Reader(WebSocketReaderBase prevReader)
             : base(prevReader)
         {
-            m_ProtocolProcessor = ((IWebSocketServer)this.AppServer).WebSocketProtocolProcessor;
+            
         }
 
         public override WebSocketCommandInfo FindCommandInfo(IAppSession session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)

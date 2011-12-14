@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Net.Sockets;
-using NUnit.Framework;
-using System.Net;
-using System.IO;
 using System.Collections.Specialized;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Security.Cryptography;
+using System.Text;
+using NUnit.Framework;
 using SuperSocket.Common;
 
 
@@ -35,25 +35,25 @@ namespace SuperWebSocketTest
             var secKey = Guid.NewGuid().ToString().Substring(0, 5);
 
             writer.Write("GET /websock HTTP/1.1");
-			writer.Write(NewLine);
+            writer.Write(NewLine);
             writer.Write("Upgrade: WebSocket");
             writer.Write(NewLine);
-			writer.Write("Sec-WebSocket-Version: 8");
-			writer.Write(NewLine);
+            writer.Write("Sec-WebSocket-Version: 8");
+            writer.Write(NewLine);
             writer.Write("Connection: Upgrade");
-			writer.Write(NewLine);
+            writer.Write(NewLine);
             writer.Write("Sec-WebSocket-Key: " + secKey);
             writer.Write(NewLine);
-			writer.Write("Host: example.com");
-			writer.Write(NewLine);
+            writer.Write("Host: example.com");
+            writer.Write(NewLine);
             writer.Write("Origin: http://example.com");
-			writer.Write(NewLine);
+            writer.Write(NewLine);
 
             if (!string.IsNullOrEmpty(protocol))
-			{
+            {
                 writer.Write("Sec-WebSocket-Protocol: {0}", protocol);
-				writer.Write(NewLine);
-			}
+                writer.Write(NewLine);
+            }
 
             writer.Write(NewLine);
             writer.Flush();

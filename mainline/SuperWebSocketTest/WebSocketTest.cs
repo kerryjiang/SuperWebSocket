@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using NUnit.Framework;
-using SuperWebSocket;
-using SuperSocket.SocketBase.Config;
-using System.Net.Sockets;
-using System.IO;
-using System.Net;
-using SuperSocket.SocketBase;
-using SuperSocket.SocketEngine;
 using SuperSocket.Common;
+using SuperSocket.SocketBase;
+using SuperSocket.SocketBase.Config;
+using SuperSocket.SocketEngine;
+using SuperWebSocket;
 
 namespace SuperWebSocketTest
 {
@@ -18,13 +18,13 @@ namespace SuperWebSocketTest
     public class WebSocketTest
     {
         protected WebSocketServer m_WebSocketServer;
-		private Encoding m_Encoding;
-		protected string NewLine { get; private set; }
+        private Encoding m_Encoding;
+        protected string NewLine { get; private set; }
 
         public WebSocketTest()
         {
             m_Encoding = new UTF8Encoding();
-			NewLine = "\r\n";
+            NewLine = "\r\n";
         }
 
         [TestFixtureSetUp]
@@ -46,11 +46,11 @@ namespace SuperWebSocketTest
             m_WebSocketServer.NewSessionConnected += new SessionEventHandler<WebSocketSession>(m_WebSocketServer_NewSessionConnected);
             m_WebSocketServer.SessionClosed += new SessionEventHandler<WebSocketSession, CloseReason>(m_WebSocketServer_SessionClosed);
         }
-		
-		protected WebSocketServer Server
-		{
-			get { return m_WebSocketServer; }
-		}
+        
+        protected WebSocketServer Server
+        {
+            get { return m_WebSocketServer; }
+        }
 
         protected virtual string SubProtocol
         {
@@ -106,28 +106,28 @@ namespace SuperWebSocketTest
             var writer = new StreamWriter(stream, m_Encoding, 1024 * 10);
 
             writer.Write("GET /websock HTTP/1.1");
-			writer.Write(NewLine);
-            writer.Write("Upgrade: WebSocket");
-			writer.Write(NewLine);
-            writer.Write("Connection: Upgrade");
-			writer.Write(NewLine);
-            writer.Write("Sec-WebSocket-Key2: 12998 5 Y3 1  .P00");
-			writer.Write(NewLine);
-            writer.Write("Host: example.com");
-			writer.Write(NewLine);
-            writer.Write("Sec-WebSocket-Key1: 4 @1  46546xW%0l 1 5");
-			writer.Write(NewLine);
-            writer.Write("Origin: http://example.com");
-			writer.Write(NewLine);
-
-            if (!string.IsNullOrEmpty(protocol))
-			{
-                writer.Write("Sec-WebSocket-Protocol: {0}", protocol);
-				writer.Write(NewLine);
-			}
-
             writer.Write(NewLine);
-			
+            writer.Write("Upgrade: WebSocket");
+            writer.Write(NewLine);
+            writer.Write("Connection: Upgrade");
+            writer.Write(NewLine);
+            writer.Write("Sec-WebSocket-Key2: 12998 5 Y3 1  .P00");
+            writer.Write(NewLine);
+            writer.Write("Host: example.com");
+            writer.Write(NewLine);
+            writer.Write("Sec-WebSocket-Key1: 4 @1  46546xW%0l 1 5");
+            writer.Write(NewLine);
+            writer.Write("Origin: http://example.com");
+            writer.Write(NewLine);
+            
+            if (!string.IsNullOrEmpty(protocol))
+            {
+                writer.Write("Sec-WebSocket-Protocol: {0}", protocol);
+                writer.Write(NewLine);
+            }
+            
+            writer.Write(NewLine);
+            
             string secKey = "^n:ds[4U";
             writer.Write(secKey);
             writer.Flush();

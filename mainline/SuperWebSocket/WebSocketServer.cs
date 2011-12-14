@@ -143,16 +143,17 @@ namespace SuperWebSocket
                 {
                     string originalProtocolName = protocolConfig.Name;
                     string protocolName;
+                    
                     ISubProtocol<TWebSocketSession> subProtocolInstance;
 
-                    if (!string.IsNullOrEmpty(protocolConfig.Name))
+                    if (!string.IsNullOrEmpty(originalProtocolName))
                     {
-                        protocolName = protocolConfig.Name;
+                        protocolName = originalProtocolName;
 
                         if (!string.IsNullOrEmpty(protocolConfig.Type))
                         {
                             Exception exception;
-                            if (!AssemblyUtil.TryCreateInstance<ISubProtocol<TWebSocketSession>>(protocolConfig.Type, new object[] { protocolConfig.Name }, out subProtocolInstance, out exception))
+                            if (!AssemblyUtil.TryCreateInstance<ISubProtocol<TWebSocketSession>>(protocolConfig.Type, new object[] { originalProtocolName }, out subProtocolInstance, out exception))
                                 return false;
 
                             if (!RegisterSubProtocol(subProtocolInstance))

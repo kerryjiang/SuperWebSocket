@@ -77,13 +77,13 @@ namespace SuperWebSocket.Protocol
             byte[] b3 = secKey3;
 
             //Concatenating everything into 1 byte array for hashing.
-            List<byte> bChallenge = new List<byte>();
-            bChallenge.AddRange(b1);
-            bChallenge.AddRange(b2);
-            bChallenge.AddRange(b3);
+            byte[] bChallenge = new byte[b1.Length + b2.Length + b3.Length];
+            Array.Copy(b1, 0, bChallenge, 0, b1.Length);
+            Array.Copy(b2, 0, bChallenge, b1.Length, b2.Length);
+            Array.Copy(b3, 0, bChallenge, b1.Length + b2.Length, b3.Length);
 
             //Hash and return
-            byte[] hash = MD5.Create().ComputeHash(bChallenge.ToArray());
+            byte[] hash = MD5.Create().ComputeHash(bChallenge);
             return hash;
         }
 

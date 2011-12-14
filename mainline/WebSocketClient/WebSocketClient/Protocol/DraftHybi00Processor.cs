@@ -135,13 +135,13 @@ namespace SuperWebSocket.WebSocketClient.Protocol
             byte[] b3 = secKey3;
 
             //Concatenating everything into 1 byte array for hashing.
-            List<byte> bChallenge = new List<byte>();
-            bChallenge.AddRange(b1);
-            bChallenge.AddRange(b2);
-            bChallenge.AddRange(b3);
+            byte[] bChallenge = new byte[b1.Length + b2.Length + b3.Length];
+            Array.Copy(b1, 0, bChallenge, 0, b1.Length);
+            Array.Copy(b2, 0, bChallenge, b1.Length, b2.Length);
+            Array.Copy(b3, 0, bChallenge, b1.Length + b2.Length, b3.Length);
 
             //Hash and return
-            byte[] hash = MD5.Create().ComputeHash(bChallenge.ToArray());
+            byte[] hash = MD5.Create().ComputeHash(bChallenge);
             return hash;
         }
 
@@ -157,33 +157,33 @@ namespace SuperWebSocket.WebSocketClient.Protocol
             int charLen = m_Random.Next(3, totalLen - 1 - spaceLen);
             int digLen = totalLen - spaceLen - charLen;
 
-            List<char> source = new List<char>(totalLen);
+            List<byte> source = new List<byte>(totalLen);
 
             for (int i = 0; i < spaceLen; i++)
-                source.Add(' ');
+                source.Add((byte)' ');
 
             for (int i = 0; i < charLen; i++)
             {
-                source.Add(m_CharLib[m_Random.Next(0, m_CharLib.Count - 1)]);
+                source.Add((byte)m_CharLib[m_Random.Next(0, m_CharLib.Count - 1)]);
             }
 
             for (int i = 0; i < digLen; i++)
             {
-                source.Add(m_DigLib[m_Random.Next(0, m_DigLib.Count - 1)]);
+                source.Add((byte)m_DigLib[m_Random.Next(0, m_DigLib.Count - 1)]);
             }
 
-            List<char> mixedChars = new List<char>();
+            byte[] mixedChars = new byte[totalLen];
 
             for (int i = 0; i < totalLen - 1; i++)
             {
                 int pos = m_Random.Next(0, source.Count - 1);
-                mixedChars.Add(source[pos]);
+                mixedChars[i] = source[pos];
                 source.RemoveAt(pos);
             }
 
-            mixedChars.Add(source[0]);
+            mixedChars[totalLen - 1] = source[0];
 
-            return mixedChars.Select(c => (byte)c).ToArray();
+            return mixedChars;
         }
     }
 }

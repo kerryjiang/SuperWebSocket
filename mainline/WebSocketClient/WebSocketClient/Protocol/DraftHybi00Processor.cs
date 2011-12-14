@@ -129,9 +129,10 @@ namespace SuperWebSocket.WebSocketClient.Protocol
             int k2FinalNum = (int)(intK2 / k2Spaces);
 
             //Getting byte parts
-            byte[] b1 = BitConverter.GetBytes(k1FinalNum).Reverse().ToArray();
-            byte[] b2 = BitConverter.GetBytes(k2FinalNum).Reverse().ToArray();
-            //byte[] b3 = Encoding.UTF8.GetBytes(secKey3);
+            byte[] b1 = BitConverter.GetBytes(k1FinalNum);
+            Array.Reverse(b1);
+            byte[] b2 = BitConverter.GetBytes(k2FinalNum);
+            Array.Reverse(b2);
             byte[] b3 = secKey3;
 
             //Concatenating everything into 1 byte array for hashing.
@@ -157,33 +158,24 @@ namespace SuperWebSocket.WebSocketClient.Protocol
             int charLen = m_Random.Next(3, totalLen - 1 - spaceLen);
             int digLen = totalLen - spaceLen - charLen;
 
-            List<byte> source = new List<byte>(totalLen);
+            byte[] source = new byte[totalLen];
+
+            var pos = 0;
 
             for (int i = 0; i < spaceLen; i++)
-                source.Add((byte)' ');
+                source[pos++]  = (byte)' ';
 
             for (int i = 0; i < charLen; i++)
             {
-                source.Add((byte)m_CharLib[m_Random.Next(0, m_CharLib.Count - 1)]);
+                source[pos++] = (byte)m_CharLib[m_Random.Next(0, m_CharLib.Count - 1)];
             }
 
             for (int i = 0; i < digLen; i++)
             {
-                source.Add((byte)m_DigLib[m_Random.Next(0, m_DigLib.Count - 1)]);
+                source[pos++] = (byte)m_DigLib[m_Random.Next(0, m_DigLib.Count - 1)];
             }
 
-            byte[] mixedChars = new byte[totalLen];
-
-            for (int i = 0; i < totalLen - 1; i++)
-            {
-                int pos = m_Random.Next(0, source.Count - 1);
-                mixedChars[i] = source[pos];
-                source.RemoveAt(pos);
-            }
-
-            mixedChars[totalLen - 1] = source[0];
-
-            return mixedChars;
+            return source.RandomOrder();
         }
     }
 }

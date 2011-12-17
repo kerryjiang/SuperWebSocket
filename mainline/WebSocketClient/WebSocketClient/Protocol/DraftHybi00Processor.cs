@@ -104,6 +104,19 @@ namespace SuperWebSocket.WebSocketClient.Protocol
             if (!string.IsNullOrEmpty(WebSocket.SubProtocol))
                 handshakeBuilder.AppendLine(string.Format("Sec-WebSocket-Protocol: {0}", WebSocket.SubProtocol));
 
+            var cookies = WebSocket.Cookies;
+
+            if (cookies != null && cookies.Count > 0)
+            {
+                string[] cookiePairs = new string[cookies.Count];
+                for (int i = 0; i < cookies.Count; i++)
+                {
+                    var item = cookies[i];
+                    cookiePairs[i] = item.Key + "=" + Uri.EscapeUriString(item.Value);
+                }
+                handshakeBuilder.AppendLine(string.Format("Cookie: {0}", string.Join(";", cookiePairs)));
+            }
+
             handshakeBuilder.AppendLine();
             handshakeBuilder.Append(Encoding.UTF8.GetString(secKey3, 0, secKey3.Length));
 

@@ -25,6 +25,8 @@ namespace SuperWebSocket.WebSocketClient
 
         internal IDictionary<object, object> Items { get; private set; }
 
+        internal List<KeyValuePair<string, string>> Cookies { get; private set; }
+
         public WebSocketState State { get; private set; }
 
         protected IClientCommandReader<WebSocketCommandInfo> CommandReader { get; private set; }
@@ -39,26 +41,37 @@ namespace SuperWebSocket.WebSocketClient
         }
 
         public WebSocket(string uri, WebSocketVersion version)
-            : this(uri, string.Empty, version)
+            : this(uri, string.Empty, null, version)
         {
 
         }
 
         public WebSocket(string uri, string subProtocol)
-            : this(uri, subProtocol, WebSocketVersion.DraftHybi10)
+            : this(uri, subProtocol, null, WebSocketVersion.DraftHybi10)
         {
 
         }
 
-        public WebSocket(string uri, string subProtocol, WebSocketVersion version)
-            : this(uri, subProtocol, GetProtocolProcessor(version))
+        public WebSocket(string uri, List<KeyValuePair<string, string>> cookies)
+            : this(uri, string.Empty, cookies, WebSocketVersion.DraftHybi00)
+        {
+
+        }
+
+        public WebSocket(string uri, string subProtocol, List<KeyValuePair<string, string>> cookies)
+            : this(uri, subProtocol, cookies, WebSocketVersion.DraftHybi00)
+        {
+
+        }
+
+        public WebSocket(string uri, string subProtocol, List<KeyValuePair<string, string>> cookies, WebSocketVersion version)
         {
             Version = version;
-        }
+            ProtocolProcessor = GetProtocolProcessor(version);
+            ProtocolProcessor.Initialize(this);
+            CommandReader = ProtocolProcessor.CreateHandshakeReader();
 
-        public WebSocket(string uri, string subProtocol, IProtocolProcessor protocolProcessor)
-        {
-            CommandReader = protocolProcessor.CreateHandshakeReader();
+            Cookies = cookies;
 
             var handshakeCmd = new Command.Handshake();
             m_CommandDict.Add(handshakeCmd.Name, handshakeCmd);
@@ -72,9 +85,6 @@ namespace SuperWebSocket.WebSocketClient
             m_CommandDict.Add(pongCmd.Name, pongCmd);
             
             State = WebSocketState.None;
-
-            ProtocolProcessor = protocolProcessor;
-            ProtocolProcessor.Initialize(this);
 
             TargetUri = new Uri(uri);
 

@@ -64,6 +64,12 @@ namespace SuperWebSocket.WebSocketClient
 
         }
 
+        public WebSocket(string uri, string subProtocol, WebSocketVersion version)
+            : this(uri, subProtocol, null, version)
+        {
+
+        }
+
         public WebSocket(string uri, string subProtocol, List<KeyValuePair<string, string>> cookies, WebSocketVersion version)
         {
             Version = version;

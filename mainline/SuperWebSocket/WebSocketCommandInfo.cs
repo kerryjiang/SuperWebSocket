@@ -35,6 +35,8 @@ namespace SuperWebSocket
             var opCode = frames[0].OpCode;
             Key = opCode.ToString();
 
+            int offset, length;
+
             if (opCode != 2)
             {
                 var stringBuilder = new StringBuilder();
@@ -43,37 +45,41 @@ namespace SuperWebSocket
                 {
                     var frame = frames[i];
 
-                    var data = frame.InnerData.ToArrayData(frame.InnerData.Count - (int)frame.ActualPayloadLength, (int)frame.ActualPayloadLength);
+                    offset = frame.InnerData.Count - (int)frame.ActualPayloadLength;
+                    length = (int)frame.ActualPayloadLength;
 
                     if (frame.HasMask)
                     {
-                        data = DecodeMask(data, frame.MaskKey);
+                        frame.InnerData.DecodeMask(frame.MaskKey, offset, length);
                     }
 
-                    stringBuilder.Append(Encoding.UTF8.GetString(data));
+                    stringBuilder.Append(frame.InnerData.Decode(Encoding.UTF8, offset, length));
                 }
 
                 Text = stringBuilder.ToString();
             }
             else
             {
-                var resultBuffer = new ArraySegmentList<byte>();
+                var resultBuffer = new byte[frames.Sum(f => (int)f.ActualPayloadLength)];
+
+                int copied = 0;
 
                 for (var i = 0; i < frames.Count; i++)
                 {
                     var frame = frames[i];
 
-                    var data = frame.InnerData.ToArrayData(frame.InnerData.Count - (int)frame.ActualPayloadLength, (int)frame.ActualPayloadLength);
+                    offset = frame.InnerData.Count - (int)frame.ActualPayloadLength;
+                    length = (int)frame.ActualPayloadLength;
 
                     if (frame.HasMask)
                     {
-                        data = DecodeMask(data, frame.MaskKey);
+                        frame.InnerData.DecodeMask(frame.MaskKey, offset, length);
                     }
 
-                    resultBuffer.AddSegment(new ArraySegment<byte>(data));
+                    frame.InnerData.CopyTo(resultBuffer, offset, copied, length);
                 }
 
-                Data = resultBuffer.ToArrayData();
+                Data = resultBuffer;
             }
         }
 
@@ -86,27 +92,23 @@ namespace SuperWebSocket
         {
             Key = frame.OpCode.ToString();
 
-            var data = frame.InnerData.ToArrayData(frame.InnerData.Count - (int)frame.ActualPayloadLength, (int)frame.ActualPayloadLength);
+            int offset = frame.InnerData.Count - (int)frame.ActualPayloadLength;
+            int length = (int)frame.ActualPayloadLength;
 
             if (frame.HasMask)
             {
-                data = DecodeMask(data, frame.MaskKey);
+                frame.InnerData.DecodeMask(frame.MaskKey, offset, length);
             }
 
             if (frame.OpCode != 2)
-                Text = Encoding.UTF8.GetString(data);
-            else
-                Data = data;
-        }
-
-        private byte[] DecodeMask(byte[] data, byte[] mask)
-        {
-            for (var i = 0; i < data.Length; i++)
             {
-                data[i] = (byte)(data[i] ^ mask[i % 4]);
+                Text = frame.InnerData.Decode(Encoding.UTF8, offset, length);
+                Console.WriteLine("Decoded: {0}, Len: {1}, Text: {2}", Text, length, Encoding.UTF8.GetString(frame.InnerData.ToArrayData(offset, length)));
             }
-
-            return data;
+            else
+            {
+                Data = frame.InnerData.ToArrayData(offset, length);
+            }
         }
 
         public string Key { get; private set; }

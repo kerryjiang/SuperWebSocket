@@ -98,9 +98,9 @@ namespace SuperWebSocketTest
 
             Random rd = new Random();
 
-            ArraySegmentList<byte> receivedBuffer = new ArraySegmentList<byte>();
+            ArraySegmentList receivedBuffer = new ArraySegmentList();
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 100; i++)
             {
                 int startPos = rd.Next(0, messageSource.Length - 2);
                 int endPos = rd.Next(startPos + 1, messageSource.Length - 1);
@@ -181,7 +181,7 @@ namespace SuperWebSocketTest
 
             Random rd = new Random();
 
-            ArraySegmentList<byte> receivedBuffer = new ArraySegmentList<byte>();
+            ArraySegmentList receivedBuffer = new ArraySegmentList();
 
             for (int i = 0; i < 10; i++)
             {

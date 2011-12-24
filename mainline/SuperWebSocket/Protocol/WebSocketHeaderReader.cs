@@ -14,27 +14,42 @@ namespace SuperWebSocket.Protocol
     {
         private static readonly byte[] m_HeaderTerminator = Encoding.UTF8.GetBytes("\r\n\r\n");
 
+        private SearchMarkState<byte> m_SearchState;
+
         public WebSocketHeaderReader(IAppServer server)
             : base(server)
         {
-
+            m_SearchState = new SearchMarkState<byte>();
+            m_SearchState.Mark = m_HeaderTerminator;
         }
 
         public override WebSocketCommandInfo FindCommandInfo(IAppSession session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
         {
             left = 0;
 
-            AddArraySegment(readBuffer, offset, length, isReusableBuffer);
+            var result = readBuffer.SearchMark(offset, length, m_SearchState);
 
-            int? result = BufferSegments.SearchMark(m_HeaderTerminator);
-
-            if (!result.HasValue || result.Value <= 0)
+            if (result < 0)
             {
-                NextCommandReader = this;
+                this.AddArraySegment(readBuffer, offset, length, isReusableBuffer);
                 return null;
             }
 
-            string header = Encoding.UTF8.GetString(BufferSegments.ToArrayData(0, result.Value));
+            int findLen = result - offset;
+
+            string header = string.Empty;
+
+            if (this.BufferSegments.Count > 0)
+            {
+                if (findLen > 0)
+                    this.AddArraySegment(readBuffer, offset, findLen, false);
+
+                header = this.BufferSegments.Decode(Encoding.UTF8);
+            }
+            else
+            {
+                header = Encoding.UTF8.GetString(readBuffer, offset, findLen);
+            }
 
             var webSocketSession = session as IWebSocketSession;
 
@@ -44,9 +59,9 @@ namespace SuperWebSocket.Protocol
             var secWebSocketKey2 = webSocketSession.Items.GetValue<string>(WebSocketConstant.SecWebSocketKey2, string.Empty);
             var secWebSocketVersion = webSocketSession.SecWebSocketVersion;
 
-            left = BufferSegments.Count - result.Value - m_HeaderTerminator.Length;
+            left = length - findLen - m_HeaderTerminator.Length;
 
-            BufferSegments.ClearSegements();
+            this.ClearBufferSegments();
 
             if (string.IsNullOrEmpty(secWebSocketKey1) && string.IsNullOrEmpty(secWebSocketKey2))
             {
@@ -63,14 +78,14 @@ namespace SuperWebSocket.Protocol
             {
                 //draft-hixie-thewebsocketprotocol-76/draft-ietf-hybi-thewebsocketprotocol-00
                 //Read SecWebSocketKey3(8 bytes)
-                if (left == 8)
+                if (left == SecKey3Len)
                 {
                     webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = readBuffer.CloneRange(offset + length - left, left);
                     left = 0;
                     Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession);
                     return HandshakeCommandInfo;
                 }
-                else if (left > 8)
+                else if (left > SecKey3Len)
                 {
                     webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = readBuffer.CloneRange(offset + length - left, 8);
                     left -= 8;

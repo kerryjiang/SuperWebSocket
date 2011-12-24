@@ -23,13 +23,14 @@ namespace SuperWebSocketWeb
         private object m_SessionSyncRoot = new object();
         private object m_SecureSessionSyncRoot = new object();
         private Timer m_SecureSocketPushTimer;
+        private int m_Index = 0;
 
         void Application_Start(object sender, EventArgs e)
         {
             LogUtil.Setup();
             StartSuperWebSocketByConfig();
             //StartSuperWebSocketByProgramming();
-            var ts = new TimeSpan(0, 0, 0, 0, 5000);
+            var ts = new TimeSpan(0, 0, 0, 0, 5);
             m_SecureSocketPushTimer = new Timer(OnSecureSocketPushTimerCallback, new object(), ts, ts);
         }
 
@@ -37,7 +38,7 @@ namespace SuperWebSocketWeb
         {
             lock (m_SecureSessionSyncRoot)
             {
-                m_SecureSessions.ForEach(s => s.SendResponseAsync("Push data from WebSocket. Current Time: " + DateTime.Now));
+                m_SecureSessions.ForEach(s => s.SendResponseAsync("Push data from WebSocket. [" + (m_Index++) + "] Current Time: " + DateTime.Now));
             }
         }
 

@@ -107,18 +107,19 @@ namespace SuperWebSocket.WebSocketClient
             {
                 throw new ArgumentException("Invalid websocket address's schema.", "uri");
             }
-
-            IPAddress ipAddress;
-
-            if (IPAddress.TryParse(TargetUri.Host, out ipAddress))
-                RemoteEndPoint = new IPEndPoint(ipAddress, TargetUri.Port);
-            else
-                RemoteEndPoint = new DnsEndPoint(TargetUri.Host, TargetUri.Port);         
         }
 
         public void Open()
         {
             State = WebSocketState.Connecting;
+            
+            IPAddress ipAddress;
+
+            if (IPAddress.TryParse(TargetUri.Host, out ipAddress))
+                RemoteEndPoint = new IPEndPoint(ipAddress, TargetUri.Port);
+            else
+                RemoteEndPoint = new DnsEndPoint(TargetUri.Host, TargetUri.Port);
+            
             Connect();
         }
 

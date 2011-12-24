@@ -234,7 +234,7 @@ namespace SuperWebSocketTest
 
             Random rd = new Random();
 
-            ArraySegmentList<byte> receivedBuffer = new ArraySegmentList<byte>();
+            ArraySegmentList receivedBuffer = new ArraySegmentList();
 
             for (int i = 0; i < 100; i++)
             {
@@ -282,7 +282,7 @@ namespace SuperWebSocketTest
 
             Random rd = new Random();
 
-            ArraySegmentList<byte> receivedBuffer = new ArraySegmentList<byte>();
+            ArraySegmentList receivedBuffer = new ArraySegmentList();
 
             for (int i = 0; i < 10; i++)
             {
@@ -328,7 +328,7 @@ namespace SuperWebSocketTest
             socket.Close();
         }
 
-        protected void ReceiveMessage(Stream stream, ArraySegmentList<byte> commandBuffer, int predictCount)
+        protected void ReceiveMessage(Stream stream, ArraySegmentList commandBuffer, int predictCount)
         {
             byte[] buffer = new byte[1024];
             int thisRead = 0;
@@ -337,7 +337,7 @@ namespace SuperWebSocketTest
             while ((thisRead = stream.Read(buffer, 0, Math.Min(left, buffer.Length))) > 0)
             {
                 Console.WriteLine("Current read: {0}", thisRead);
-                commandBuffer.AddSegment(new ArraySegment<byte>(buffer.Take(thisRead).ToArray()));
+                commandBuffer.AddSegment(buffer, 0, thisRead, true);
                 left -= thisRead;
 
                 if (left <= 0)

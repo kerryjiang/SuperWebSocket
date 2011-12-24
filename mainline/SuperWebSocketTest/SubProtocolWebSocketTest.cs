@@ -80,7 +80,7 @@ namespace SuperWebSocketTest
             stream.Write(new byte[] { WebSocketConstant.EndByte }, 0, 1);
             stream.Flush();
 
-            var receivedBuffer = new ArraySegmentList<byte>();
+            var receivedBuffer = new ArraySegmentList();
 
             foreach (var p in parameters)
             {
@@ -114,7 +114,7 @@ namespace SuperWebSocketTest
 
             Random rd = new Random();
 
-            ArraySegmentList<byte> receivedBuffer = new ArraySegmentList<byte>();
+            ArraySegmentList receivedBuffer = new ArraySegmentList();
 
             for (int i = 0; i < 10; i++)
             {
@@ -165,7 +165,7 @@ namespace SuperWebSocketTest
 
             Random rd = new Random();
 
-            ArraySegmentList<byte> receivedBuffer = new ArraySegmentList<byte>();
+            ArraySegmentList receivedBuffer = new ArraySegmentList();
 
             byte[] commandNameData = Encoding.UTF8.GetBytes("ECHO ");
 

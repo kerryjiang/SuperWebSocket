@@ -30,16 +30,13 @@ namespace SuperWebSocket.Protocol
         public WebSocketDataFrameReader(IAppServer appServer)
         {
             AppServer = appServer;
-            m_Frame = new WebSocketDataFrame(new ArraySegmentList<byte>());
+            m_Frame = new WebSocketDataFrame(new ArraySegmentList());
             m_PartReader = DataFramePartReader.NewReader;
         }
 
-        protected void AddArraySegment(ArraySegmentList<byte> segments, byte[] buffer, int offset, int length, bool isReusableBuffer)
+        protected void AddArraySegment(ArraySegmentList segments, byte[] buffer, int offset, int length, bool isReusableBuffer)
         {
-            if (isReusableBuffer)
-                segments.AddSegment(new ArraySegment<byte>(buffer.CloneRange(offset, length)));
-            else
-                segments.AddSegment(new ArraySegment<byte>(buffer, offset, length));
+            segments.AddSegment(buffer, offset, length, isReusableBuffer);
         }
 
         public WebSocketCommandInfo FindCommandInfo(IAppSession session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
@@ -72,7 +69,7 @@ namespace SuperWebSocket.Protocol
                         if (m_PreviousFrames != null && m_PreviousFrames.Count > 0)
                         {
                             m_PreviousFrames.Add(m_Frame);
-                            m_Frame = new WebSocketDataFrame(new ArraySegmentList<byte>());
+                            m_Frame = new WebSocketDataFrame(new ArraySegmentList());
                             commandInfo = new WebSocketCommandInfo(m_PreviousFrames);
                             m_PreviousFrames = null;
                         }
@@ -88,7 +85,7 @@ namespace SuperWebSocket.Protocol
                             m_PreviousFrames = new List<WebSocketDataFrame>();
 
                         m_PreviousFrames.Add(m_Frame);
-                        m_Frame = new WebSocketDataFrame(new ArraySegmentList<byte>());
+                        m_Frame = new WebSocketDataFrame(new ArraySegmentList());
 
                         commandInfo = null;
                     }

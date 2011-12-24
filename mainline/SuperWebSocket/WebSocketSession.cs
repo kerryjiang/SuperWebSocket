@@ -169,12 +169,12 @@ namespace SuperWebSocket
 
         public void SendResponseAsync(string message)
         {
-            Async.Run(() => SendResponse(message));
+            Async.Run((s) => SendResponse((string)s), message);
         }
 
         public void SendResponseAsync(string message, params object[] paramValues)
         {
-            Async.Run(() => SendResponse(message, paramValues));
+            SendResponseAsync(string.Format(message, paramValues));
         }
 
         public void Close(string reasonText)

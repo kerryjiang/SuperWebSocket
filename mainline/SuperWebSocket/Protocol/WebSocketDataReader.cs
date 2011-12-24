@@ -52,14 +52,14 @@ namespace SuperWebSocket.Protocol
                         if (BufferSegments.Count <= 0)
                         {
                             var commandInfo = new WebSocketCommandInfo(Encoding.UTF8.GetString(readBuffer, offset + skipByteCount, i - offset - skipByteCount));
-                            Reset(false);
+                            Reset();
                             return commandInfo;
                         }
                         else
                         {
-                            AddArraySegment(readBuffer, offset + skipByteCount, i - offset - skipByteCount, isReusableBuffer);
-                            var commandInfo = new WebSocketCommandInfo(Encoding.UTF8.GetString(BufferSegments.ToArrayData()));
-                            Reset(true);
+                            AddArraySegment(readBuffer, offset + skipByteCount, i - offset - skipByteCount, false);
+                            var commandInfo = new WebSocketCommandInfo(BufferSegments.Decode(Encoding.UTF8));
+                            Reset();
                             return commandInfo;
                         }
                     }
@@ -113,28 +113,27 @@ namespace SuperWebSocket.Protocol
                     if (BufferSegments.Count <= 0)
                     {
                         var commandInfo = new WebSocketCommandInfo(Encoding.UTF8.GetString(readBuffer, offset + skipByteCount, requiredSize));
-                        Reset(false);
+                        Reset();
                         return commandInfo;
                     }
                     else
                     {
-                        AddArraySegment(readBuffer, offset + skipByteCount, requiredSize, isReusableBuffer);
-                        var commandInfo = new WebSocketCommandInfo(Encoding.UTF8.GetString(BufferSegments.ToArrayData()));
-                        Reset(true);
+                        AddArraySegment(readBuffer, offset + skipByteCount, requiredSize, false);
+                        var commandInfo = new WebSocketCommandInfo(BufferSegments.Decode(Encoding.UTF8));
+                        Reset();
                         return commandInfo;
                     }
                 }
             }
         }
 
-        void Reset(bool clearBuffer)
+        void Reset()
         {
             m_Type = null;
             m_Length = null;
             m_TempLength = 0;
 
-            if (clearBuffer)
-                BufferSegments.ClearSegements();
+            ClearBufferSegments();
         }
     }
 }

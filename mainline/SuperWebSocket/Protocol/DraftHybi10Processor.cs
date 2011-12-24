@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using SuperSocket.Common;
+using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket.Protocol
@@ -13,6 +16,10 @@ namespace SuperWebSocket.Protocol
     {
         private const string m_SecWebSocketVersion = "8";
         private const string m_Magic = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
+
+        private Queue<ArraySegment<byte>> m_SendingQueue = new Queue<ArraySegment<byte>>();
+
+        private volatile bool m_InSending = false;
 
         public override bool Handshake(IWebSocketSession session, WebSocketReaderBase previousReader, out ICommandReader<WebSocketCommandInfo> dataFrameReader)
         {
@@ -118,8 +125,63 @@ namespace SuperWebSocket.Protocol
 
             headData[0] = (byte)(opCode | 0x80);
 
-            session.SocketSession.SendResponse(headData);
-            session.SocketSession.SendResponse(playloadData);
+            EnqueueSend(session,
+                new ArraySegment<byte>[]
+                {
+                    new ArraySegment<byte>(headData, 0, headData.Length),
+                    new ArraySegment<byte>(playloadData, 0, playloadData.Length)
+                });
+        }
+
+        private void DequeueSend(IWebSocketSession session)
+        {
+            if (m_InSending)
+                return;
+
+            m_InSending = true;
+
+            while (true)
+            {
+                if (session.Status != SessionStatus.Healthy)
+                    break;
+
+                ArraySegment<byte> segment;
+
+                lock (m_SendingQueue)
+                {
+                    if (m_SendingQueue.Count <= 0)
+                        break;
+
+                    segment = m_SendingQueue.Dequeue();
+                }
+
+                session.SocketSession.SendResponse(segment.Array, segment.Offset, segment.Count);
+            }
+
+            m_InSending = false;
+        }
+
+        private void EnqueueSend(IWebSocketSession session, IList<ArraySegment<byte>> data)
+        {
+            lock (m_SendingQueue)
+            {
+                for (var i = 0; i < data.Count; i++)
+                {
+                    m_SendingQueue.Enqueue(data[i]);
+                }
+            }
+
+            DequeueSend(session);
+        }
+
+        private void EnqueueSend(IWebSocketSession session, ArraySegment<byte> data)
+        {
+            lock (m_SendingQueue)
+            {
+                m_SendingQueue.Enqueue(data);
+            }
+
+            DequeueSend(session);
         }
     }
 }

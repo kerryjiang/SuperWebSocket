@@ -11,6 +11,8 @@ namespace SuperWebSocket.Protocol
 {
     public abstract class WebSocketReaderBase : CommandReaderBase<WebSocketCommandInfo>
     {
+        protected const int SecKey3Len = 8;
+
         static WebSocketReaderBase()
         {
             HandshakeCommandInfo = new WebSocketCommandInfo(OpCode.Handshake.ToString(), string.Empty);

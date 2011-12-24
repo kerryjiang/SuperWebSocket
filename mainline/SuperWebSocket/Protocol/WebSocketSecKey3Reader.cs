@@ -22,25 +22,25 @@ namespace SuperWebSocket.Protocol
 
             int total = BufferSegments.Count + length;
 
-            if (total == 8)
+            if (total == SecKey3Len)
             {
-                List<byte> key = new List<byte>();
-                key.AddRange(BufferSegments.ToArrayData());
-                key.AddRange(readBuffer.CloneRange(offset, length));
-                webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = key.ToArray();
-                BufferSegments.ClearSegements();
+                byte[] key = new byte[SecKey3Len];
+                BufferSegments.CopyTo(key);
+                Array.Copy(readBuffer, offset, key, BufferSegments.Count, length);
+                webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = key;
+                BufferSegments.Clear();
                 left = 0;
                 Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession);
                 return HandshakeCommandInfo;
             }
-            else if (total > 8)
+            else if (total > SecKey3Len)
             {
-                List<byte> key = new List<byte>();
-                key.AddRange(BufferSegments.ToArrayData());
-                key.AddRange(readBuffer.CloneRange(offset, 8 - BufferSegments.Count));
-                webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = key.ToArray();
-                BufferSegments.ClearSegements();
-                left = total - 8;
+                byte[] key = new byte[8];
+                BufferSegments.CopyTo(key);
+                Array.Copy(readBuffer, offset, key, BufferSegments.Count, SecKey3Len - BufferSegments.Count);
+                webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = key;
+                BufferSegments.Clear();
+                left = total - SecKey3Len;
                 Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession);
                 return HandshakeCommandInfo;
             }

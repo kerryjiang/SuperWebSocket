@@ -8,14 +8,14 @@ namespace SuperWebSocket.Protocol
 {
     public class WebSocketDataFrame
     {
-        private ArraySegmentList<byte> m_InnerData;
+        private ArraySegmentList m_InnerData;
 
-        public ArraySegmentList<byte> InnerData
+        public ArraySegmentList InnerData
         {
             get { return m_InnerData; }
         }
 
-        public WebSocketDataFrame(ArraySegmentList<byte> data)
+        public WebSocketDataFrame(ArraySegmentList data)
         {
             m_InnerData = data;
             m_InnerData.ClearSegements();
@@ -71,19 +71,16 @@ namespace SuperWebSocket.Protocol
                     m_ActualPayloadLength = payloadLength;
                 else if (payloadLength == 126)
                 {
-                    var sizeData = m_InnerData.ToArrayData(2, 2);
-                    m_ActualPayloadLength = (int)sizeData[0] * 256 + (int)sizeData[1];
+                    m_ActualPayloadLength = (int)m_InnerData[2] * 256 + (int)m_InnerData[3];
                 }
                 else
                 {
-                    var sizeData = m_InnerData.ToArrayData(2, 8);
-
                     long len = 0;
                     int n = 1;
 
                     for (int i = 7; i >= 0; i--)
                     {
-                        len += (int)sizeData[i] * n;
+                        len += (int)m_InnerData[i + 2] * n;
                         n *= 256;
                     }
 

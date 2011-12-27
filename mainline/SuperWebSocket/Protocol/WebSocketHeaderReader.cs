@@ -19,8 +19,7 @@ namespace SuperWebSocket.Protocol
         public WebSocketHeaderReader(IAppServer server)
             : base(server)
         {
-            m_SearchState = new SearchMarkState<byte>();
-            m_SearchState.Mark = m_HeaderTerminator;
+            m_SearchState = new SearchMarkState<byte>(m_HeaderTerminator);
         }
 
         public override WebSocketCommandInfo FindCommandInfo(IAppSession session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)

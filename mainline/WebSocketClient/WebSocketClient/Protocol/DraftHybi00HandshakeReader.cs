@@ -12,6 +12,9 @@ namespace SuperWebSocket.WebSocketClient.Protocol
         private int m_ReceivedChallengeLength = -1;
         private int m_ExpectedChallengeLength = 16;
 
+        private WebSocketCommandInfo m_HandshakeCommand = null;
+        private byte[] m_Challenges = new byte[16];
+
         public DraftHybi00HandshakeReader(WebSocket websocket)
             : base(websocket)
         {
@@ -25,6 +28,7 @@ namespace SuperWebSocket.WebSocketClient.Protocol
 
         public override WebSocketCommandInfo GetCommandInfo(byte[] readBuffer, int offset, int length, out int left)
         {
+            //haven't receive handshake header
             if (m_ReceivedChallengeLength < 0)
             {
                 var commandInfo = base.GetCommandInfo(readBuffer, offset, length, out left);
@@ -32,34 +36,35 @@ namespace SuperWebSocket.WebSocketClient.Protocol
                 if (commandInfo == null)
                     return null;
 
+                m_ReceivedChallengeLength = 0;
+                m_HandshakeCommand = commandInfo;
+
+                var challengeOffset = offset + length - left;
+
                 if (left < m_ExpectedChallengeLength)
                 {
-                    m_ReceivedChallengeLength = left;
                     if (left > 0)
-                        this.AddArraySegment(readBuffer, offset + length - left, left);
+                    {
+                        Buffer.BlockCopy(readBuffer, challengeOffset, m_Challenges, 0, left);
+                        m_ReceivedChallengeLength = left;
+                    }
+
                     return null;
                 }
                 else if (left == m_ExpectedChallengeLength)
                 {
-                    byte[] challenges = readBuffer.CloneRange(offset + length - left, left);
+                    Buffer.BlockCopy(readBuffer, challengeOffset, m_Challenges, 0, left);
                     SetDataReader();
-                    return new WebSocketCommandInfo
-                        {
-                            Key = OpCode.Handshake.ToString(),
-                            Data = challenges
-                        };
+                    m_HandshakeCommand.Data = m_Challenges;
+                    return m_HandshakeCommand;
                 }
                 else
                 {
-                    byte[] challenges = readBuffer.CloneRange(offset + length - left, m_ExpectedChallengeLength);
+                    Buffer.BlockCopy(readBuffer, challengeOffset, m_Challenges, 0, m_ExpectedChallengeLength);
                     left -= m_ExpectedChallengeLength;
-
                     SetDataReader();
-                    return new WebSocketCommandInfo
-                    {
-                        Key = OpCode.Handshake.ToString(),
-                        Data = challenges
-                    };
+                    m_HandshakeCommand.Data = m_Challenges;
+                    return m_HandshakeCommand;
                 }
             }
             else
@@ -68,37 +73,27 @@ namespace SuperWebSocket.WebSocketClient.Protocol
                 
                 if (receivedTotal < m_ExpectedChallengeLength)
                 {
+                    Buffer.BlockCopy(readBuffer, offset, m_Challenges, m_ReceivedChallengeLength, length);
                     left = 0;
                     m_ReceivedChallengeLength = receivedTotal;
                     return null;
                 }
                 else if (receivedTotal == m_ExpectedChallengeLength)
                 {
+                    Buffer.BlockCopy(readBuffer, offset, m_Challenges, m_ReceivedChallengeLength, length);
                     left = 0;
-                    this.AddArraySegment(readBuffer, offset, length);
-                    byte[] challenges = BufferSegments.ToArrayData();
-                    BufferSegments.ClearSegements();
-
                     SetDataReader();
-                    return new WebSocketCommandInfo
-                    {
-                        Key = OpCode.Handshake.ToString(),
-                        Data = challenges
-                    };
+                    m_HandshakeCommand.Data = m_Challenges;
+                    return m_HandshakeCommand;
                 }
                 else
                 {
-                    this.AddArraySegment(readBuffer, offset, m_ExpectedChallengeLength - m_ReceivedChallengeLength);
-                    byte[] challenges = BufferSegments.ToArrayData();
-                    BufferSegments.ClearSegements();
-                    left = length - (m_ExpectedChallengeLength - m_ReceivedChallengeLength);
-
+                    var parsedLen = m_ExpectedChallengeLength - m_ReceivedChallengeLength;
+                    Buffer.BlockCopy(readBuffer, offset, m_Challenges, m_ReceivedChallengeLength, parsedLen);
+                    left = length - parsedLen;
                     SetDataReader();
-                    return new WebSocketCommandInfo
-                    {
-                        Key = OpCode.Handshake.ToString(),
-                        Data = challenges
-                    };
+                    m_HandshakeCommand.Data = m_Challenges;
+                    return m_HandshakeCommand;
                 }
             }
         }

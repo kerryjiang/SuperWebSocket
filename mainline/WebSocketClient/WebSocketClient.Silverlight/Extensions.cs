@@ -34,4 +34,13 @@ namespace SuperWebSocket.WebSocketClient
             return new MD5Managed();
         }
     }
+
+
+    public static class SHA1
+    {
+        public static HashAlgorithm Create()
+        {
+            return new SHA1Managed();
+        }
+    }
 }

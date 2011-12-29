@@ -10,16 +10,18 @@ namespace SuperWebSocket.WebSocketClient.Protocol
     {
         static HandshakeReader()
         {
-            DefaultHandshakeCommandInfo = new WebSocketCommandInfo();
+
         }
 
         public HandshakeReader(WebSocket websocket)
             : base(websocket)
         {
-
+            m_HeadSeachState = new SearchMarkState<byte>(HeaderTerminator);
         }
 
         protected static readonly byte[] HeaderTerminator = Encoding.UTF8.GetBytes(Environment.NewLine + Environment.NewLine);
+
+        private SearchMarkState<byte> m_HeadSeachState;
 
         protected static WebSocketCommandInfo DefaultHandshakeCommandInfo { get; private set; }
 
@@ -27,26 +29,29 @@ namespace SuperWebSocket.WebSocketClient.Protocol
         {
             left = 0;
 
-            this.AddArraySegment(readBuffer, offset, length);
+            var result = readBuffer.SearchMark(offset, length, m_HeadSeachState);
 
-            int? result = BufferSegments.SearchMark(HeaderTerminator);
-
-            if (!result.HasValue || result.Value <= 0)
+            if (result < 0)
+            {
+                AddArraySegment(readBuffer, offset, length);
                 return null;
+            }
 
-            string handshake = Encoding.UTF8.GetString(BufferSegments.ToArrayData(0, result.Value));
+            BufferSegments.AddSegment(readBuffer, offset, result - offset, false);
 
-            ParseHandshake(handshake);
+            string handshake = BufferSegments.Decode(Encoding.UTF8);
 
-            left = BufferSegments.Count - result.Value - HeaderTerminator.Length;
+            left = length - (result - offset + HeaderTerminator.Length);
+
             BufferSegments.ClearSegements();
 
-            return DefaultHandshakeCommandInfo;
-        }
+            m_HeadSeachState.Matched = 0;
 
-        private void ParseHandshake(string handshake)
-        {
-
+            return new WebSocketCommandInfo
+                {
+                    Key = OpCode.Handshake.ToString(),
+                    Text = handshake
+                };
         }
     }
 }

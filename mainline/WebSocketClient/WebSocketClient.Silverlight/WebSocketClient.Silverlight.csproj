@@ -58,9 +58,6 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\WebSocketClient\BinaryUtil.cs">
-      <Link>BinaryUtil.cs</Link>
-    </Compile>
     <Compile Include="..\WebSocketClient\Command\Binary.cs">
       <Link>Command\Binary.cs</Link>
     </Compile>
@@ -97,11 +94,32 @@
     <Compile Include="..\WebSocketClient\Protocol\DraftHybi00Processor.cs">
       <Link>Protocol\DraftHybi00Processor.cs</Link>
     </Compile>
+    <Compile Include="..\WebSocketClient\Protocol\DraftHybi10DataReader.cs">
+      <Link>Protocol\DraftHybi10DataReader.cs</Link>
+    </Compile>
     <Compile Include="..\WebSocketClient\Protocol\DraftHybi10HandshakeReader.cs">
       <Link>Protocol\DraftHybi10HandshakeReader.cs</Link>
     </Compile>
     <Compile Include="..\WebSocketClient\Protocol\DraftHybi10Processor.cs">
       <Link>Protocol\DraftHybi10Processor.cs</Link>
+    </Compile>
+    <Compile Include="..\WebSocketClient\Protocol\FramePartReader\DataFramePartReader.cs">
+      <Link>Protocol\FramePartReader\DataFramePartReader.cs</Link>
+    </Compile>
+    <Compile Include="..\WebSocketClient\Protocol\FramePartReader\ExtendedLenghtReader.cs">
+      <Link>Protocol\FramePartReader\ExtendedLenghtReader.cs</Link>
+    </Compile>
+    <Compile Include="..\WebSocketClient\Protocol\FramePartReader\FixPartReader.cs">
+      <Link>Protocol\FramePartReader\FixPartReader.cs</Link>
+    </Compile>
+    <Compile Include="..\WebSocketClient\Protocol\FramePartReader\IDataFramePartReader.cs">
+      <Link>Protocol\FramePartReader\IDataFramePartReader.cs</Link>
+    </Compile>
+    <Compile Include="..\WebSocketClient\Protocol\FramePartReader\MaskKeyReader.cs">
+      <Link>Protocol\FramePartReader\MaskKeyReader.cs</Link>
+    </Compile>
+    <Compile Include="..\WebSocketClient\Protocol\FramePartReader\PayloadDataReader.cs">
+      <Link>Protocol\FramePartReader\PayloadDataReader.cs</Link>
     </Compile>
     <Compile Include="..\WebSocketClient\Protocol\HandshakeReader.cs">
       <Link>Protocol\HandshakeReader.cs</Link>
@@ -114,6 +132,9 @@
     </Compile>
     <Compile Include="..\WebSocketClient\Protocol\ReaderBase.cs">
       <Link>Protocol\ReaderBase.cs</Link>
+    </Compile>
+    <Compile Include="..\WebSocketClient\Protocol\WebSocketDataFrame.cs">
+      <Link>Protocol\WebSocketDataFrame.cs</Link>
     </Compile>
     <Compile Include="..\WebSocketClient\WebSocket.cs">
       <Link>WebSocket.cs</Link>
@@ -130,6 +151,7 @@
     <Compile Include="..\WebSocketClient\WebSocketVersion.cs">
       <Link>WebSocketVersion.cs</Link>
     </Compile>
+    <Compile Include="ASCIIEncoding.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="MD5.cs" />
     <Compile Include="MD5Managed.cs" />

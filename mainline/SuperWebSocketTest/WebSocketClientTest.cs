@@ -53,9 +53,11 @@ namespace SuperWebSocketTest
         }
 
         [Test]
-        public void ConnectionTest()
+        [TestCase(WebSocketVersion.DraftHybi00)]
+        [TestCase(WebSocketVersion.DraftHybi10)]
+        public void ConnectionTest(WebSocketVersion version)
         {
-            WebSocket webSocketClient = new WebSocket(string.Format("ws://127.0.0.1:{0}/websocket", m_WebSocketServer.Config.Port), "basic", WebSocketVersion.DraftHybi00);
+            WebSocket webSocketClient = new WebSocket(string.Format("ws://127.0.0.1:{0}/websocket", m_WebSocketServer.Config.Port), "basic", version);
             webSocketClient.Opened += new EventHandler(webSocketClient_Opened);
             webSocketClient.Closed += new EventHandler(webSocketClient_Closed);
             webSocketClient.MessageReceived += new EventHandler<MessageReceivedEventArgs>(webSocketClient_MessageReceived);
@@ -91,9 +93,11 @@ namespace SuperWebSocketTest
         }
 
         [Test, Repeat(10)]
-        public void SendMessageTest()
+        [TestCase(WebSocketVersion.DraftHybi00)]
+        [TestCase(WebSocketVersion.DraftHybi10)]
+        public void SendMessageTest(WebSocketVersion version)
         {
-            WebSocket webSocketClient = new WebSocket(string.Format("ws://127.0.0.1:{0}/websocket", m_WebSocketServer.Config.Port), "basic", WebSocketVersion.DraftHybi00);
+            WebSocket webSocketClient = new WebSocket(string.Format("ws://127.0.0.1:{0}/websocket", m_WebSocketServer.Config.Port), "basic", version);
             webSocketClient.Opened += new EventHandler(webSocketClient_Opened);
             webSocketClient.Closed += new EventHandler(webSocketClient_Closed);
             webSocketClient.MessageReceived += new EventHandler<MessageReceivedEventArgs>(webSocketClient_MessageReceived);
@@ -138,9 +142,11 @@ namespace SuperWebSocketTest
 
 
         [Test, Repeat(10)]
-        public void CloseWebSocketTest()
+        [TestCase(WebSocketVersion.DraftHybi00)]
+        [TestCase(WebSocketVersion.DraftHybi10)]
+        public void CloseWebSocketTest(WebSocketVersion version)
         {
-            WebSocket webSocketClient = new WebSocket(string.Format("ws://127.0.0.1:{0}/websocket", m_WebSocketServer.Config.Port), "basic", WebSocketVersion.DraftHybi00);
+            WebSocket webSocketClient = new WebSocket(string.Format("ws://127.0.0.1:{0}/websocket", m_WebSocketServer.Config.Port), "basic", version);
             webSocketClient.Opened += new EventHandler(webSocketClient_Opened);
             webSocketClient.Closed += new EventHandler(webSocketClient_Closed);
             webSocketClient.MessageReceived += new EventHandler<MessageReceivedEventArgs>(webSocketClient_MessageReceived);
@@ -153,7 +159,7 @@ namespace SuperWebSocketTest
 
             webSocketClient.Send("QUIT");
 
-            if (!m_CloseEvent.WaitOne(1000))
+            if (!m_CloseEvent.WaitOne())
                 Assert.Fail("Failed to close session ontime");
 
             Assert.AreEqual(WebSocketState.Closed, webSocketClient.State);

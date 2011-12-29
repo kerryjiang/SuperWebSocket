@@ -53,15 +53,15 @@ namespace SuperWebSocket.WebSocketClient.Protocol
                         }
                         else
                         {
-                            AddArraySegment(readBuffer, offset + skipByteCount, i - offset - skipByteCount);
-                            var commandInfo = new WebSocketCommandInfo(OpCode.Text.ToString(), Encoding.UTF8.GetString(BufferSegments.ToArrayData()));
+                            this.BufferSegments.AddSegment(readBuffer, offset + skipByteCount, i - offset - skipByteCount, false);
+                            var commandInfo = new WebSocketCommandInfo(OpCode.Text.ToString(), BufferSegments.Decode(Encoding.UTF8));
                             Reset(true);
                             return commandInfo;
                         }
                     }
                 }
 
-                AddArraySegment(readBuffer, offset + skipByteCount, length - skipByteCount);
+                this.AddArraySegment(readBuffer, offset + skipByteCount, length - skipByteCount);
                 return null;
             }
             else//10000000: Collect protocol data by length
@@ -100,7 +100,7 @@ namespace SuperWebSocket.WebSocketClient.Protocol
 
                 if (leftSize < requiredSize)
                 {
-                    AddArraySegment(readBuffer, skipByteCount, length - skipByteCount);
+                    this.AddArraySegment(readBuffer, skipByteCount, length - skipByteCount);
                     return null;
                 }
                 else
@@ -115,8 +115,8 @@ namespace SuperWebSocket.WebSocketClient.Protocol
                     }
                     else
                     {
-                        AddArraySegment(readBuffer, offset + skipByteCount, requiredSize);
-                        var commandInfo = new WebSocketCommandInfo(Encoding.UTF8.GetString(BufferSegments.ToArrayData()));
+                        this.BufferSegments.AddSegment(readBuffer, offset + skipByteCount, requiredSize, false);
+                        var commandInfo = new WebSocketCommandInfo(BufferSegments.Decode(Encoding.UTF8));
                         Reset(true);
                         return commandInfo;
                     }

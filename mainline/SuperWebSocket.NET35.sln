@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperWebSocketService.NET35
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperWebSocketTest.NET35", "SuperWebSocketTest\SuperWebSocketTest.NET35.csproj", "{9EF7E84D-B746-4285-A89A-5A515AB540EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Net35", "Client\Client.Net35.csproj", "{FA1DC954-EE1A-4CC8-B0EF-A01A6ECF5189}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{60A5C06A-70AA-4E2A-A3FB-F42500524FBE}"
 	ProjectSection(SolutionItems) = preProject
 		GlobalAssemblyInfo.cs = GlobalAssemblyInfo.cs
@@ -64,16 +62,6 @@ Global
 		{9EF7E84D-B746-4285-A89A-5A515AB540EA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{9EF7E84D-B746-4285-A89A-5A515AB540EA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{9EF7E84D-B746-4285-A89A-5A515AB540EA}.Release|x86.ActiveCfg = Release|Any CPU
-		{FA1DC954-EE1A-4CC8-B0EF-A01A6ECF5189}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FA1DC954-EE1A-4CC8-B0EF-A01A6ECF5189}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FA1DC954-EE1A-4CC8-B0EF-A01A6ECF5189}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{FA1DC954-EE1A-4CC8-B0EF-A01A6ECF5189}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{FA1DC954-EE1A-4CC8-B0EF-A01A6ECF5189}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{FA1DC954-EE1A-4CC8-B0EF-A01A6ECF5189}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FA1DC954-EE1A-4CC8-B0EF-A01A6ECF5189}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FA1DC954-EE1A-4CC8-B0EF-A01A6ECF5189}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{FA1DC954-EE1A-4CC8-B0EF-A01A6ECF5189}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{FA1DC954-EE1A-4CC8-B0EF-A01A6ECF5189}.Release|x86.ActiveCfg = Release|Any CPU
 		{C7BCA9E5-7501-4DC7-A330-8A407007CAE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C7BCA9E5-7501-4DC7-A330-8A407007CAE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C7BCA9E5-7501-4DC7-A330-8A407007CAE2}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU

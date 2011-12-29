@@ -95,19 +95,24 @@ namespace SuperWebSocket
             int offset = frame.InnerData.Count - (int)frame.ActualPayloadLength;
             int length = (int)frame.ActualPayloadLength;
 
-            if (frame.HasMask)
+            if (frame.HasMask && length > 0)
             {
                 frame.InnerData.DecodeMask(frame.MaskKey, offset, length);
             }
 
             if (frame.OpCode != 2)
             {
-                Text = frame.InnerData.Decode(Encoding.UTF8, offset, length);
-                Console.WriteLine("Decoded: {0}, Len: {1}, Text: {2}", Text, length, Encoding.UTF8.GetString(frame.InnerData.ToArrayData(offset, length)));
+                if (length > 0)
+                    Text = frame.InnerData.Decode(Encoding.UTF8, offset, length);
+                else
+                    Text = string.Empty;
             }
             else
             {
-                Data = frame.InnerData.ToArrayData(offset, length);
+                if (length > 0)
+                    Data = frame.InnerData.ToArrayData(offset, length);
+                else
+                    Data = new byte[0];
             }
         }
 

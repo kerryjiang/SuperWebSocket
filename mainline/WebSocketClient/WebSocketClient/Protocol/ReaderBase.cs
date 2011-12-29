@@ -17,15 +17,15 @@ namespace SuperWebSocket.WebSocketClient.Protocol
         public ReaderBase(WebSocket websocket)
         {
             WebSocket = websocket;
-            m_BufferSegments = new ArraySegmentList<byte>();
+            m_BufferSegments = new ArraySegmentList();
         }
 
-        private readonly ArraySegmentList<byte> m_BufferSegments;
+        private readonly ArraySegmentList m_BufferSegments;
 
         /// <summary>
         /// Gets the buffer segments which can help you parse your commands conviniently.
         /// </summary>
-        protected ArraySegmentList<byte> BufferSegments
+        protected ArraySegmentList BufferSegments
         {
             get { return m_BufferSegments; }
         }
@@ -57,7 +57,7 @@ namespace SuperWebSocket.WebSocketClient.Protocol
         /// <param name="length">The length.</param>
         protected void AddArraySegment(byte[] buffer, int offset, int length)
         {
-            BufferSegments.AddSegment(new ArraySegment<byte>(buffer.CloneRange(offset, length)));
+            BufferSegments.AddSegment(buffer, offset, length, true);
         }
 
         /// <summary>

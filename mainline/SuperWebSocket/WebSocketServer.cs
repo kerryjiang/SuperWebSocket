@@ -221,9 +221,12 @@ namespace SuperWebSocket
             else
                 m_UriScheme = "wss";
 
-            m_WebSocketProtocolProcessor = new DraftHybi00Processor
+            m_WebSocketProtocolProcessor = new DraftHybi10Processor
             {
-                NextProcessor = new DraftHybi10Processor()
+                NextProcessor = new Rfc6455Processor
+                {
+                    NextProcessor = new DraftHybi00Processor()
+                }
             };
 
             return true;

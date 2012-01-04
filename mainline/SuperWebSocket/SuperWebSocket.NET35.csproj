@@ -83,6 +83,7 @@
     <Compile Include="Protocol\IProtocolProcessor.cs" />
     <Compile Include="Protocol\OpCode.cs" />
     <Compile Include="Protocol\ProtocolProcessorBase..cs" />
+    <Compile Include="Protocol\Rfc6455Processor.cs" />
     <Compile Include="Protocol\WebSocketDataFrame.cs" />
     <Compile Include="Protocol\WebSocketDataFrameReader.cs" />
     <Compile Include="Protocol\WebSocketDataReader.cs" />

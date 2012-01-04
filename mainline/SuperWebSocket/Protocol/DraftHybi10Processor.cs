@@ -21,14 +21,19 @@ namespace SuperWebSocket.Protocol
 
         private volatile bool m_InSending = false;
 
+        protected virtual string SecWebSocketVersion
+        {
+            get { return m_SecWebSocketVersion; }
+        }
+
         public override bool Handshake(IWebSocketSession session, WebSocketReaderBase previousReader, out ICommandReader<WebSocketCommandInfo> dataFrameReader)
         {
-            dataFrameReader = null;
-
-            if (!m_SecWebSocketVersion.Equals(session.SecWebSocketVersion) && NextProcessor != null)
+            if (!SecWebSocketVersion.Equals(session.SecWebSocketVersion) && NextProcessor != null)
             {
                 return NextProcessor.Handshake(session, previousReader, out dataFrameReader);
             }
+
+            dataFrameReader = null;
 
             session.ProtocolProcessor = this;
 

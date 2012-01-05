@@ -28,35 +28,44 @@ namespace SuperWebSocket.WebSocketClient.Protocol
             var handshakeBuilder = new StringBuilder();
 
 #if SILVERLIGHT
-            handshakeBuilder.AppendLine(string.Format("GET {0} HTTP/1.1", WebSocket.TargetUri.GetPathAndQuery()));
+            handshakeBuilder.AppendFormatWithCrCf("GET {0} HTTP/1.1", WebSocket.TargetUri.GetPathAndQuery());
 #else
-            handshakeBuilder.AppendLine(string.Format("GET {0} HTTP/1.1", WebSocket.TargetUri.PathAndQuery));
+            handshakeBuilder.AppendFormatWithCrCf("GET {0} HTTP/1.1", WebSocket.TargetUri.PathAndQuery);
 #endif
 
-            handshakeBuilder.AppendLine("Upgrade: WebSocket");
-            handshakeBuilder.AppendLine("Connection: Upgrade");
-            handshakeBuilder.AppendLine("Sec-WebSocket-Version: 8");
-            handshakeBuilder.AppendLine(string.Format("Sec-WebSocket-Key: {0}", secKey));
-            handshakeBuilder.AppendLine(string.Format("Host: {0}", WebSocket.TargetUri.Host));
-            handshakeBuilder.AppendLine(string.Format("Origin: {0}", WebSocket.TargetUri.Host));
+            handshakeBuilder.AppendWithCrCf("Upgrade: WebSocket");
+            handshakeBuilder.AppendWithCrCf("Connection: Upgrade");
+            handshakeBuilder.AppendWithCrCf("Sec-WebSocket-Version: 8");
+            handshakeBuilder.Append("Sec-WebSocket-Key: ");
+            handshakeBuilder.AppendWithCrCf(secKey);
+            handshakeBuilder.Append("Host: ");
+            handshakeBuilder.AppendWithCrCf(WebSocket.TargetUri.Host);
+            handshakeBuilder.Append("Origin: ");
+            handshakeBuilder.AppendWithCrCf(WebSocket.TargetUri.Host);
 
             if (!string.IsNullOrEmpty(WebSocket.SubProtocol))
-                handshakeBuilder.AppendLine(string.Format("Sec-WebSocket-Protocol: {0}", WebSocket.SubProtocol));
+            {
+                handshakeBuilder.Append("Sec-WebSocket-Protocol: ");
+                handshakeBuilder.AppendWithCrCf(WebSocket.SubProtocol);
+            }
 
             var cookies = WebSocket.Cookies;
 
             if (cookies != null && cookies.Count > 0)
             {
                 string[] cookiePairs = new string[cookies.Count];
+
                 for (int i = 0; i < cookies.Count; i++)
                 {
                     var item = cookies[i];
                     cookiePairs[i] = item.Key + "=" + Uri.EscapeUriString(item.Value);
                 }
-                handshakeBuilder.AppendLine(string.Format("Cookie: {0}", string.Join(";", cookiePairs)));
+
+                handshakeBuilder.Append("Cookie: ");
+                handshakeBuilder.AppendWithCrCf(string.Join(";", cookiePairs));
             }
 
-            handshakeBuilder.AppendLine();
+            handshakeBuilder.AppendWithCrCf();
 
             byte[] handshakeBuffer = Encoding.UTF8.GetBytes(handshakeBuilder.ToString());
 

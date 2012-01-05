@@ -13,7 +13,7 @@ using System.Text;
 
 namespace SuperWebSocket.WebSocketClient
 {
-    public static class Extensions
+    public static partial class Extensions
     {
         public static string GetString(this Encoding encoding, byte[] buffer)
         {

@@ -79,6 +79,9 @@
     <Compile Include="..\WebSocketClient\DataReceivedEventArgs.cs">
       <Link>DataReceivedEventArgs.cs</Link>
     </Compile>
+    <Compile Include="..\WebSocketClient\Extensions.cs">
+      <Link>Extensions.cs</Link>
+    </Compile>
     <Compile Include="..\WebSocketClient\MessageReceivedEventArgs.cs">
       <Link>MessageReceivedEventArgs.cs</Link>
     </Compile>
@@ -152,7 +155,7 @@
       <Link>WebSocketVersion.cs</Link>
     </Compile>
     <Compile Include="ASCIIEncoding.cs" />
-    <Compile Include="Extensions.cs" />
+    <Compile Include="Extensions.Silverlight.cs" />
     <Compile Include="MD5.cs" />
     <Compile Include="MD5Managed.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -49,6 +49,7 @@
     <Compile Include="Command\Pong.cs" />
     <Compile Include="Command\Text.cs" />
     <Compile Include="DataReceivedEventArgs.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="MessageReceivedEventArgs.cs" />
     <Compile Include="OpCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

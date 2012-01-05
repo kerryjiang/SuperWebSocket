@@ -89,20 +89,27 @@ namespace SuperWebSocket.WebSocketClient.Protocol
             var handshakeBuilder = new StringBuilder();
 
 #if SILVERLIGHT
-            handshakeBuilder.AppendLine(string.Format("GET {0} HTTP/1.1", WebSocket.TargetUri.GetPathAndQuery()));
+            handshakeBuilder.AppendFormatWithCrCf("GET {0} HTTP/1.1", WebSocket.TargetUri.GetPathAndQuery());
 #else
-            handshakeBuilder.AppendLine(string.Format("GET {0} HTTP/1.1", WebSocket.TargetUri.PathAndQuery));
+            handshakeBuilder.AppendFormatWithCrCf("GET {0} HTTP/1.1", WebSocket.TargetUri.PathAndQuery);
 #endif
 
-            handshakeBuilder.AppendLine("Upgrade: WebSocket");
-            handshakeBuilder.AppendLine("Connection: Upgrade");
-            handshakeBuilder.AppendLine(string.Format("Sec-WebSocket-Key1: {0}", secKey1));
-            handshakeBuilder.AppendLine(string.Format("Sec-WebSocket-Key2: {0}", secKey2));
-            handshakeBuilder.AppendLine(string.Format("Host: {0}", WebSocket.TargetUri.Host));
-            handshakeBuilder.AppendLine(string.Format("Origin: {0}", WebSocket.TargetUri.Host));
+            handshakeBuilder.AppendWithCrCf("Upgrade: WebSocket");
+            handshakeBuilder.AppendWithCrCf("Connection: Upgrade");
+            handshakeBuilder.Append("Sec-WebSocket-Key1: ");
+            handshakeBuilder.AppendWithCrCf(secKey1);
+            handshakeBuilder.Append("Sec-WebSocket-Key2: ");
+            handshakeBuilder.AppendWithCrCf(secKey2);
+            handshakeBuilder.Append("Host: ");
+            handshakeBuilder.AppendWithCrCf(WebSocket.TargetUri.Host);
+            handshakeBuilder.Append("Origin: ");
+            handshakeBuilder.AppendWithCrCf(WebSocket.TargetUri.Host);
 
             if (!string.IsNullOrEmpty(WebSocket.SubProtocol))
-                handshakeBuilder.AppendLine(string.Format("Sec-WebSocket-Protocol: {0}", WebSocket.SubProtocol));
+            {
+                handshakeBuilder.Append("Sec-WebSocket-Protocol: ");
+                handshakeBuilder.AppendWithCrCf(WebSocket.SubProtocol);
+            }
 
             var cookies = WebSocket.Cookies;
 
@@ -114,10 +121,11 @@ namespace SuperWebSocket.WebSocketClient.Protocol
                     var item = cookies[i];
                     cookiePairs[i] = item.Key + "=" + Uri.EscapeUriString(item.Value);
                 }
-                handshakeBuilder.AppendLine(string.Format("Cookie: {0}", string.Join(";", cookiePairs)));
+                handshakeBuilder.Append("Cookie: ");
+                handshakeBuilder.AppendWithCrCf(string.Join(";", cookiePairs));
             }
 
-            handshakeBuilder.AppendLine();
+            handshakeBuilder.AppendWithCrCf();
             handshakeBuilder.Append(Encoding.UTF8.GetString(secKey3, 0, secKey3.Length));
 
             byte[] handshakeBuffer = Encoding.UTF8.GetBytes(handshakeBuilder.ToString());

@@ -9,6 +9,9 @@ using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket.Protocol
 {
+    /// <summary>
+    /// http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-00
+    /// </summary>
     class DraftHybi00Processor : ProtocolProcessorBase
     {
         private static readonly byte[] m_ZeroKeyBytes = new byte[0];

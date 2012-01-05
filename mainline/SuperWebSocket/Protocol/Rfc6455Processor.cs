@@ -5,6 +5,9 @@ using System.Text;
 
 namespace SuperWebSocket.Protocol
 {
+    /// <summary>
+    /// http://tools.ietf.org/html/rfc6455
+    /// </summary>
     class Rfc6455Processor : DraftHybi10Processor
     {
         private const string m_SecWebSocketVersion = "13";

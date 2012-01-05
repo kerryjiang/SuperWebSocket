@@ -47,6 +47,7 @@ namespace SuperWebSocket.WebSocketClient.Protocol
                     {
                         Buffer.BlockCopy(readBuffer, challengeOffset, m_Challenges, 0, left);
                         m_ReceivedChallengeLength = left;
+                        left = 0;
                     }
 
                     return null;
@@ -56,6 +57,7 @@ namespace SuperWebSocket.WebSocketClient.Protocol
                     Buffer.BlockCopy(readBuffer, challengeOffset, m_Challenges, 0, left);
                     SetDataReader();
                     m_HandshakeCommand.Data = m_Challenges;
+                    left = 0;
                     return m_HandshakeCommand;
                 }
                 else

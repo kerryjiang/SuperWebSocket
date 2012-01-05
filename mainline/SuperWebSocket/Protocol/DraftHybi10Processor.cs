@@ -12,6 +12,9 @@ using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket.Protocol
 {
+    /// <summary>
+    /// http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-10
+    /// </summary>
     class DraftHybi10Processor : ProtocolProcessorBase
     {
         private const string m_SecWebSocketVersion = "8";

@@ -11,7 +11,7 @@ using SuperSocket.SocketBase.Config;
 using SuperSocket.SocketEngine;
 using SuperWebSocket;
 using SuperWebSocket.SubProtocol;
-using SuperWebSocket.WebSocketClient;
+using WebSocket4Net;
 
 namespace SuperWebSocketTest
 {

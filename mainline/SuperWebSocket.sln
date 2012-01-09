@@ -22,14 +22,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonCommandAssembly", "Samp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomSession", "Samples\CustomSession\CustomSession.csproj", "{F922B5DE-5CCD-46D7-8F6A-F50EF45661F8}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{2A480CF1-9DCE-4DCF-BA53-D465AEE9468F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSocketClient", "WebSocketClient\WebSocketClient\WebSocketClient.csproj", "{6920447F-76B1-4739-822E-9CE3A2882718}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSocketClient.Silverlight", "WebSocketClient\WebSocketClient.Silverlight\WebSocketClient.Silverlight.csproj", "{57D44E92-7B6F-4F3D-8755-FBB1E1456C36}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSocketClient.Mono", "WebSocketClient\WebSocketClient\WebSocketClient.Mono.csproj", "{DF689E8A-4CB0-4302-8D5E-2E9B759D32A3}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -94,30 +86,6 @@ Global
 		{F922B5DE-5CCD-46D7-8F6A-F50EF45661F8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F922B5DE-5CCD-46D7-8F6A-F50EF45661F8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{F922B5DE-5CCD-46D7-8F6A-F50EF45661F8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{6920447F-76B1-4739-822E-9CE3A2882718}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6920447F-76B1-4739-822E-9CE3A2882718}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6920447F-76B1-4739-822E-9CE3A2882718}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{6920447F-76B1-4739-822E-9CE3A2882718}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{6920447F-76B1-4739-822E-9CE3A2882718}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6920447F-76B1-4739-822E-9CE3A2882718}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6920447F-76B1-4739-822E-9CE3A2882718}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{6920447F-76B1-4739-822E-9CE3A2882718}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{57D44E92-7B6F-4F3D-8755-FBB1E1456C36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{57D44E92-7B6F-4F3D-8755-FBB1E1456C36}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{57D44E92-7B6F-4F3D-8755-FBB1E1456C36}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{57D44E92-7B6F-4F3D-8755-FBB1E1456C36}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{57D44E92-7B6F-4F3D-8755-FBB1E1456C36}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{57D44E92-7B6F-4F3D-8755-FBB1E1456C36}.Release|Any CPU.Build.0 = Release|Any CPU
-		{57D44E92-7B6F-4F3D-8755-FBB1E1456C36}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{57D44E92-7B6F-4F3D-8755-FBB1E1456C36}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{DF689E8A-4CB0-4302-8D5E-2E9B759D32A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DF689E8A-4CB0-4302-8D5E-2E9B759D32A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DF689E8A-4CB0-4302-8D5E-2E9B759D32A3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{DF689E8A-4CB0-4302-8D5E-2E9B759D32A3}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{DF689E8A-4CB0-4302-8D5E-2E9B759D32A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DF689E8A-4CB0-4302-8D5E-2E9B759D32A3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DF689E8A-4CB0-4302-8D5E-2E9B759D32A3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{DF689E8A-4CB0-4302-8D5E-2E9B759D32A3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -127,9 +95,6 @@ Global
 		{4A8713F5-DF02-4424-81F2-D112C615ADC2} = {60AFFD96-6CC7-41F4-A57B-A9A2952B1F25}
 		{31511A5E-6A0E-4DA3-AD7A-8C239634AF8A} = {60AFFD96-6CC7-41F4-A57B-A9A2952B1F25}
 		{F922B5DE-5CCD-46D7-8F6A-F50EF45661F8} = {60AFFD96-6CC7-41F4-A57B-A9A2952B1F25}
-		{6920447F-76B1-4739-822E-9CE3A2882718} = {2A480CF1-9DCE-4DCF-BA53-D465AEE9468F}
-		{57D44E92-7B6F-4F3D-8755-FBB1E1456C36} = {2A480CF1-9DCE-4DCF-BA53-D465AEE9468F}
-		{DF689E8A-4CB0-4302-8D5E-2E9B759D32A3} = {2A480CF1-9DCE-4DCF-BA53-D465AEE9468F}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = SuperWebSocket\SuperWebSocket.csproj

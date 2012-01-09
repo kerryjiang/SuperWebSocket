@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -43,9 +43,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="SuperSocket.ClientEngine">
-      <HintPath>..\Reference\SuperSocket\Net40\SuperSocket.ClientEngine.dll</HintPath>
-    </Reference>
     <Reference Include="SuperSocket.Common">
       <HintPath>..\Reference\SuperSocket\Net40\SuperSocket.Common.dll</HintPath>
     </Reference>
@@ -56,6 +53,9 @@
       <HintPath>..\Reference\SuperSocket\Net40\SuperSocket.SocketEngine.dll</HintPath>
     </Reference>
     <Reference Include="System.Configuration" />
+    <Reference Include="WebSocket4Net">
+      <HintPath>..\Reference\WebSocket4Net\Net40\WebSocket4Net.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Command\ECHO.cs" />
@@ -70,10 +70,6 @@
     <ProjectReference Include="..\SuperWebSocket\SuperWebSocket.csproj">
       <Project>{2DC79E40-BB70-4F6A-B378-905F2FBC6E97}</Project>
       <Name>SuperWebSocket</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WebSocketClient\WebSocketClient\WebSocketClient.csproj">
-      <Project>{6920447F-76B1-4739-822E-9CE3A2882718}</Project>
-      <Name>WebSocketClient</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -8,10 +8,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{648A0D
 		GlobalAssemblyInfo.cs = GlobalAssemblyInfo.cs
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{2A480CF1-9DCE-4DCF-BA53-D465AEE9468F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSocketClient.Mono", "WebSocketClient\WebSocketClient\WebSocketClient.Mono.csproj", "{DF689E8A-4CB0-4302-8D5E-2E9B759D32A3}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperWebSocketTest.Mono", "SuperWebSocketTest\SuperWebSocketTest.Mono.csproj", "{9EF7E84D-B746-4285-A89A-5A515AB540EA}"
 EndProject
 Global
@@ -38,22 +34,11 @@ Global
 		{9EF7E84D-B746-4285-A89A-5A515AB540EA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9EF7E84D-B746-4285-A89A-5A515AB540EA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{9EF7E84D-B746-4285-A89A-5A515AB540EA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{DF689E8A-4CB0-4302-8D5E-2E9B759D32A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DF689E8A-4CB0-4302-8D5E-2E9B759D32A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DF689E8A-4CB0-4302-8D5E-2E9B759D32A3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{DF689E8A-4CB0-4302-8D5E-2E9B759D32A3}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{DF689E8A-4CB0-4302-8D5E-2E9B759D32A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DF689E8A-4CB0-4302-8D5E-2E9B759D32A3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DF689E8A-4CB0-4302-8D5E-2E9B759D32A3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{DF689E8A-4CB0-4302-8D5E-2E9B759D32A3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{DF689E8A-4CB0-4302-8D5E-2E9B759D32A3} = {2A480CF1-9DCE-4DCF-BA53-D465AEE9468F}
-	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = SuperWebSocket\SuperWebSocket.csproj
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = SuperWebSocket\SuperWebSocket.csproj
 	EndGlobalSection
 EndGlobal

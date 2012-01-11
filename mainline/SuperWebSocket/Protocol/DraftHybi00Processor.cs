@@ -50,7 +50,7 @@ namespace SuperWebSocket.Protocol
             session.SendRawResponse(responseBuilder.ToString());
             //Encrypt message
             byte[] secret = GetResponseSecurityKey(secKey1, secKey2, secKey3);
-            session.SendResponse(secret);
+            session.SendRawResponse(secret, 0, secret.Length);
 
             dataFrameReader = new WebSocketDataReader(previousReader);
 
@@ -103,7 +103,7 @@ namespace SuperWebSocket.Protocol
 
         public override void SendCloseHandshake(IWebSocketSession session, string closeReason)
         {
-            session.SendResponse(WebSocketConstant.ClosingHandshake);
+            session.SendRawResponse(WebSocketConstant.ClosingHandshake, 0, WebSocketConstant.ClosingHandshake.Length);
         }
 
         public override void SendPong(IWebSocketSession session, string ping)

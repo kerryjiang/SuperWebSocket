@@ -22,6 +22,7 @@ namespace SuperWebSocket
         string Origin { get; }
         string UriScheme { get; }
         void SendRawResponse(string message);
+        void SendRawResponse(byte[] data, int offset, int length);
         void SendResponse(string message);
         void SendResponse(byte[] data);
         IWebSocketServer AppServer { get; }
@@ -101,6 +102,11 @@ namespace SuperWebSocket
             base.SendResponse(message);
         }
 
+        void IWebSocketSession.SendRawResponse(byte[] data, int offset, int length)
+        {
+            base.SocketSession.SendResponse(data, offset, length);
+        }
+
         private bool m_Handshaked = false;
 
         internal bool Handshaked
@@ -167,7 +173,7 @@ namespace SuperWebSocket
             ProtocolProcessor.SendMessage(this, string.Format(message, paramValues));
         }
 
-        public override void SendResponse(byte[] data)
+        public new void SendResponse(byte[] data)
         {
             if (!ProtocolProcessor.CanSendBinaryData)
             {

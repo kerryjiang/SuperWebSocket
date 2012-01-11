@@ -85,7 +85,7 @@ namespace SuperWebSocket.Protocol
 
         public override void SendData(IWebSocketSession session, byte[] data, int offset, int length)
         {
-            EnqueueSend(session, new ArraySegment<byte>(data, offset, length));
+            SendPackage(session, OpCode.Binary, data, offset, length);
         }
 
         public override void SendMessage(IWebSocketSession session, string message)
@@ -103,12 +103,8 @@ namespace SuperWebSocket.Protocol
             SendMessage(session, OpCode.Pong, ping);
         }
 
-        private void SendMessage(IWebSocketSession session, int opCode, string message)
+        private void SendPackage(IWebSocketSession session, int opCode, byte[] data, int offset, int length)
         {
-            byte[] playloadData = Encoding.UTF8.GetBytes(message);
-
-            int length = playloadData.Length;
-
             byte[] headData;
 
             if (length < 126)
@@ -147,8 +143,14 @@ namespace SuperWebSocket.Protocol
                 new ArraySegment<byte>[]
                 {
                     new ArraySegment<byte>(headData, 0, headData.Length),
-                    new ArraySegment<byte>(playloadData, 0, playloadData.Length)
+                    new ArraySegment<byte>(data, offset, length)
                 });
+        }
+
+        private void SendMessage(IWebSocketSession session, int opCode, string message)
+        {
+            byte[] playloadData = Encoding.UTF8.GetBytes(message);
+            SendPackage(session, opCode, playloadData, 0, playloadData.Length);
         }
 
         private void DequeueSend(IWebSocketSession session)

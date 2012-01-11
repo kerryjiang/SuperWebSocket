@@ -167,6 +167,17 @@ namespace SuperWebSocket
             ProtocolProcessor.SendMessage(this, string.Format(message, paramValues));
         }
 
+        public override void SendResponse(byte[] data)
+        {
+            if (!ProtocolProcessor.CanSendBinaryData)
+            {
+                Logger.LogError("The websocket of this version cannot used for sending binary data!");
+                return;
+            }
+
+            ProtocolProcessor.SendData(this, data, 0, data.Length);
+        }
+
         public void SendResponseAsync(string message)
         {
             Async.Run((s) => SendResponse((string)s), message);
@@ -190,6 +201,12 @@ namespace SuperWebSocket
 
         public override void Close(CloseReason reason)
         {
+            if (!Handshaked)
+            {
+                base.Close(reason);
+                return;
+            }
+
             if (reason == CloseReason.ServerClosing)
             {
                 Close(reason, string.Empty);

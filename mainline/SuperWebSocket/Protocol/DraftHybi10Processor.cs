@@ -78,6 +78,16 @@ namespace SuperWebSocket.Protocol
             return true;
         }
 
+        public override bool CanSendBinaryData
+        {
+            get { return true; }
+        }
+
+        public override void SendData(IWebSocketSession session, byte[] data, int offset, int length)
+        {
+            EnqueueSend(session, new ArraySegment<byte>(data, offset, length));
+        }
+
         public override void SendMessage(IWebSocketSession session, string message)
         {
             SendMessage(session, OpCode.Text, message);

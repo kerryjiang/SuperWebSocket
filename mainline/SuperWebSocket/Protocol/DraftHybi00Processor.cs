@@ -110,5 +110,15 @@ namespace SuperWebSocket.Protocol
         {
 
         }
+
+        public override bool CanSendBinaryData
+        {
+            get { return false; }
+        }
+
+        public override void SendData(IWebSocketSession session, byte[] data, int offset, int length)
+        {
+            throw new NotSupportedException();
+        }
     }
 }

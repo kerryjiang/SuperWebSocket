@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
@@ -13,10 +14,10 @@ using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Command;
 using SuperSocket.SocketBase.Config;
 using SuperSocket.SocketBase.Protocol;
-using SuperWebSocket.Protocol;
-using SuperWebSocket.SubProtocol;
 using SuperWebSocket.Command;
 using SuperWebSocket.Config;
+using SuperWebSocket.Protocol;
+using SuperWebSocket.SubProtocol;
 
 namespace SuperWebSocket
 {
@@ -80,6 +81,21 @@ namespace SuperWebSocket
         private Dictionary<string, ISubProtocol<TWebSocketSession>> m_SubProtocols = new Dictionary<string, ISubProtocol<TWebSocketSession>>(StringComparer.OrdinalIgnoreCase);
 
         internal ISubProtocol<TWebSocketSession> DefaultSubProtocol { get; private set; }
+
+        private ConcurrentQueue<TWebSocketSession> m_HandshakePendingQueue = new ConcurrentQueue<TWebSocketSession>();
+
+        /// <summary>
+        /// The handshake timeout, in seconds
+        /// </summary>
+        private int m_HandshakeTimeOut;
+
+        /// <summary>
+        /// The interval of checking handshake pending queue, in seconds
+        /// </summary>
+        private int m_HandshakePendingQueueCheckingInterval;
+
+
+        private Timer m_HandshakePendingQueueCheckingTimer;
 
         /// <summary>
         /// Gets the sub protocol by sub protocol name.
@@ -229,7 +245,68 @@ namespace SuperWebSocket
                 }
             };
 
+            if (!int.TryParse(config.Options.GetValue("handshakePendingQueueCheckingInterval"), out m_HandshakePendingQueueCheckingInterval))
+                m_HandshakePendingQueueCheckingInterval = 60;// 1 minute default
+
+
+            if (!int.TryParse(config.Options.GetValue("handshakeTimeOut"), out m_HandshakePendingQueueCheckingInterval))
+                m_HandshakeTimeOut = 120;// 2 minute default
+
             return true;
+        }
+
+        protected override void OnStartup()
+        {
+            m_HandshakePendingQueueCheckingTimer = new Timer(HandshakePendingQueueCheckingCallback, null, m_HandshakePendingQueueCheckingInterval * 1000, m_HandshakePendingQueueCheckingInterval * 1000);
+            base.OnStartup();
+        }
+
+        private void HandshakePendingQueueCheckingCallback(object state)
+        {
+            try
+            {
+                m_HandshakePendingQueueCheckingTimer.Change(Timeout.Infinite, Timeout.Infinite);
+
+                while (true)
+                {
+                    TWebSocketSession session;
+
+                    if (!m_HandshakePendingQueue.TryPeek(out session))
+                        break;
+
+                    if (session.Handshaked || session.Status != SessionStatus.Healthy)
+                    {
+                        //Handshaked or not connected
+                        m_HandshakePendingQueue.TryDequeue(out session);
+                        continue;
+                    }
+
+                    if (DateTime.Now < session.StartTime.AddSeconds(m_HandshakeTimeOut))
+                        break;
+
+                    //Timeout, dequeue and then close
+                    m_HandshakePendingQueue.TryDequeue(out session);
+                    session.Close(CloseReason.TimeOut);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e);
+            }
+            finally
+            {
+                m_HandshakePendingQueueCheckingTimer.Change(m_HandshakePendingQueueCheckingInterval, m_HandshakePendingQueueCheckingInterval);
+            }
+        }
+
+        public override TWebSocketSession CreateAppSession(ISocketSession socketSession)
+        {
+            var session = base.CreateAppSession(socketSession);
+
+            if (session != NullAppSession)
+                m_HandshakePendingQueue.Enqueue(session);
+
+            return session;
         }
 
         private SessionEventHandler<TWebSocketSession> m_NewSessionConnected;

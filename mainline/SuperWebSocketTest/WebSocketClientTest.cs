@@ -16,13 +16,48 @@ using WebSocket4Net;
 namespace SuperWebSocketTest
 {
     [TestFixture]
-    public class WebSocketClientTest
+    public class WebSocketClientTestHybi00 : WebSocketClientTest
+    {
+        public WebSocketClientTestHybi00()
+            : base(WebSocketVersion.DraftHybi00)
+        {
+
+        }
+    }
+
+    [TestFixture]
+    public class WebSocketClientTestHybi10 : WebSocketClientTest
+    {
+        public WebSocketClientTestHybi10()
+            : base(WebSocketVersion.DraftHybi10)
+        {
+
+        }
+    }
+
+    [TestFixture]
+    public class WebSocketClientTestRFC6455 : WebSocketClientTest
+    {
+        public WebSocketClientTestRFC6455()
+            : base(WebSocketVersion.Rfc6455)
+        {
+
+        }
+    }
+
+    public abstract class WebSocketClientTest
     {
         protected WebSocketServer m_WebSocketServer;
         private AutoResetEvent m_MessageReceiveEvent = new AutoResetEvent(false);
         private AutoResetEvent m_OpenedEvent = new AutoResetEvent(false);
         private AutoResetEvent m_CloseEvent = new AutoResetEvent(false);
         private string m_CurrentMessage = string.Empty;
+        private readonly WebSocketVersion m_Version;
+
+        public WebSocketClientTest(WebSocketVersion version)
+        {
+            m_Version = version;
+        }
 
         [TestFixtureSetUp]
         public virtual void Setup()
@@ -30,6 +65,7 @@ namespace SuperWebSocketTest
             LogUtil.Setup(new ConsoleLogger());
 
             m_WebSocketServer = new WebSocketServer(new BasicSubProtocol("Basic", new List<Assembly> { this.GetType().Assembly }));
+            m_WebSocketServer.NewDataReceived += new SessionEventHandler<WebSocketSession, byte[]>(m_WebSocketServer_NewDataReceived);
             m_WebSocketServer.Setup(new RootConfig(), new ServerConfig
             {
                 Port = 2012,
@@ -38,6 +74,12 @@ namespace SuperWebSocketTest
                 Mode = SocketMode.Async,
                 Name = "SuperWebSocket Server"
             }, SocketServerFactory.Instance);
+        }
+        
+        void m_WebSocketServer_NewDataReceived(WebSocketSession session, byte[] e)
+        {
+            //Echo
+            session.SendResponse(e);
         }
 
         [SetUp]
@@ -53,11 +95,9 @@ namespace SuperWebSocketTest
         }
 
         [Test]
-        [TestCase(WebSocketVersion.DraftHybi00)]
-        [TestCase(WebSocketVersion.DraftHybi10)]
-        public void ConnectionTest(WebSocketVersion version)
+        public void ConnectionTest()
         {
-            WebSocket webSocketClient = new WebSocket(string.Format("ws://127.0.0.1:{0}/websocket", m_WebSocketServer.Config.Port), "basic", version);
+            WebSocket webSocketClient = new WebSocket(string.Format("ws://127.0.0.1:{0}/websocket", m_WebSocketServer.Config.Port), "basic", m_Version);
             webSocketClient.Opened += new EventHandler(webSocketClient_Opened);
             webSocketClient.Closed += new EventHandler(webSocketClient_Closed);
             webSocketClient.MessageReceived += new EventHandler<MessageReceivedEventArgs>(webSocketClient_MessageReceived);
@@ -93,11 +133,9 @@ namespace SuperWebSocketTest
         }
 
         [Test, Repeat(10)]
-        [TestCase(WebSocketVersion.DraftHybi00)]
-        [TestCase(WebSocketVersion.DraftHybi10)]
-        public void SendMessageTest(WebSocketVersion version)
+        public void SendMessageTest()
         {
-            WebSocket webSocketClient = new WebSocket(string.Format("ws://127.0.0.1:{0}/websocket", m_WebSocketServer.Config.Port), "basic", version);
+            WebSocket webSocketClient = new WebSocket(string.Format("ws://127.0.0.1:{0}/websocket", m_WebSocketServer.Config.Port), "basic", m_Version);
             webSocketClient.Opened += new EventHandler(webSocketClient_Opened);
             webSocketClient.Closed += new EventHandler(webSocketClient_Closed);
             webSocketClient.MessageReceived += new EventHandler<MessageReceivedEventArgs>(webSocketClient_MessageReceived);
@@ -139,14 +177,67 @@ namespace SuperWebSocketTest
             if (!m_CloseEvent.WaitOne(1000))
                 Assert.Fail("Failed to close session ontime");
         }
+  
+        [Test, Repeat(10)]
+        public void SendDataTest()
+        {
+            WebSocket webSocketClient = new WebSocket(string.Format("ws://127.0.0.1:{0}/websocket", m_WebSocketServer.Config.Port), "basic", m_Version);
 
+            if (!webSocketClient.SupportBinary)
+                return;
+
+            webSocketClient.Opened += new EventHandler(webSocketClient_Opened);
+            webSocketClient.Closed += new EventHandler(webSocketClient_Closed);
+            webSocketClient.DataReceived += new EventHandler<DataReceivedEventArgs>(webSocketClient_DataReceived);
+            webSocketClient.Open();
+
+            if (!m_OpenedEvent.WaitOne(1000))
+                Assert.Fail("Failed to Opened session ontime");
+
+            StringBuilder sb = new StringBuilder();
+
+            for (int i = 0; i < 10; i++)
+            {
+                sb.Append(Guid.NewGuid().ToString());
+            }
+
+            string messageSource = sb.ToString();
+
+            Random rd = new Random();
+
+            for (int i = 0; i < 100; i++)
+            {
+                int startPos = rd.Next(0, messageSource.Length - 2);
+                int endPos = rd.Next(startPos + 1, messageSource.Length - 1);
+
+                string message = messageSource.Substring(startPos, endPos - startPos);
+
+                Console.WriteLine("Client:" + message);
+                var data = Encoding.UTF8.GetBytes(message);
+                webSocketClient.Send(data, 0, data.Length);
+
+                if (!m_MessageReceiveEvent.WaitOne())
+                    Assert.Fail("Cannot get response in time!");
+
+                Assert.AreEqual(message, m_CurrentMessage);
+            }
+
+            webSocketClient.Close();
+
+            if (!m_CloseEvent.WaitOne(1000))
+                Assert.Fail("Failed to close session ontime");
+        }
+        
+        void webSocketClient_DataReceived(object sender, DataReceivedEventArgs e)
+        {
+            m_CurrentMessage = Encoding.UTF8.GetString(e.Data);
+            m_MessageReceiveEvent.Set();
+        }
 
         [Test, Repeat(10)]
-        [TestCase(WebSocketVersion.DraftHybi00)]
-        [TestCase(WebSocketVersion.DraftHybi10)]
-        public void CloseWebSocketTest(WebSocketVersion version)
+        public void CloseWebSocketTest()
         {
-            WebSocket webSocketClient = new WebSocket(string.Format("ws://127.0.0.1:{0}/websocket", m_WebSocketServer.Config.Port), "basic", version);
+            WebSocket webSocketClient = new WebSocket(string.Format("ws://127.0.0.1:{0}/websocket", m_WebSocketServer.Config.Port), "basic", m_Version);
             webSocketClient.Opened += new EventHandler(webSocketClient_Opened);
             webSocketClient.Closed += new EventHandler(webSocketClient_Closed);
             webSocketClient.MessageReceived += new EventHandler<MessageReceivedEventArgs>(webSocketClient_MessageReceived);

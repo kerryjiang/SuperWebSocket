@@ -47,10 +47,10 @@ namespace SuperWebSocket.Protocol
                 responseBuilder.AppendLine(string.Format("Sec-WebSocket-Protocol: {0}", subProtocol));
 
             responseBuilder.AppendLine();
-            session.SendRawResponse(responseBuilder.ToString());
+            session.SocketSession.SendResponse(responseBuilder.ToString());
             //Encrypt message
             byte[] secret = GetResponseSecurityKey(secKey1, secKey2, secKey3);
-            session.SendRawResponse(secret, 0, secret.Length);
+            session.SocketSession.SendResponse(secret, 0, secret.Length);
 
             dataFrameReader = new WebSocketDataReader(previousReader);
 
@@ -103,7 +103,7 @@ namespace SuperWebSocket.Protocol
 
         public override void SendCloseHandshake(IWebSocketSession session, string closeReason)
         {
-            session.SendRawResponse(WebSocketConstant.ClosingHandshake, 0, WebSocketConstant.ClosingHandshake.Length);
+            session.SocketSession.SendResponse(WebSocketConstant.ClosingHandshake, 0, WebSocketConstant.ClosingHandshake.Length);
         }
 
         public override void SendPong(IWebSocketSession session, string ping)

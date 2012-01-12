@@ -71,7 +71,7 @@ namespace SuperWebSocket.Protocol
                 responseBuilder.AppendLine(string.Format("Sec-WebSocket-Protocol: {0}", subProtocol));
 
             responseBuilder.AppendLine();
-            session.SendRawResponse(responseBuilder.ToString());
+            session.SocketSession.SendResponse(responseBuilder.ToString());
 
             dataFrameReader = new WebSocketDataFrameReader(session.AppServer);
 

@@ -21,8 +21,6 @@ namespace SuperWebSocket
         string SecWebSocketVersion { get; }
         string Origin { get; }
         string UriScheme { get; }
-        void SendRawResponse(string message);
-        void SendRawResponse(byte[] data, int offset, int length);
         void SendResponse(string message);
         void SendResponse(byte[] data);
         IWebSocketServer AppServer { get; }
@@ -91,21 +89,6 @@ namespace SuperWebSocket
         }
 
         public ISubProtocol<TWebSocketSession> SubProtocol { get; private set; }
-
-        internal void SendRawResponse(string message)
-        {
-            base.SendResponse(message);
-        }
-
-        void IWebSocketSession.SendRawResponse(string message)
-        {
-            base.SendResponse(message);
-        }
-
-        void IWebSocketSession.SendRawResponse(byte[] data, int offset, int length)
-        {
-            base.SocketSession.SendResponse(data, offset, length);
-        }
 
         private bool m_Handshaked = false;
 

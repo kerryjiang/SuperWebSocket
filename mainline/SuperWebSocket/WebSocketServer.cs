@@ -249,7 +249,7 @@ namespace SuperWebSocket
                 m_HandshakePendingQueueCheckingInterval = 60;// 1 minute default
 
 
-            if (!int.TryParse(config.Options.GetValue("handshakeTimeOut"), out m_HandshakePendingQueueCheckingInterval))
+            if (!int.TryParse(config.Options.GetValue("handshakeTimeOut"), out m_HandshakeTimeOut))
                 m_HandshakeTimeOut = 120;// 2 minute default
 
             return true;
@@ -295,7 +295,7 @@ namespace SuperWebSocket
             }
             finally
             {
-                m_HandshakePendingQueueCheckingTimer.Change(m_HandshakePendingQueueCheckingInterval, m_HandshakePendingQueueCheckingInterval);
+                m_HandshakePendingQueueCheckingTimer.Change(m_HandshakePendingQueueCheckingInterval * 1000, m_HandshakePendingQueueCheckingInterval * 1000);
             }
         }
 

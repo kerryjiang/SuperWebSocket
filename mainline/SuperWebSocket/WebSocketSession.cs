@@ -26,6 +26,8 @@ namespace SuperWebSocket
         IWebSocketServer AppServer { get; }
         IProtocolProcessor ProtocolProcessor { get; set; }
         string GetAvailableSubProtocol(string protocol);
+        void EnqueueSend(IList<ArraySegment<byte>> data);
+        void EnqueueSend(ArraySegment<byte> data);
     }
 
     public class WebSocketSession : WebSocketSession<WebSocketSession>
@@ -48,6 +50,10 @@ namespace SuperWebSocket
         public string Connection { get { return this.Items.GetValue<string>(WebSocketConstant.Connection, string.Empty); } }
         public string SecWebSocketVersion { get { return this.Items.GetValue<string>(WebSocketConstant.SecWebSocketVersion, string.Empty); } }
         public string SecWebSocketProtocol { get { return this.Items.GetValue<string>(WebSocketConstant.SecWebSocketProtocol, string.Empty); } }
+
+        private Queue<ArraySegment<byte>> m_SendingQueue = new Queue<ArraySegment<byte>>();
+
+        private volatile bool m_InSending = false;
 
         public new WebSocketServer<TWebSocketSession> AppServer
         {
@@ -145,6 +151,60 @@ namespace SuperWebSocket
         }
 
         public StringDictionary Cookies { get; private set; }
+
+        void IWebSocketSession.EnqueueSend(IList<ArraySegment<byte>> data)
+        {
+            lock (m_SendingQueue)
+            {
+                for (var i = 0; i < data.Count; i++)
+                {
+                    m_SendingQueue.Enqueue(data[i]);
+                }
+            }
+
+            DequeueSend();
+        }
+
+        void IWebSocketSession.EnqueueSend(ArraySegment<byte> data)
+        {
+            lock (m_SendingQueue)
+            {
+                for (var i = 0; i < data.Count; i++)
+                {
+                    m_SendingQueue.Enqueue(data);
+                }
+            }
+
+            DequeueSend();
+        }
+
+        private void DequeueSend()
+        {
+            if (m_InSending)
+                return;
+
+            m_InSending = true;
+
+            while (true)
+            {
+                if (Status != SessionStatus.Healthy)
+                    break;
+
+                ArraySegment<byte> segment;
+
+                lock (m_SendingQueue)
+                {
+                    if (m_SendingQueue.Count <= 0)
+                        break;
+
+                    segment = m_SendingQueue.Dequeue();
+                }
+
+                SocketSession.SendResponse(segment.Array, segment.Offset, segment.Count);
+            }
+
+            m_InSending = false;
+        }
 
         public override void SendResponse(string message)
         {

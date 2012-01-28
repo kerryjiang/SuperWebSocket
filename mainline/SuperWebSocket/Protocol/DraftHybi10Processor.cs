@@ -20,10 +20,6 @@ namespace SuperWebSocket.Protocol
         private const string m_SecWebSocketVersion = "8";
         private const string m_Magic = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
-        private Queue<ArraySegment<byte>> m_SendingQueue = new Queue<ArraySegment<byte>>();
-
-        private volatile bool m_InSending = false;
-
         protected virtual string SecWebSocketVersion
         {
             get { return m_SecWebSocketVersion; }
@@ -139,7 +135,7 @@ namespace SuperWebSocket.Protocol
 
             headData[0] = (byte)(opCode | 0x80);
 
-            EnqueueSend(session,
+            session.EnqueueSend(
                 new ArraySegment<byte>[]
                 {
                     new ArraySegment<byte>(headData, 0, headData.Length),
@@ -151,57 +147,6 @@ namespace SuperWebSocket.Protocol
         {
             byte[] playloadData = Encoding.UTF8.GetBytes(message);
             SendPackage(session, opCode, playloadData, 0, playloadData.Length);
-        }
-
-        private void DequeueSend(IWebSocketSession session)
-        {
-            if (m_InSending)
-                return;
-
-            m_InSending = true;
-
-            while (true)
-            {
-                if (session.Status != SessionStatus.Healthy)
-                    break;
-
-                ArraySegment<byte> segment;
-
-                lock (m_SendingQueue)
-                {
-                    if (m_SendingQueue.Count <= 0)
-                        break;
-
-                    segment = m_SendingQueue.Dequeue();
-                }
-
-                session.SocketSession.SendResponse(segment.Array, segment.Offset, segment.Count);
-            }
-
-            m_InSending = false;
-        }
-
-        private void EnqueueSend(IWebSocketSession session, IList<ArraySegment<byte>> data)
-        {
-            lock (m_SendingQueue)
-            {
-                for (var i = 0; i < data.Count; i++)
-                {
-                    m_SendingQueue.Enqueue(data[i]);
-                }
-            }
-
-            DequeueSend(session);
-        }
-
-        private void EnqueueSend(IWebSocketSession session, ArraySegment<byte> data)
-        {
-            lock (m_SendingQueue)
-            {
-                m_SendingQueue.Enqueue(data);
-            }
-
-            DequeueSend(session);
         }
     }
 }

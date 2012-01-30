@@ -32,21 +32,21 @@ namespace SuperWebSocket.Protocol
 
             var responseBuilder = new StringBuilder();
 
-            responseBuilder.AppendLine("HTTP/1.1 101 Web Socket Protocol Handshake");
-            responseBuilder.AppendLine("Upgrade: WebSocket");
-            responseBuilder.AppendLine("Connection: Upgrade");
+            responseBuilder.AppendWithCrCf("HTTP/1.1 101 Web Socket Protocol Handshake");
+            responseBuilder.AppendWithCrCf("Upgrade: WebSocket");
+            responseBuilder.AppendWithCrCf("Connection: Upgrade");
 
             if (!string.IsNullOrEmpty(session.Origin))
-                responseBuilder.AppendLine(string.Format("Sec-WebSocket-Origin: {0}", session.Origin));
+                responseBuilder.AppendFormatWithCrCf("Sec-WebSocket-Origin: {0}", session.Origin);
 
-            responseBuilder.AppendLine(string.Format("Sec-WebSocket-Location: {0}://{1}{2}", session.UriScheme, session.Host, session.Path));
+            responseBuilder.AppendFormatWithCrCf("Sec-WebSocket-Location: {0}://{1}{2}", session.UriScheme, session.Host, session.Path);
 
             var subProtocol = session.GetAvailableSubProtocol(session.Items.GetValue<string>(WebSocketConstant.SecWebSocketProtocol, string.Empty));
 
             if (!string.IsNullOrEmpty(subProtocol))
-                responseBuilder.AppendLine(string.Format("Sec-WebSocket-Protocol: {0}", subProtocol));
+                responseBuilder.AppendFormatWithCrCf("Sec-WebSocket-Protocol: {0}", subProtocol);
 
-            responseBuilder.AppendLine();
+            responseBuilder.AppendWithCrCf();
             session.SocketSession.SendResponse(responseBuilder.ToString());
             //Encrypt message
             byte[] secret = GetResponseSecurityKey(secKey1, secKey2, secKey3);
@@ -57,11 +57,13 @@ namespace SuperWebSocket.Protocol
             return true;
         }
 
+        private const string m_SecurityKeyRegex = "[^0-9]";
+
         private byte[] GetResponseSecurityKey(string secKey1, string secKey2, byte[] secKey3)
         {
             //Remove all symbols that are not numbers
-            string k1 = Regex.Replace(secKey1, "[^0-9]", String.Empty);
-            string k2 = Regex.Replace(secKey2, "[^0-9]", String.Empty);
+            string k1 = Regex.Replace(secKey1, m_SecurityKeyRegex, String.Empty);
+            string k2 = Regex.Replace(secKey2, m_SecurityKeyRegex, String.Empty);
 
             //Convert received string to 64 bit integer.
             Int64 intK1 = Int64.Parse(k1);

@@ -56,17 +56,17 @@ namespace SuperWebSocket.Protocol
                 return false;
             }
 
-            responseBuilder.AppendLine("HTTP/1.1 101 Switching Protocols");
-            responseBuilder.AppendLine("Upgrade: WebSocket");
-            responseBuilder.AppendLine("Connection: Upgrade");
-            responseBuilder.AppendLine(string.Format("Sec-WebSocket-Accept: {0}", secKeyAccept));
+            responseBuilder.AppendWithCrCf("HTTP/1.1 101 Switching Protocols");
+            responseBuilder.AppendWithCrCf("Upgrade: WebSocket");
+            responseBuilder.AppendWithCrCf("Connection: Upgrade");
+            responseBuilder.AppendFormatWithCrCf("Sec-WebSocket-Accept: {0}", secKeyAccept);
 
             var subProtocol = session.GetAvailableSubProtocol(session.Items.GetValue<string>(WebSocketConstant.SecWebSocketProtocol, string.Empty));
 
             if (!string.IsNullOrEmpty(subProtocol))
-                responseBuilder.AppendLine(string.Format("Sec-WebSocket-Protocol: {0}", subProtocol));
+                responseBuilder.AppendFormatWithCrCf("Sec-WebSocket-Protocol: {0}", subProtocol);
 
-            responseBuilder.AppendLine();
+            responseBuilder.AppendWithCrCf();
             session.SocketSession.SendResponse(responseBuilder.ToString());
 
             dataFrameReader = new WebSocketDataFrameReader(session.AppServer);

@@ -73,6 +73,7 @@
     <Compile Include="Config\CommandConfigCollection.cs" />
     <Compile Include="Config\SubProtocolConfig.cs" />
     <Compile Include="Config\SubProtocolConfigCollection.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Protocol\DraftHybi00Processor.cs" />
     <Compile Include="Protocol\DraftHybi10Processor.cs" />
     <Compile Include="Protocol\FramePartReader\DataFramePartReader.cs" />

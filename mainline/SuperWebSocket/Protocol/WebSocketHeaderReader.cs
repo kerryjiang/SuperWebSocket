@@ -26,6 +26,8 @@ namespace SuperWebSocket.Protocol
         {
             left = 0;
 
+            int prevMatched = m_SearchState.Matched;
+
             var result = readBuffer.SearchMark(offset, length, m_SearchState);
 
             if (result < 0)
@@ -35,15 +37,19 @@ namespace SuperWebSocket.Protocol
             }
 
             int findLen = result - offset;
-
             string header = string.Empty;
 
             if (this.BufferSegments.Count > 0)
             {
                 if (findLen > 0)
+                {
                     this.AddArraySegment(readBuffer, offset, findLen, false);
-
-                header = this.BufferSegments.Decode(Encoding.UTF8);
+                    header = this.BufferSegments.Decode(Encoding.UTF8);
+                }
+                else
+                {
+                    header = this.BufferSegments.Decode(Encoding.UTF8, 0, this.BufferSegments.Count - prevMatched);
+                }
             }
             else
             {

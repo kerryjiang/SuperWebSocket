@@ -169,10 +169,7 @@ namespace SuperWebSocket
         {
             lock (m_SendingQueue)
             {
-                for (var i = 0; i < data.Count; i++)
-                {
-                    m_SendingQueue.Enqueue(data);
-                }
+                m_SendingQueue.Enqueue(data);
             }
 
             DequeueSend();

@@ -337,6 +337,9 @@ namespace SuperWebSocket
         {
             add
             {
+                if (m_SubProtocols.Values.Any())
+                    throw new Exception("If you have defined any sub protocol, you cannot subscribe NewMessageReceived event!");
+
                 m_NewMessageReceived += value;
             }
             remove

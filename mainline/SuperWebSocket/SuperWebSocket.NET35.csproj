@@ -74,6 +74,8 @@
     <Compile Include="Config\SubProtocolConfig.cs" />
     <Compile Include="Config\SubProtocolConfigCollection.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Protocol\CloseStatusCodeHybi10.cs" />
+    <Compile Include="Protocol\CloseStatusCodeRfc6455.cs" />
     <Compile Include="Protocol\DraftHybi00Processor.cs" />
     <Compile Include="Protocol\DraftHybi10Processor.cs" />
     <Compile Include="Protocol\FramePartReader\DataFramePartReader.cs" />
@@ -82,7 +84,9 @@
     <Compile Include="Protocol\FramePartReader\IDataFramePartReader.cs" />
     <Compile Include="Protocol\FramePartReader\MaskKeyReader.cs" />
     <Compile Include="Protocol\FramePartReader\PayloadDataReader.cs" />
+    <Compile Include="Protocol\ICloseStatusCode.cs" />
     <Compile Include="Protocol\IProtocolProcessor.cs" />
+    <Compile Include="Protocol\MultipleProtocolSwitchProcessor.cs" />
     <Compile Include="Protocol\OpCode.cs" />
     <Compile Include="Protocol\ProtocolProcessorBase..cs" />
     <Compile Include="Protocol\Rfc6455Processor.cs" />

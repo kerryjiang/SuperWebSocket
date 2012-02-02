@@ -71,13 +71,13 @@ namespace SuperWebSocket.Protocol
             if (string.IsNullOrEmpty(secWebSocketKey1) && string.IsNullOrEmpty(secWebSocketKey2))
             {
                 //draft-hixie-thewebsocketprotocol-75
-                Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession);
-                return HandshakeCommandInfo;
+                if(Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession))
+                    return HandshakeCommandInfo;
             }
             else if ("6".Equals(secWebSocketVersion)) //draft-ietf-hybi-thewebsocketprotocol-06
             {
-                Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession);
-                return HandshakeCommandInfo;
+                if(Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession))
+                    return HandshakeCommandInfo;
             }
             else
             {
@@ -87,15 +87,15 @@ namespace SuperWebSocket.Protocol
                 {
                     webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = readBuffer.CloneRange(offset + length - left, left);
                     left = 0;
-                    Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession);
-                    return HandshakeCommandInfo;
+                    if(Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession))
+                        return HandshakeCommandInfo;
                 }
                 else if (left > SecKey3Len)
                 {
                     webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = readBuffer.CloneRange(offset + length - left, 8);
                     left -= 8;
-                    Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession);
-                    return HandshakeCommandInfo;
+                    if(Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession))
+                        return HandshakeCommandInfo;
                 }
                 else
                 {
@@ -110,6 +110,8 @@ namespace SuperWebSocket.Protocol
                     return null;
                 }
             }
+
+            return null;
         }
     }
 }

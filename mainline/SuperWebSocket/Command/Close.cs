@@ -21,7 +21,21 @@ namespace SuperWebSocket.Command
 
         public override void ExecuteCommand(TWebSocketSession session, WebSocketCommandInfo commandInfo)
         {
-            session.Close(CloseReason.ClientClosing);
+            //the close handshake started from server side, now received a handshake response
+            if (session.InClosing)
+            {
+                //Close the underlying socket directly
+                session.Close(CloseReason.ClientClosing);
+                return;
+            }
+
+            int closeStatusCode = commandInfo.CloseStatusCode;
+
+            if (closeStatusCode <= 0)
+                closeStatusCode = session.ProtocolProcessor.CloseStatusClode.NoStatusCode;
+
+            //Send handshake response
+            session.CloseWithHandshake(closeStatusCode, commandInfo.Text);
         }
     }
 }

@@ -59,11 +59,16 @@ namespace SuperWebSocket
         public WebSocketServer(IEnumerable<ISubProtocol<TWebSocketSession>> subProtocols)
             : this()
         {
+            if (!subProtocols.Any())
+                return;
+
             foreach (var protocol in subProtocols)
             {
                 if (!RegisterSubProtocol(protocol))
                     throw new Exception("Failed to register sub protocol!");
             }
+
+            m_SubProtocolConfigured = true;
         }
 
         public WebSocketServer(ISubProtocol<TWebSocketSession> subProtocol)
@@ -81,6 +86,8 @@ namespace SuperWebSocket
         private Dictionary<string, ISubProtocol<TWebSocketSession>> m_SubProtocols = new Dictionary<string, ISubProtocol<TWebSocketSession>>(StringComparer.OrdinalIgnoreCase);
 
         internal ISubProtocol<TWebSocketSession> DefaultSubProtocol { get; private set; }
+
+        private bool m_SubProtocolConfigured = false;
 
         private ConcurrentQueue<TWebSocketSession> m_HandshakePendingQueue = new ConcurrentQueue<TWebSocketSession>();
 
@@ -199,9 +206,12 @@ namespace SuperWebSocket
 
                     subProtocolConfigDict[protocolName] = protocolConfig;
                 }
+
+                if(subProtocolConfigDict.Values.Any())
+                    m_SubProtocolConfigured = true;
             }
 
-            if (m_SubProtocols.Count <= 0 || (subProtocolConfigDict.ContainsKey(BasicSubProtocol<TWebSocketSession>.DefaultName) && m_SubProtocols.ContainsKey(BasicSubProtocol<TWebSocketSession>.DefaultName)))
+            if (m_SubProtocols.Count <= 0 || (subProtocolConfigDict.ContainsKey(BasicSubProtocol<TWebSocketSession>.DefaultName) && !m_SubProtocols.ContainsKey(BasicSubProtocol<TWebSocketSession>.DefaultName)))
             {
                 if (!RegisterSubProtocol(BasicSubProtocol<TWebSocketSession>.DefaultInstance))
                     return false;
@@ -245,6 +255,8 @@ namespace SuperWebSocket
                 }
             };
 
+            SetupMultipleProtocolSwitch(m_WebSocketProtocolProcessor);
+
             if (!int.TryParse(config.Options.GetValue("handshakePendingQueueCheckingInterval"), out m_HandshakePendingQueueCheckingInterval))
                 m_HandshakePendingQueueCheckingInterval = 60;// 1 minute default
 
@@ -253,6 +265,25 @@ namespace SuperWebSocket
                 m_HandshakeTimeOut = 120;// 2 minute default
 
             return true;
+        }
+
+        private void SetupMultipleProtocolSwitch(IProtocolProcessor rootProcessor)
+        {
+            var thisProcessor = rootProcessor;
+
+            List<int> availableVersions = new List<int>();
+
+            while (true)
+            {
+                availableVersions.Add(thisProcessor.Version);
+
+                if (thisProcessor.NextProcessor == null)
+                    break;
+
+                thisProcessor = thisProcessor.NextProcessor;
+            }
+
+            thisProcessor.NextProcessor = new MultipleProtocolSwitchProcessor(availableVersions.ToArray());
         }
 
         protected override void OnStartup()
@@ -337,7 +368,7 @@ namespace SuperWebSocket
         {
             add
             {
-                if (m_SubProtocols.Values.Any())
+                if (m_SubProtocolConfigured)
                     throw new Exception("If you have defined any sub protocol, you cannot subscribe NewMessageReceived event!");
 
                 m_NewMessageReceived += value;
@@ -355,7 +386,7 @@ namespace SuperWebSocket
                 if (session.SubProtocol == null)
                 {
                     Logger.LogError("No SubProtocol selected! This session cannot process any message!");
-                    session.Close("No SubProtocol selected");
+                    session.CloseWithHandshake(session.ProtocolProcessor.CloseStatusClode.ProtocolError, "No SubProtocol selected");
                     return;
                 }
 

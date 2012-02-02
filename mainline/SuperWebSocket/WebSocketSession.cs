@@ -112,6 +112,8 @@ namespace SuperWebSocket
             }
         }
 
+        public bool InClosing { get; private set; }
+
         private void SetCookie()
         {
             string cookieValue = this.Items.GetValue<string>(WebSocketConstant.Cookie, string.Empty);
@@ -234,43 +236,24 @@ namespace SuperWebSocket
             SendResponseAsync(string.Format(message, paramValues));
         }
 
-        public void Close(string reasonText)
+        public void CloseWithHandshake(string reasonText)
         {
-            this.Close(CloseReason.ServerClosing, reasonText);
+            this.CloseWithHandshake(ProtocolProcessor.CloseStatusClode.NormalClosure, reasonText);
         }
 
-        public void Close(CloseReason reason, string reasonText)
+        public void CloseWithHandshake(int statusCode, string reasonText)
         {
-            ProtocolProcessor.SendCloseHandshake(this, reasonText);
-            base.Close(reason);
+            if (!InClosing)
+                InClosing = true;
+
+            ProtocolProcessor.SendCloseHandshake(this, statusCode, reasonText);
         }
 
         public override void Close(CloseReason reason)
         {
-            if (!Handshaked)
+            if (reason == CloseReason.TimeOut)
             {
-                base.Close(reason);
-                return;
-            }
-
-            if (reason == CloseReason.ServerClosing)
-            {
-                Close(reason, string.Empty);
-                return;
-            }
-            else if (reason == CloseReason.ServerShutdown)
-            {
-                Close(reason, "Server shutdown");
-                return;
-            }
-            else if (reason == CloseReason.TimeOut)
-            {
-                Close(reason, "Session timeout");
-                return;
-            }
-            else if (reason == CloseReason.Unknown)
-            {
-                Close(reason, string.Empty);
+                CloseWithHandshake(ProtocolProcessor.CloseStatusClode.NormalClosure, "Session timeOut");
                 return;
             }
 

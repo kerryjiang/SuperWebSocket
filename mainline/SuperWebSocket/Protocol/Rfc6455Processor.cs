@@ -10,14 +10,10 @@ namespace SuperWebSocket.Protocol
     /// </summary>
     class Rfc6455Processor : DraftHybi10Processor
     {
-        private const string m_SecWebSocketVersion = "13";
-
-        protected override string SecWebSocketVersion
+        public Rfc6455Processor()
+            : base(13, new CloseStatusCodeRfc6455())
         {
-            get
-            {
-                return m_SecWebSocketVersion;
-            }
+
         }
     }
 }

@@ -16,6 +16,12 @@ namespace SuperWebSocket.Protocol
     {
         private static readonly byte[] m_ZeroKeyBytes = new byte[0];
 
+        public DraftHybi00Processor()
+            : base(0, new CloseStatusCodeHybi10())
+        {
+
+        }
+
         public override bool Handshake(IWebSocketSession session, WebSocketReaderBase previousReader, out ICommandReader<WebSocketCommandInfo> dataFrameReader)
         {
             var secKey1 = session.Items.GetValue<string>(WebSocketConstant.SecWebSocketKey1, string.Empty);
@@ -103,7 +109,7 @@ namespace SuperWebSocket.Protocol
             session.SocketSession.SendResponse(sendBuffer, 0, bytesCount + 2);
         }
 
-        public override void SendCloseHandshake(IWebSocketSession session, string closeReason)
+        public override void SendCloseHandshake(IWebSocketSession session, int statusCode, string closeReason)
         {
             session.SocketSession.SendResponse(WebSocketConstant.ClosingHandshake, 0, WebSocketConstant.ClosingHandshake.Length);
         }

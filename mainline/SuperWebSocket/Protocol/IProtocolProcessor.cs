@@ -11,6 +11,8 @@ namespace SuperWebSocket.Protocol
     {
         bool CanSendBinaryData { get; }
 
+        ICloseStatusCode CloseStatusClode { get; }
+
         IProtocolProcessor NextProcessor { get; set; }
 
         bool Handshake(IWebSocketSession session, WebSocketReaderBase previousReader, out ICommandReader<WebSocketCommandInfo> dataFrameReader);
@@ -19,8 +21,10 @@ namespace SuperWebSocket.Protocol
 
         void SendData(IWebSocketSession session, byte[] data, int offset, int length);
 
-        void SendCloseHandshake(IWebSocketSession session, string closeReason);
+        void SendCloseHandshake(IWebSocketSession session, int statusCode, string closeReason);
 
         void SendPong(IWebSocketSession session, string ping);
+
+        int Version { get; }
     }
 }

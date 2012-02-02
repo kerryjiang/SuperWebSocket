@@ -30,7 +30,7 @@ namespace SuperWebSocketWeb
             LogUtil.Setup();
             StartSuperWebSocketByConfig();
             //StartSuperWebSocketByProgramming();
-            var ts = new TimeSpan(0, 0, 0, 0, 5);
+            var ts = new TimeSpan(0, 0, 0, 0, 5000);
             m_SecureSocketPushTimer = new Timer(OnSecureSocketPushTimerCallback, new object(), ts, ts);
         }
 

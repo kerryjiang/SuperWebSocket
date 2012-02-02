@@ -20,14 +20,21 @@ namespace SuperWebSocket.Protocol
         private const string m_SecWebSocketVersion = "8";
         private const string m_Magic = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
-        protected virtual string SecWebSocketVersion
+        protected DraftHybi10Processor(int version, ICloseStatusCode closeStatusCode)
+            : base(version, closeStatusCode)
         {
-            get { return m_SecWebSocketVersion; }
+
+        }
+
+        public DraftHybi10Processor()
+            : base(8, new CloseStatusCodeHybi10())
+        {
+
         }
 
         public override bool Handshake(IWebSocketSession session, WebSocketReaderBase previousReader, out ICommandReader<WebSocketCommandInfo> dataFrameReader)
         {
-            if (!SecWebSocketVersion.Equals(session.SecWebSocketVersion) && NextProcessor != null)
+            if (!VersionTag.Equals(session.SecWebSocketVersion) && NextProcessor != null)
             {
                 return NextProcessor.Handshake(session, previousReader, out dataFrameReader);
             }
@@ -89,9 +96,25 @@ namespace SuperWebSocket.Protocol
             SendMessage(session, OpCode.Text, message);
         }
 
-        public override void SendCloseHandshake(IWebSocketSession session, string closeReason)
+        public override void SendCloseHandshake(IWebSocketSession session, int statusCode, string closeReason)
         {
-            SendMessage(session, OpCode.Close, closeReason);
+            byte[] playloadData = new byte[(string.IsNullOrEmpty(closeReason) ? 0 : Encoding.UTF8.GetMaxByteCount(closeReason.Length)) + 2];
+
+            int highByte = statusCode / 256;
+            int lowByte = statusCode % 256;
+
+            playloadData[0] = (byte)highByte;
+            playloadData[1] = (byte)lowByte;
+
+            if (!string.IsNullOrEmpty(closeReason))
+            {
+                int bytesCount = Encoding.UTF8.GetBytes(closeReason, 0, closeReason.Length, playloadData, 2);
+                SendPackage(session, OpCode.Close, playloadData, 0, bytesCount + 2);
+            }
+            else
+            {
+                SendPackage(session, OpCode.Close, playloadData, 0, playloadData.Length);
+            }
         }
 
         public override void SendPong(IWebSocketSession session, string ping)
@@ -141,6 +164,11 @@ namespace SuperWebSocket.Protocol
                     new ArraySegment<byte>(headData, 0, headData.Length),
                     new ArraySegment<byte>(data, offset, length)
                 });
+        }
+
+        private void SendMessage(IWebSocketSession session, int opCode, string message, int statusCode)
+        {
+            
         }
 
         private void SendMessage(IWebSocketSession session, int opCode, string message)

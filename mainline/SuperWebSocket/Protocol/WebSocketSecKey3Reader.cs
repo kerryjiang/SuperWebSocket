@@ -30,8 +30,8 @@ namespace SuperWebSocket.Protocol
                 webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = key;
                 BufferSegments.Clear();
                 left = 0;
-                Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession);
-                return HandshakeCommandInfo;
+                if(Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession))
+                    return HandshakeCommandInfo;
             }
             else if (total > SecKey3Len)
             {
@@ -41,8 +41,8 @@ namespace SuperWebSocket.Protocol
                 webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = key;
                 BufferSegments.Clear();
                 left = total - SecKey3Len;
-                Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession);
-                return HandshakeCommandInfo;
+                if(Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession))
+                    return HandshakeCommandInfo;
             }
             else
             {
@@ -51,6 +51,8 @@ namespace SuperWebSocket.Protocol
                 NextCommandReader = this;
                 return null;
             }
+
+            return null;
         }
     }
 }

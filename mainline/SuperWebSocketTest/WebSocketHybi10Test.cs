@@ -79,6 +79,25 @@ namespace SuperWebSocketTest
             Assert.AreEqual(expectedKey, response["Sec-WebSocket-Accept"]);
         }
 
+        private static Random m_Random = new Random();
+
+        private void GenerateMask(byte[] mask, int offset)
+        {
+            for (var i = offset; i < offset + 4; i++)
+            {
+                mask[i] = (byte)m_Random.Next(0, 255);
+            }
+        }
+
+        private void MaskData(byte[] rawData, int offset, int length, byte[] mask, int maskOffset)
+        {
+            for (var i = 0; i < length; i++)
+            {
+                var pos = offset + i;
+                rawData[pos] = (byte)(rawData[pos] ^ mask[maskOffset + i % 4]);
+            }
+        }
+
         [Test]
         public override void MessageTransferTest()
         {
@@ -271,20 +290,20 @@ namespace SuperWebSocketTest
 
             if (length < 126)
             {
-                headData = new byte[2];
-                headData[1] = (byte)length;
+                headData = new byte[6];
+                headData[1] = (byte)(length | 0x80);
             }
             else if (length < 65536)
             {
-                headData = new byte[4];
-                headData[1] = (byte)126;
+                headData = new byte[8];
+                headData[1] = (byte)(126 | 0x80);
                 headData[2] = (byte)(length / 256);
                 headData[3] = (byte)(length % 256);
             }
             else
             {
-                headData = new byte[10];
-                headData[1] = (byte)127;
+                headData = new byte[14];
+                headData[1] = (byte)(127 | 0x80);
 
                 int left = length;
                 int unit = 256;
@@ -301,10 +320,13 @@ namespace SuperWebSocketTest
 
             headData[0] = (byte)(opCode | 0x80);
 
+            GenerateMask(headData, headData.Length - 4);
+            MaskData(playloadData, 0, playloadData.Length, headData, headData.Length - 4);
+
             outputStream.Write(headData, 0, headData.Length);
             outputStream.Write(playloadData, 0, playloadData.Length);
 
-            return headData.Length + playloadData.Length;
+            return headData.Length + playloadData.Length - 4;
         }
     }
 }

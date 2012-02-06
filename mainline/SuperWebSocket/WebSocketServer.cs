@@ -420,6 +420,12 @@ namespace SuperWebSocket
             m_NewDataReceived(session, data);
         }
 
+        private const string m_Tab = "\t";
+        private const char m_Colon = ':';
+        private const string m_Space = " ";
+        private const char m_SpaceChar = ' ';
+        private const string m_ValueSeparator = ", ";
+
         internal static void ParseHandshake(IWebSocketSession session, TextReader reader)
         {
             string line;
@@ -434,14 +440,14 @@ namespace SuperWebSocket
                     continue;
                 }
 
-                if (line.StartsWith("\t") && !string.IsNullOrEmpty(prevKey))
+                if (line.StartsWith(m_Tab) && !string.IsNullOrEmpty(prevKey))
                 {
                     string currentValue = session.Items.GetValue<string>(prevKey, string.Empty);
                     session.Items[prevKey] = currentValue + line.Trim();
                     continue;
                 }
 
-                int pos = line.IndexOf(':');
+                int pos = line.IndexOf(m_Colon);
 
                 string key = line.Substring(0, pos);
 
@@ -449,17 +455,27 @@ namespace SuperWebSocket
                     key = key.Trim();
 
                 string value = line.Substring(pos + 1);
-                if (!string.IsNullOrEmpty(value) && value.StartsWith(" ") && value.Length > 1)
+                if (!string.IsNullOrEmpty(value) && value.StartsWith(m_Space) && value.Length > 1)
                     value = value.Substring(1);
 
                 if (string.IsNullOrEmpty(key))
                     continue;
 
-                session.Items[key] = value;
+                object oldValue;
+
+                if (!session.Items.TryGetValue(key, out oldValue))
+                {
+                    session.Items.Add(key, value);
+                }
+                else
+                {
+                    session.Items[key] = oldValue + m_ValueSeparator + value;
+                }
+
                 prevKey = key;
             }
 
-            var metaInfo = firstLine.Split(' ');
+            var metaInfo = firstLine.Split(m_SpaceChar);
 
             session.Method = metaInfo[0];
             session.Path = metaInfo[1];

@@ -67,6 +67,15 @@ namespace SuperWebSocket.Protocol
 
                     if (m_Frame.FIN)
                     {
+                        if (!m_Frame.HasMask)
+                        {
+                            //Mask is required for client to server fragment
+                            //http://tools.ietf.org/html/rfc6455#section-5.3
+                            var websocketSession = session as WebSocketSession;
+                            websocketSession.CloseWithHandshake(websocketSession.ProtocolProcessor.CloseStatusClode.ProtocolError, "Mask is required!");
+                            return null;
+                        }
+
                         if (m_PreviousFrames != null && m_PreviousFrames.Count > 0)
                         {
                             m_PreviousFrames.Add(m_Frame);

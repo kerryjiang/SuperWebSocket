@@ -79,6 +79,66 @@ namespace SuperWebSocketTest
             Assert.AreEqual(expectedKey, response["Sec-WebSocket-Accept"]);
         }
 
+        [Test]
+        public void MultipleVersionTest()
+        {
+            var ip = "127.0.0.1";
+            var port = 2012;
+
+            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+            var address = new IPEndPoint(IPAddress.Parse(ip), port);
+            socket.Connect(address);
+
+            var stream = new NetworkStream(socket);
+
+            var reader = new StreamReader(stream, new UTF8Encoding(), false);
+            var writer = new StreamWriter(stream, new UTF8Encoding(), 1024 * 10);
+
+            var secKey = Guid.NewGuid().ToString().Substring(0, 5);
+
+            writer.Write("GET /websock HTTP/1.1");
+            writer.Write(NewLine);
+            writer.Write("Upgrade: WebSocket");
+            writer.Write(NewLine);
+            writer.Write("Sec-WebSocket-Version: 10");
+            writer.Write(NewLine);
+            writer.Write("Connection: Upgrade");
+            writer.Write(NewLine);
+            writer.Write("Sec-WebSocket-Key: " + secKey);
+            writer.Write(NewLine);
+            writer.Write("Host: example.com");
+            writer.Write(NewLine);
+            writer.Write("Origin: http://example.com");
+            writer.Write(NewLine);
+
+            writer.Write(NewLine);
+            writer.Flush();
+
+            reader.ReadLine();
+
+            var response = new StringDictionary();
+
+            while (true)
+            {
+                var line = reader.ReadLine();
+
+                if (string.IsNullOrEmpty(line))
+                    break;
+
+                var arr = line.Split(':');
+
+                response[arr[0]] = arr[1].Trim();
+            }
+
+            var versions = response["Sec-WebSocket-Version"];
+
+            Console.WriteLine("Sec-WebSocket-Version: {0}", versions);
+            Assert.AreEqual("8, 13", versions);
+
+            socket.Close();
+        }
+
         private static Random m_Random = new Random();
 
         private void GenerateMask(byte[] mask, int offset)

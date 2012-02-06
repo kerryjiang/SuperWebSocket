@@ -17,7 +17,6 @@ namespace SuperWebSocket.Protocol
     /// </summary>
     class DraftHybi10Processor : ProtocolProcessorBase
     {
-        private const string m_SecWebSocketVersion = "8";
         private const string m_Magic = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
         protected DraftHybi10Processor(int version, ICloseStatusCode closeStatusCode)
@@ -63,15 +62,15 @@ namespace SuperWebSocket.Protocol
                 return false;
             }
 
-            responseBuilder.AppendWithCrCf("HTTP/1.1 101 Switching Protocols");
-            responseBuilder.AppendWithCrCf("Upgrade: WebSocket");
-            responseBuilder.AppendWithCrCf("Connection: Upgrade");
-            responseBuilder.AppendFormatWithCrCf("Sec-WebSocket-Accept: {0}", secKeyAccept);
+            responseBuilder.AppendWithCrCf(WebSocketConstant.ResponseHeadLine);
+            responseBuilder.AppendWithCrCf(WebSocketConstant.ResponseUpgradeLine);
+            responseBuilder.AppendWithCrCf(WebSocketConstant.ResponseConnectionLine);
+            responseBuilder.AppendFormatWithCrCf(WebSocketConstant.ResponseAcceptLine, secKeyAccept);
 
             var subProtocol = session.GetAvailableSubProtocol(session.Items.GetValue<string>(WebSocketConstant.SecWebSocketProtocol, string.Empty));
 
             if (!string.IsNullOrEmpty(subProtocol))
-                responseBuilder.AppendFormatWithCrCf("Sec-WebSocket-Protocol: {0}", subProtocol);
+                responseBuilder.AppendFormatWithCrCf(WebSocketConstant.ResponseProtocolLine, subProtocol);
 
             responseBuilder.AppendWithCrCf();
             session.SocketSession.SendResponse(responseBuilder.ToString());

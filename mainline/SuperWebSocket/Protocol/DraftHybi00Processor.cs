@@ -38,19 +38,19 @@ namespace SuperWebSocket.Protocol
 
             var responseBuilder = new StringBuilder();
 
-            responseBuilder.AppendWithCrCf("HTTP/1.1 101 Web Socket Protocol Handshake");
-            responseBuilder.AppendWithCrCf("Upgrade: WebSocket");
-            responseBuilder.AppendWithCrCf("Connection: Upgrade");
+            responseBuilder.AppendWithCrCf(WebSocketConstant.ResponseHeadLine);
+            responseBuilder.AppendWithCrCf(WebSocketConstant.ResponseUpgradeLine);
+            responseBuilder.AppendWithCrCf(WebSocketConstant.ResponseConnectionLine);
 
             if (!string.IsNullOrEmpty(session.Origin))
-                responseBuilder.AppendFormatWithCrCf("Sec-WebSocket-Origin: {0}", session.Origin);
+                responseBuilder.AppendFormatWithCrCf(WebSocketConstant.ResponseOriginLine, session.Origin);
 
-            responseBuilder.AppendFormatWithCrCf("Sec-WebSocket-Location: {0}://{1}{2}", session.UriScheme, session.Host, session.Path);
+            responseBuilder.AppendFormatWithCrCf(WebSocketConstant.ResponseLocationLine, session.UriScheme, session.Host, session.Path);
 
             var subProtocol = session.GetAvailableSubProtocol(session.Items.GetValue<string>(WebSocketConstant.SecWebSocketProtocol, string.Empty));
 
             if (!string.IsNullOrEmpty(subProtocol))
-                responseBuilder.AppendFormatWithCrCf("Sec-WebSocket-Protocol: {0}", subProtocol);
+                responseBuilder.AppendFormatWithCrCf(WebSocketConstant.ResponseProtocolLine, subProtocol);
 
             responseBuilder.AppendWithCrCf();
             session.SocketSession.SendResponse(responseBuilder.ToString());

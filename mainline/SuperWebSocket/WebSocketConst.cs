@@ -19,6 +19,13 @@ namespace SuperWebSocket
         public const string Cookie = "Cookie";
         public const string Upgrade = "Upgrade";
         public const string Origin = "Origin";
+        public const string ResponseHeadLine = "HTTP/1.1 101 Web Socket Protocol Handshake";
+        public const string ResponseUpgradeLine = Upgrade + ": WebSocket";
+        public const string ResponseConnectionLine = Connection + ": Upgrade";
+        public const string ResponseOriginLine = Origin + ": {0}";
+        public const string ResponseLocationLine = "Sec-WebSocket-Location: {0}://{1}{2}";
+        public const string ResponseProtocolLine = SecWebSocketProtocol + ": {0}";
+        public const string ResponseAcceptLine = "Sec-WebSocket-Accept: {0}";
         public const byte StartByte = 0x00;
         public const byte EndByte = 0xFF;
         public static byte[] ClosingHandshake = new byte[] { 0xFF, 0x00 };

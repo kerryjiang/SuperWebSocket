@@ -275,7 +275,8 @@ namespace SuperWebSocket
 
             while (true)
             {
-                availableVersions.Add(thisProcessor.Version);
+                if (thisProcessor.Version > 0)
+                    availableVersions.Add(thisProcessor.Version);
 
                 if (thisProcessor.NextProcessor == null)
                     break;

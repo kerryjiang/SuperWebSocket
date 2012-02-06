@@ -13,12 +13,21 @@ namespace SuperWebSocket.Protocol
     {
         private int[] m_AvailableVersions;
 
-        private string m_AvailableVersionLine;
+        private byte[] m_SwitchResponse;
 
         public MultipleProtocolSwitchProcessor(int[] availableVersions)
         {
             m_AvailableVersions = availableVersions;
-            m_AvailableVersionLine = "Sec-WebSocket-Version: " + string.Join(", ", availableVersions.Select(i => i.ToString()).ToArray());
+
+            var responseBuilder = new StringBuilder();
+
+            responseBuilder.AppendWithCrCf("HTTP/1.1 400 Bad Request");
+            responseBuilder.AppendWithCrCf("Upgrade: WebSocket");
+            responseBuilder.AppendWithCrCf("Connection: Upgrade");
+            responseBuilder.AppendWithCrCf("Sec-WebSocket-Version: " + string.Join(", ", availableVersions.Select(i => i.ToString()).ToArray()));
+            responseBuilder.AppendWithCrCf();
+
+            m_SwitchResponse = Encoding.UTF8.GetBytes(responseBuilder.ToString());
         }
 
         public bool CanSendBinaryData { get { return false; } }
@@ -30,17 +39,7 @@ namespace SuperWebSocket.Protocol
         public bool Handshake(IWebSocketSession session, WebSocketReaderBase previousReader, out ICommandReader<WebSocketCommandInfo> dataFrameReader)
         {
             dataFrameReader = null;
-
-            var responseBuilder = new StringBuilder();
-
-            responseBuilder.AppendWithCrCf("HTTP/1.1 400 Bad Request");
-            responseBuilder.AppendWithCrCf("Upgrade: WebSocket");
-            responseBuilder.AppendWithCrCf("Connection: Upgrade");
-            responseBuilder.AppendWithCrCf(m_AvailableVersionLine);
-            responseBuilder.AppendWithCrCf();
-
-            session.SocketSession.SendResponse(responseBuilder.ToString());
-
+            session.SocketSession.SendResponse(m_SwitchResponse, 0, m_SwitchResponse.Length);
             return true;
         }
 

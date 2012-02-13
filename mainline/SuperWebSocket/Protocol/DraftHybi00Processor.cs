@@ -38,7 +38,7 @@ namespace SuperWebSocket.Protocol
 
             var responseBuilder = new StringBuilder();
 
-            responseBuilder.AppendWithCrCf(WebSocketConstant.ResponseHeadLine);
+            responseBuilder.AppendWithCrCf(WebSocketConstant.ResponseHeadLine00);
             responseBuilder.AppendWithCrCf(WebSocketConstant.ResponseUpgradeLine);
             responseBuilder.AppendWithCrCf(WebSocketConstant.ResponseConnectionLine);
 

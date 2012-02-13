@@ -62,7 +62,7 @@ namespace SuperWebSocket.Protocol
                 return false;
             }
 
-            responseBuilder.AppendWithCrCf(WebSocketConstant.ResponseHeadLine);
+            responseBuilder.AppendWithCrCf(WebSocketConstant.ResponseHeadLine10);
             responseBuilder.AppendWithCrCf(WebSocketConstant.ResponseUpgradeLine);
             responseBuilder.AppendWithCrCf(WebSocketConstant.ResponseConnectionLine);
             responseBuilder.AppendFormatWithCrCf(WebSocketConstant.ResponseAcceptLine, secKeyAccept);

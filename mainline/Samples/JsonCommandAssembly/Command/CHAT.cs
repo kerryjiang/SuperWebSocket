@@ -13,7 +13,7 @@ namespace SuperWebSocket.Samples.JsonCommandAssembly.Command
     /// </summary>
     public class CHAT : JsonSubCommand<ChatMessage>
     {
-        protected override void ExecuteJsonCommand(WebSocketSession session, ChatMessage commandInfo)
+        protected override void ExecuteJsonCommand(WebSocketSession session, string token, ChatMessage commandInfo)
         {
             //Save to database or despacth to other session?
         }

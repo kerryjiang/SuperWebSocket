@@ -48,7 +48,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Command\ADD.cs" />
     <Compile Include="Command\CHAT.cs" />
+    <Compile Include="Command\ECHO.cs" />
+    <Compile Include="JsonObject\AddParameter.cs" />
+    <Compile Include="JsonObject\AddResult.cs" />
     <Compile Include="JsonObject\ChatMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -62,6 +66,7 @@
     <Content Include="readme.txt" />
     <Content Include="SuperWebSocket.Service.exe.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

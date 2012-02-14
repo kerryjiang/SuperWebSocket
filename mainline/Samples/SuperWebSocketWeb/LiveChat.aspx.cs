@@ -15,7 +15,7 @@ namespace SuperWebSocketWeb
             var nameCookie = Request.Cookies.Get("name");
 
             if (nameCookie == null)
-                Response.Redirect("~/Default.aspx");
+                Response.Redirect("~/Default.aspx?returnUrl=" + Server.UrlEncode(Request.FilePath));
         }
 
         protected object WebSocketPort

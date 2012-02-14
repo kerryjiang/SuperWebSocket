@@ -41,6 +41,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Reference\SuperSocket\Net40\SuperSocket.Common.dll</HintPath>
     </Reference>
+    <Reference Include="SuperSocket.Facility">
+      <HintPath>..\..\Reference\SuperSocket\Net40\SuperSocket.Facility.dll</HintPath>
+    </Reference>
     <Reference Include="SuperSocket.SocketBase, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Reference\SuperSocket\Net40\SuperSocket.SocketBase.dll</HintPath>
@@ -68,6 +71,8 @@
     <Reference Include="System.Web.ApplicationServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="clientaccesspolicy.xml" />
+    <Content Include="ClientBin\WebSocket4Net.JsBridge.xap" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Images\white-top-bottom.gif" />
@@ -91,14 +96,23 @@
     <Compile Include="LiveChat.aspx.designer.cs">
       <DependentUpon>LiveChat.aspx</DependentUpon>
     </Compile>
+    <Compile Include="LiveChatWithBridge.aspx.cs">
+      <DependentUpon>LiveChatWithBridge.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LiveChatWithBridge.aspx.designer.cs">
+      <DependentUpon>LiveChatWithBridge.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Config\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="LiveChatWithBridge.aspx" />
     <Content Include="Scripts\jquery.js" />
+    <Content Include="Scripts\Silverlight.js" />
+    <Content Include="Scripts\websocket.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -120,6 +134,10 @@
       <Project>{2DC79E40-BB70-4F6A-B378-905F2FBC6E97}</Project>
       <Name>SuperWebSocket</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Config\log4net.config" />
+    <Content Include="Config\log4net.unix.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

@@ -17,7 +17,8 @@ namespace SuperWebSocketWeb
         protected void btnLogin_Click(object sender, EventArgs e)
         {
             Response.AppendCookie(new HttpCookie("name", txbName.Text.Trim()));
-            Response.Redirect("~/LiveChat.aspx");
+            var returnUrl = Request.QueryString["returnUrl"];
+            Response.Redirect(string.IsNullOrEmpty(returnUrl) ? "~/LiveChatWithBridge.aspx" : returnUrl);
         }
     }
 }

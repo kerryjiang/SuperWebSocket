@@ -5,7 +5,7 @@
     <title>Live Chat</title>
     <script type="text/javascript" src="Scripts/jquery.js"></script>
     <script type="text/javascript" src="Scripts/Silverlight.js"></script>
-    <script type="text/javascript" src="Scripts/websocket.js"></script>
+    <script type="text/javascript" src="Scripts/WebSocketEx.js"></script>
     <style type="text/css">
     body
     {
@@ -61,15 +61,17 @@
 
             messageBoard.append("* Connecting to server ..<br/>");
             // create a new websocket and connect
-            createWebSocket('ws://<%= Request.Url.Host %>:<%= WebSocketPort %>/sample', '', function () {
+            var websocket = new WebSocketEx('ws://<%= Request.Url.Host %>:<%= WebSocketPort %>/sample', '', function () {
                 messageBoard.append('* Connection open<br/>');
+                ws = websocket;
             }, function () {
                 messageBoard.append('* Connection closed<br/>');
             }, function (evt) {
                 messageBoard.append("# " + evt.data + "<br />");
                 scrollToBottom(messageBoard);
             }, function (evt) {
-                ws = evt;
+                messageBoard.append("# " + evt.data + "<br />");
+                scrollToBottom(messageBoard);
             });
         }
 

@@ -110,9 +110,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LiveChatWithBridge.aspx" />
+    <Content Include="Scripts\WebSocketEx.js" />
     <Content Include="Scripts\jquery.js" />
     <Content Include="Scripts\Silverlight.js" />
-    <Content Include="Scripts\websocket.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

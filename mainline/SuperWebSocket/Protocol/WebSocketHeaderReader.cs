@@ -64,7 +64,7 @@ namespace SuperWebSocket.Protocol
             var secWebSocketKey2 = webSocketSession.Items.GetValue<string>(WebSocketConstant.SecWebSocketKey2, string.Empty);
             var secWebSocketVersion = webSocketSession.SecWebSocketVersion;
 
-            left = length - findLen - m_HeaderTerminator.Length;
+            left = length - findLen - (m_HeaderTerminator.Length - prevMatched);
 
             this.ClearBufferSegments();
 

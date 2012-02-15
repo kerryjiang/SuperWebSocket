@@ -28,7 +28,7 @@ namespace SuperWebSocket.Protocol
                 BufferSegments.CopyTo(key);
                 Array.Copy(readBuffer, offset, key, BufferSegments.Count, length);
                 webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = key;
-                BufferSegments.Clear();
+                BufferSegments.ClearSegements();
                 left = 0;
                 if(Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession))
                     return HandshakeCommandInfo;
@@ -39,7 +39,7 @@ namespace SuperWebSocket.Protocol
                 BufferSegments.CopyTo(key);
                 Array.Copy(readBuffer, offset, key, BufferSegments.Count, SecKey3Len - BufferSegments.Count);
                 webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = key;
-                BufferSegments.Clear();
+                BufferSegments.ClearSegements();
                 left = total - SecKey3Len;
                 if(Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession))
                     return HandshakeCommandInfo;

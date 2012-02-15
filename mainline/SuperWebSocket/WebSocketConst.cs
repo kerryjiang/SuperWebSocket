@@ -23,7 +23,7 @@ namespace SuperWebSocket
         public const string ResponseHeadLine10 = "HTTP/1.1 101 Switching Protocols";
         public const string ResponseUpgradeLine = Upgrade + ": WebSocket";
         public const string ResponseConnectionLine = Connection + ": Upgrade";
-        public const string ResponseOriginLine = Origin + ": {0}";
+        public const string ResponseOriginLine = "Sec-WebSocket-Origin: {0}";
         public const string ResponseLocationLine = "Sec-WebSocket-Location: {0}://{1}{2}";
         public const string ResponseProtocolLine = SecWebSocketProtocol + ": {0}";
         public const string ResponseAcceptLine = "Sec-WebSocket-Accept: {0}";

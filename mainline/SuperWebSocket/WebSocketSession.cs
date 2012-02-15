@@ -251,7 +251,7 @@ namespace SuperWebSocket
 
         public override void Close(CloseReason reason)
         {
-            if (reason == CloseReason.TimeOut)
+            if (reason == CloseReason.TimeOut && ProtocolProcessor != null)
             {
                 CloseWithHandshake(ProtocolProcessor.CloseStatusClode.NormalClosure, "Session timeOut");
                 return;

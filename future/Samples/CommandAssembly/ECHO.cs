@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using SuperWebSocket.SubProtocol;
 using SuperSocket.SocketBase.Command;
+using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket.Samples.CommandAssembly
 {
@@ -13,7 +14,7 @@ namespace SuperWebSocket.Samples.CommandAssembly
     /// </summary>
     public class ECHO : SubCommandBase
     {
-        public override void ExecuteCommand(WebSocketSession session, StringCommandInfo commandInfo)
+        public override void ExecuteCommand(WebSocketSession session, StringRequestInfo commandInfo)
         {
             session.SendResponse(commandInfo.Data);
         }

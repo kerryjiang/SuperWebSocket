@@ -7,6 +7,7 @@ using System.Text;
 using SuperSocket.Common;
 using SuperSocket.SocketEngine;
 using SuperSocket.SocketEngine.Configuration;
+using SuperSocket.Common.Logging;
 
 namespace SuperWebSocket.Service
 {
@@ -17,7 +18,7 @@ namespace SuperWebSocket.Service
         /// </summary>
         static void Main(string[] args)
         {
-            LogUtil.Setup();
+            LogFactoryProvider.Initialize();
 
             if (args != null && args.Length > 0)
             {

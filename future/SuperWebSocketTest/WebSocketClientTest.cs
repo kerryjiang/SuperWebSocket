@@ -12,6 +12,7 @@ using SuperSocket.SocketEngine;
 using SuperWebSocket;
 using SuperWebSocket.SubProtocol;
 using WebSocket4Net;
+using SuperSocket.Common.Logging;
 
 namespace SuperWebSocketTest
 {
@@ -62,7 +63,8 @@ namespace SuperWebSocketTest
         [TestFixtureSetUp]
         public virtual void Setup()
         {
-            LogUtil.Setup(new ConsoleLogger());
+            if (LogFactoryProvider.LogFactory == null)
+                LogFactoryProvider.Initialize(new ConsoleLogFactory());
 
             m_WebSocketServer = new WebSocketServer(new BasicSubProtocol("Basic", new List<Assembly> { this.GetType().Assembly }));
             m_WebSocketServer.NewDataReceived += new SessionEventHandler<WebSocketSession, byte[]>(m_WebSocketServer_NewDataReceived);
@@ -71,7 +73,7 @@ namespace SuperWebSocketTest
                 Port = 2012,
                 Ip = "Any",
                 MaxConnectionNumber = 100,
-                Mode = SocketMode.Async,
+                Mode = SocketMode.Tcp,
                 Name = "SuperWebSocket Server"
             }, SocketServerFactory.Instance);
         }
@@ -79,7 +81,7 @@ namespace SuperWebSocketTest
         void m_WebSocketServer_NewDataReceived(WebSocketSession session, byte[] e)
         {
             //Echo
-            session.SendResponse(e);
+            session.SendResponse(e, 0, e.Length);
         }
 
         [SetUp]

@@ -13,6 +13,7 @@ using SuperSocket.SocketBase.Config;
 using SuperSocket.SocketEngine;
 using SuperSocket.SocketEngine.Configuration;
 using SuperWebSocket;
+using SuperSocket.Common.Logging;
 
 namespace SuperWebSocketWeb
 {
@@ -26,7 +27,7 @@ namespace SuperWebSocketWeb
 
         void Application_Start(object sender, EventArgs e)
         {
-            LogUtil.Setup();
+            LogFactoryProvider.Initialize();
             StartSuperWebSocketByConfig();
             //StartSuperWebSocketByProgramming();
             var ts = new TimeSpan(0, 0, 5);
@@ -93,7 +94,7 @@ namespace SuperWebSocketWeb
                 Name = "SuperWebSocket",
                 Ip = "Any",
                 Port = 2011,
-                Mode = SocketMode.Async
+                Mode = SocketMode.Tcp
             }, SocketServerFactory.Instance);
             socketServer.NewMessageReceived += new SessionEventHandler<WebSocketSession, string>(socketServer_NewMessageReceived);
             socketServer.NewSessionConnected += new SessionEventHandler<WebSocketSession>(socketServer_NewSessionConnected);
@@ -105,7 +106,7 @@ namespace SuperWebSocketWeb
                 Name = "SecureSuperWebSocket",
                 Ip = "Any",
                 Port = 2012,
-                Mode = SocketMode.Sync,
+                Mode = SocketMode.Tcp,
                 Security = "tls",
                 Certificate = new SuperSocket.SocketBase.Config.CertificateConfig
                 {

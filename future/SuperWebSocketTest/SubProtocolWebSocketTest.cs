@@ -12,6 +12,7 @@ using SuperSocket.SocketBase.Config;
 using SuperSocket.SocketEngine;
 using SuperWebSocket;
 using SuperWebSocket.SubProtocol;
+using SuperSocket.Common.Logging;
 
 namespace SuperWebSocketTest
 {
@@ -29,7 +30,8 @@ namespace SuperWebSocketTest
         [TestFixtureSetUp]
         public override void Setup()
         {
-            LogUtil.Setup(new ConsoleLogger());
+            if (LogFactoryProvider.LogFactory == null)
+                LogFactoryProvider.Initialize(new ConsoleLogFactory());
 
             m_Encoding = new UTF8Encoding();
 
@@ -39,7 +41,7 @@ namespace SuperWebSocketTest
                 Port = 2012,
                 Ip = "Any",
                 MaxConnectionNumber = 100,
-                Mode = SocketMode.Sync,
+                Mode = SocketMode.Tcp,
                 Name = "SuperWebSocket Server"
             }, SocketServerFactory.Instance);
         }

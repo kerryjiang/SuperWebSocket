@@ -91,11 +91,11 @@
     <Compile Include="Protocol\ProtocolProcessorBase..cs" />
     <Compile Include="Protocol\Rfc6455Processor.cs" />
     <Compile Include="Protocol\WebSocketDataFrame.cs" />
-    <Compile Include="Protocol\WebSocketDataFrameReader.cs" />
-    <Compile Include="Protocol\WebSocketDataReader.cs" />
-    <Compile Include="Protocol\WebSocketHeaderReader.cs" />
-    <Compile Include="Protocol\WebSocketReaderBase.cs" />
-    <Compile Include="Protocol\WebSocketSecKey3Reader.cs" />
+    <Compile Include="Protocol\WebSocketDataFrameRequestFilter.cs" />
+    <Compile Include="Protocol\WebSocketDataRequestFilter.cs" />
+    <Compile Include="Protocol\WebSocketHeaderRequestFilter.cs" />
+    <Compile Include="Protocol\WebSocketRequestFilterBase.cs" />
+    <Compile Include="Protocol\WebSocketSecKey3RequestFilter.cs" />
     <Compile Include="SubProtocol\BasicSubCommandParser.cs" />
     <Compile Include="SubProtocol\BasicSubProtocol.cs" />
     <Compile Include="SubProtocol\ISubCommand.cs" />
@@ -103,9 +103,9 @@
     <Compile Include="SubProtocol\JsonSubCommand.cs" />
     <Compile Include="SubProtocol\SubCommandBase.cs" />
     <Compile Include="SubProtocol\SubProtocolBase.cs" />
-    <Compile Include="WebSocketCommandInfo.cs" />
     <Compile Include="WebSocketConst.cs" />
     <Compile Include="WebSocketProtocol.cs" />
+    <Compile Include="WebSocketRequestInfo.cs" />
     <Compile Include="WebSocketServer.cs" />
     <Compile Include="WebSocketSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

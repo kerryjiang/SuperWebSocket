@@ -8,15 +8,15 @@ using SuperSocket.SocketBase.Command;
 
 namespace SuperWebSocket.Protocol
 {
-    public class WebSocketSecKey3Reader : WebSocketReaderBase
+    public class WebSocketSecKey3RequestFilter : WebSocketRequestFilterBase
     {
-        public WebSocketSecKey3Reader(WebSocketReaderBase prevReader)
-            : base(prevReader)
+        public WebSocketSecKey3RequestFilter(WebSocketRequestFilterBase prevFilter)
+            : base(prevFilter)
         {
             
         }
 
-        public override WebSocketCommandInfo FindCommandInfo(IAppSession session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
+        public override WebSocketRequestInfo Filter(IAppSession<WebSocketRequestInfo> session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
         {
             var webSocketSession = session as IWebSocketSession;
 
@@ -31,7 +31,7 @@ namespace SuperWebSocket.Protocol
                 BufferSegments.ClearSegements();
                 left = 0;
                 if(Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession))
-                    return HandshakeCommandInfo;
+                    return HandshakeRequestInfo;
             }
             else if (total > SecKey3Len)
             {
@@ -42,13 +42,13 @@ namespace SuperWebSocket.Protocol
                 BufferSegments.ClearSegements();
                 left = total - SecKey3Len;
                 if(Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession))
-                    return HandshakeCommandInfo;
+                    return HandshakeRequestInfo;
             }
             else
             {
                 AddArraySegment(readBuffer, offset, length, isReusableBuffer);
                 left = 0;
-                NextCommandReader = this;
+                NextRequestFilter = this;
                 return null;
             }
 

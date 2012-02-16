@@ -9,6 +9,7 @@ using SuperSocket.SocketBase.Command;
 using System.Collections.Specialized;
 using SuperWebSocket.SubProtocol;
 using SuperWebSocket.Protocol;
+using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket
 {
@@ -22,8 +23,8 @@ namespace SuperWebSocket
         string Origin { get; }
         string UriScheme { get; }
         void SendResponse(string message);
-        void SendResponse(byte[] data);
-        IWebSocketServer AppServer { get; }
+        void SendResponse(byte[] data, int offset, int length);
+        new IWebSocketServer AppServer { get; }
         IProtocolProcessor ProtocolProcessor { get; set; }
         string GetAvailableSubProtocol(string protocol);
         void EnqueueSend(IList<ArraySegment<byte>> data);
@@ -38,7 +39,7 @@ namespace SuperWebSocket
         }
     }
 
-    public class WebSocketSession<TWebSocketSession> : AppSession<TWebSocketSession, WebSocketCommandInfo>, IWebSocketSession
+    public class WebSocketSession<TWebSocketSession> : AppSession<TWebSocketSession, WebSocketRequestInfo>, IWebSocketSession
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
         public string Method { get; set; }
@@ -215,15 +216,16 @@ namespace SuperWebSocket
             ProtocolProcessor.SendMessage(this, string.Format(message, paramValues));
         }
 
-        public new void SendResponse(byte[] data)
+        public new void SendResponse(byte[] data, int offset, int length)
         {
             if (!ProtocolProcessor.CanSendBinaryData)
             {
-                Logger.LogError("The websocket of this version cannot used for sending binary data!");
+                if(Logger.IsErrorEnabled)
+                    Logger.Error("The websocket of this version cannot used for sending binary data!");
                 return;
             }
 
-            ProtocolProcessor.SendData(this, data, 0, data.Length);
+            ProtocolProcessor.SendData(this, data, offset, length);
         }
 
         public void SendResponseAsync(string message)
@@ -262,7 +264,7 @@ namespace SuperWebSocket
 
         public IProtocolProcessor ProtocolProcessor { get; set; }
 
-        internal protected virtual void HandleUnknownCommand(StringCommandInfo commandInfo)
+        internal protected virtual void HandleUnknownCommand(StringRequestInfo commandInfo)
         {
 
         }

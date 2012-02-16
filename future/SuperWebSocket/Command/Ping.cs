@@ -7,7 +7,7 @@ using SuperWebSocket.Protocol;
 
 namespace SuperWebSocket.Command
 {
-    public class Ping<TWebSocketSession> : CommandBase<TWebSocketSession, WebSocketCommandInfo>
+    public class Ping<TWebSocketSession> : CommandBase<TWebSocketSession, WebSocketRequestInfo>
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
         public override string Name
@@ -18,9 +18,9 @@ namespace SuperWebSocket.Command
             }
         }
 
-        public override void ExecuteCommand(TWebSocketSession session, WebSocketCommandInfo commandInfo)
+        public override void ExecuteCommand(TWebSocketSession session, WebSocketRequestInfo requestInfo)
         {
-            session.ProtocolProcessor.SendPong(session, commandInfo.Text);
+            session.ProtocolProcessor.SendPong(session, requestInfo.Text);
         }
     }
 }

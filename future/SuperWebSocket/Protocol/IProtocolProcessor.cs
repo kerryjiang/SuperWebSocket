@@ -15,7 +15,7 @@ namespace SuperWebSocket.Protocol
 
         IProtocolProcessor NextProcessor { get; set; }
 
-        bool Handshake(IWebSocketSession session, WebSocketReaderBase previousReader, out ICommandReader<WebSocketCommandInfo> dataFrameReader);
+        bool Handshake(IWebSocketSession session, WebSocketRequestFilterBase previousFilter, out IRequestFilter<WebSocketRequestInfo> dataFrameReader);
 
         void SendMessage(IWebSocketSession session, string message);
 

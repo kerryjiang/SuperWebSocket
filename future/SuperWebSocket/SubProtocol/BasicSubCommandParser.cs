@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SuperSocket.SocketBase.Command;
+using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket.SubProtocol
 {
-    public class BasicSubCommandParser : ICommandParser
+    public class BasicSubCommandParser : IRequestInfoParser<StringRequestInfo>
     {
         #region ISubProtocolCommandParser Members
 
-        public StringCommandInfo ParseCommand(string command)
+        public StringRequestInfo ParseRequestInfo(string command)
         {
             var cmd = command.Trim();
             int pos = cmd.IndexOf(' ');
@@ -39,7 +40,7 @@ namespace SuperWebSocket.SubProtocol
                 paramArray = new string[0];
             }
 
-            return new StringCommandInfo(name, param, paramArray);
+            return new StringRequestInfo(name, param, paramArray);
         }
 
         #endregion

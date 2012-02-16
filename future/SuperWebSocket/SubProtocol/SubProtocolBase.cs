@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SuperSocket.SocketBase.Command;
+using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket.SubProtocol
 {
@@ -23,7 +24,7 @@ namespace SuperWebSocket.SubProtocol
 
         public abstract bool Initialize(SuperSocket.SocketBase.Config.IServerConfig config, Config.SubProtocolConfig protocolConfig);
 
-        public ICommandParser SubCommandParser { get; protected set; }
+        public IRequestInfoParser<StringRequestInfo> SubCommandParser { get; protected set; }
 
         public abstract bool TryGetCommand(string name, out ISubCommand<TWebSocketSession> command);
     }

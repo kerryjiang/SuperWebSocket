@@ -31,11 +31,11 @@ namespace SuperWebSocket.Protocol
 
         }
 
-        public override bool Handshake(IWebSocketSession session, WebSocketReaderBase previousReader, out ICommandReader<WebSocketCommandInfo> dataFrameReader)
+        public override bool Handshake(IWebSocketSession session, WebSocketRequestFilterBase previousFilter, out IRequestFilter<WebSocketRequestInfo> dataFrameReader)
         {
             if (!VersionTag.Equals(session.SecWebSocketVersion) && NextProcessor != null)
             {
-                return NextProcessor.Handshake(session, previousReader, out dataFrameReader);
+                return NextProcessor.Handshake(session, previousFilter, out dataFrameReader);
             }
 
             dataFrameReader = null;
@@ -73,9 +73,10 @@ namespace SuperWebSocket.Protocol
                 responseBuilder.AppendFormatWithCrCf(WebSocketConstant.ResponseProtocolLine, subProtocol);
 
             responseBuilder.AppendWithCrCf();
-            session.SocketSession.SendResponse(responseBuilder.ToString());
+            byte[] data = Encoding.UTF8.GetBytes(responseBuilder.ToString());
+            session.SocketSession.SendResponse(data, 0, data.Length);
 
-            dataFrameReader = new WebSocketDataFrameReader(session.AppServer);
+            dataFrameReader = new WebSocketDataFrameRequestFilter();
 
             return true;
         }

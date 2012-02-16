@@ -15,7 +15,7 @@ namespace SuperWebSocket.Protocol
             VersionTag = version.ToString();
         }
 
-        public abstract bool Handshake(IWebSocketSession session, WebSocketReaderBase previousReader, out ICommandReader<WebSocketCommandInfo> dataFrameReader);
+        public abstract bool Handshake(IWebSocketSession session, WebSocketRequestFilterBase previousFilter, out IRequestFilter<WebSocketRequestInfo> dataFrameReader);
 
         public IProtocolProcessor NextProcessor { get; set; }
 

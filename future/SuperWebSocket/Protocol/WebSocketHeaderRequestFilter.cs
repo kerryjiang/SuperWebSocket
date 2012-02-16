@@ -10,19 +10,19 @@ using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket.Protocol
 {
-    public class WebSocketHeaderReader : WebSocketReaderBase
+    public class WebSocketHeaderRequestFilter : WebSocketRequestFilterBase
     {
         private static readonly byte[] m_HeaderTerminator = Encoding.UTF8.GetBytes("\r\n\r\n");
 
         private SearchMarkState<byte> m_SearchState;
 
-        public WebSocketHeaderReader(IAppServer server)
-            : base(server)
+        public WebSocketHeaderRequestFilter()
+            : base()
         {
             m_SearchState = new SearchMarkState<byte>(m_HeaderTerminator);
         }
 
-        public override WebSocketCommandInfo FindCommandInfo(IAppSession session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
+        public override WebSocketRequestInfo Filter(IAppSession<WebSocketRequestInfo> session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
         {
             left = 0;
 
@@ -72,12 +72,12 @@ namespace SuperWebSocket.Protocol
             {
                 //draft-hixie-thewebsocketprotocol-75
                 if(Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession))
-                    return HandshakeCommandInfo;
+                    return HandshakeRequestInfo;
             }
             else if ("6".Equals(secWebSocketVersion)) //draft-ietf-hybi-thewebsocketprotocol-06
             {
                 if(Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession))
-                    return HandshakeCommandInfo;
+                    return HandshakeRequestInfo;
             }
             else
             {
@@ -88,14 +88,14 @@ namespace SuperWebSocket.Protocol
                     webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = readBuffer.CloneRange(offset + length - left, left);
                     left = 0;
                     if(Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession))
-                        return HandshakeCommandInfo;
+                        return HandshakeRequestInfo;
                 }
                 else if (left > SecKey3Len)
                 {
                     webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = readBuffer.CloneRange(offset + length - left, 8);
                     left -= 8;
                     if(Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession))
-                        return HandshakeCommandInfo;
+                        return HandshakeRequestInfo;
                 }
                 else
                 {
@@ -106,7 +106,7 @@ namespace SuperWebSocket.Protocol
                         left = 0;
                     }
 
-                    NextCommandReader = new WebSocketSecKey3Reader(this);
+                    NextRequestFilter = new WebSocketSecKey3RequestFilter(this);
                     return null;
                 }
             }

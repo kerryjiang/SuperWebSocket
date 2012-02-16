@@ -9,30 +9,30 @@ using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket.Protocol
 {
-    public abstract class WebSocketReaderBase : CommandReaderBase<WebSocketCommandInfo>
+    public abstract class WebSocketRequestFilterBase : RequestFilterBase<WebSocketRequestInfo>
     {
         protected const int SecKey3Len = 8;
 
-        static WebSocketReaderBase()
+        static WebSocketRequestFilterBase()
         {
-            HandshakeCommandInfo = new WebSocketCommandInfo(OpCode.Handshake.ToString(), string.Empty);
+            HandshakeRequestInfo = new WebSocketRequestInfo(OpCode.Handshake.ToString(), string.Empty);
         }
 
-        public WebSocketReaderBase(IAppServer appServer)
-            : base(appServer)
+        public WebSocketRequestFilterBase()
+            : base()
         {
 
         }
 
-        public WebSocketReaderBase(WebSocketReaderBase previousCommandReader)
-            : base(previousCommandReader)
+        public WebSocketRequestFilterBase(WebSocketRequestFilterBase previousRequestFilter)
+            : base(previousRequestFilter)
         {
 
         }
 
         protected bool Handshake(IProtocolProcessor protocolProcessor, IWebSocketSession session)
         {
-            ICommandReader<WebSocketCommandInfo> dataFrameReader;
+            IRequestFilter<WebSocketRequestInfo> dataFrameReader;
 
             if (!protocolProcessor.Handshake(session, this, out dataFrameReader))
             {
@@ -44,14 +44,14 @@ namespace SuperWebSocket.Protocol
             //In this case, the handshake is not completed
             if (dataFrameReader == null)
             {
-                NextCommandReader = this;
+                NextRequestFilter = this;
                 return false;
             }
 
-            NextCommandReader = dataFrameReader;
+            NextRequestFilter = dataFrameReader;
             return true;
         }
 
-        protected static WebSocketCommandInfo HandshakeCommandInfo { get; private set; }
+        protected static WebSocketRequestInfo HandshakeRequestInfo { get; private set; }
     }
 }

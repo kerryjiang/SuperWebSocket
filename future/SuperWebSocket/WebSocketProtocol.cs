@@ -10,20 +10,16 @@ using SuperSocket.SocketBase;
 
 namespace SuperWebSocket
 {
-    public class WebSocketProtocol : ICustomProtocol<WebSocketCommandInfo>
+    public class WebSocketProtocol : IRequestFilterFactory<WebSocketRequestInfo>
     {
         public WebSocketProtocol()
         {
 
         }
 
-        #region ICustomProtocol<WebSocketCommandInfo> Members
-
-        public ICommandReader<WebSocketCommandInfo> CreateCommandReader(IAppServer appServer)
+        public IRequestFilter<WebSocketRequestInfo> CreateFilter(IAppServer appServer)
         {
-            return new WebSocketHeaderReader(appServer as IWebSocketServer);
+            return new WebSocketHeaderRequestFilter();
         }
-
-        #endregion
     }
 }

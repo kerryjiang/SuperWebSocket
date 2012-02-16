@@ -9,28 +9,25 @@ using SuperWebSocket.Protocol.FramePartReader;
 
 namespace SuperWebSocket.Protocol
 {
-    class WebSocketDataFrameReader : ICommandReader<WebSocketCommandInfo>
+    class WebSocketDataFrameRequestFilter : IRequestFilter<WebSocketRequestInfo>
     {
         private List<WebSocketDataFrame> m_PreviousFrames;
         private WebSocketDataFrame m_Frame;
         private IDataFramePartReader m_PartReader;
         private int m_LastPartLength = 0;
 
-        public IAppServer AppServer { get; private set; }
-
         public int LeftBufferSize
         {
             get { return m_Frame.InnerData.Count; }
         }
 
-        public ICommandReader<WebSocketCommandInfo> NextCommandReader
+        public IRequestFilter<WebSocketRequestInfo> NextRequestFilter
         {
             get { return this; }
         }
 
-        public WebSocketDataFrameReader(IAppServer appServer)
+        public WebSocketDataFrameRequestFilter()
         {
-            AppServer = appServer;
             m_Frame = new WebSocketDataFrame(new ArraySegmentList());
             m_PartReader = DataFramePartReader.NewReader;
         }
@@ -40,7 +37,7 @@ namespace SuperWebSocket.Protocol
             segments.AddSegment(buffer, offset, length, isReusableBuffer);
         }
 
-        public WebSocketCommandInfo FindCommandInfo(IAppSession session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
+        public WebSocketRequestInfo Filter(IAppSession<WebSocketRequestInfo> session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
         {
             this.AddArraySegment(m_Frame.InnerData, readBuffer, offset, length, isReusableBuffer);
 
@@ -63,7 +60,7 @@ namespace SuperWebSocket.Protocol
                 //Means this part reader is the last one
                 if (nextPartReader == null)
                 {
-                    WebSocketCommandInfo commandInfo;
+                    WebSocketRequestInfo commandInfo;
 
                     if (m_Frame.FIN)
                     {
@@ -80,12 +77,12 @@ namespace SuperWebSocket.Protocol
                         {
                             m_PreviousFrames.Add(m_Frame);
                             m_Frame = new WebSocketDataFrame(new ArraySegmentList());
-                            commandInfo = new WebSocketCommandInfo(m_PreviousFrames);
+                            commandInfo = new WebSocketRequestInfo(m_PreviousFrames);
                             m_PreviousFrames = null;
                         }
                         else
                         {
-                            commandInfo = new WebSocketCommandInfo(m_Frame);
+                            commandInfo = new WebSocketRequestInfo(m_Frame);
                             m_Frame.Clear();
                         }
                     }
@@ -99,8 +96,7 @@ namespace SuperWebSocket.Protocol
 
                         commandInfo = null;
                     }
-
-                    //BufferSegments.ClearSegements();
+                    
                     m_LastPartLength = 0;
                     m_PartReader = DataFramePartReader.NewReader;
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SuperSocket.SocketBase.Command;
+using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket.SubProtocol
 {
@@ -21,7 +22,7 @@ namespace SuperWebSocket.SubProtocol
             get { return this.GetType().Name; }
         }
 
-        public abstract void ExecuteCommand(TWebSocketSession session, StringCommandInfo commandInfo);
+        public abstract void ExecuteCommand(TWebSocketSession session, StringRequestInfo commandInfo);
 
         #endregion
     }

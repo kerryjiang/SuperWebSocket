@@ -7,7 +7,7 @@ using SuperWebSocket.Protocol;
 
 namespace SuperWebSocket.Command
 {
-    public class Binary<TWebSocketSession> : CommandBase<TWebSocketSession, WebSocketCommandInfo>
+    public class Binary<TWebSocketSession> : CommandBase<TWebSocketSession, WebSocketRequestInfo>
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
         public override string Name
@@ -18,9 +18,9 @@ namespace SuperWebSocket.Command
             }
         }
 
-        public override void ExecuteCommand(TWebSocketSession session, WebSocketCommandInfo commandInfo)
+        public override void ExecuteCommand(TWebSocketSession session, WebSocketRequestInfo requestInfo)
         {
-            session.AppServer.OnNewDataReceived(session, commandInfo.Data);
+            session.AppServer.OnNewDataReceived(session, requestInfo.Data);
         }
     }
 }

@@ -9,7 +9,7 @@ using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket.Protocol
 {
-    public class WebSocketDataReader : WebSocketReaderBase
+    public class WebSocketDataRequestFilter : WebSocketRequestFilterBase
     {
         private byte? m_Type;
         private int m_TempLength;
@@ -17,13 +17,13 @@ namespace SuperWebSocket.Protocol
 
         private const byte m_ClosingHandshakeType = 0xFF;
 
-        public WebSocketDataReader(WebSocketReaderBase prevReader)
-            : base(prevReader)
+        public WebSocketDataRequestFilter(WebSocketRequestFilterBase prevFilter)
+            : base(prevFilter)
         {
 
         }
 
-        public override WebSocketCommandInfo FindCommandInfo(IAppSession session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
+        public override WebSocketRequestInfo Filter(IAppSession<WebSocketRequestInfo> session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
         {
             left = 0;
 
@@ -51,14 +51,14 @@ namespace SuperWebSocket.Protocol
 
                         if (BufferSegments.Count <= 0)
                         {
-                            var commandInfo = new WebSocketCommandInfo(Encoding.UTF8.GetString(readBuffer, offset + skipByteCount, i - offset - skipByteCount));
+                            var commandInfo = new WebSocketRequestInfo(Encoding.UTF8.GetString(readBuffer, offset + skipByteCount, i - offset - skipByteCount));
                             Reset();
                             return commandInfo;
                         }
                         else
                         {
                             AddArraySegment(readBuffer, offset + skipByteCount, i - offset - skipByteCount, false);
-                            var commandInfo = new WebSocketCommandInfo(BufferSegments.Decode(Encoding.UTF8));
+                            var commandInfo = new WebSocketRequestInfo(BufferSegments.Decode(Encoding.UTF8));
                             Reset();
                             return commandInfo;
                         }
@@ -112,14 +112,14 @@ namespace SuperWebSocket.Protocol
 
                     if (BufferSegments.Count <= 0)
                     {
-                        var commandInfo = new WebSocketCommandInfo(Encoding.UTF8.GetString(readBuffer, offset + skipByteCount, requiredSize));
+                        var commandInfo = new WebSocketRequestInfo(Encoding.UTF8.GetString(readBuffer, offset + skipByteCount, requiredSize));
                         Reset();
                         return commandInfo;
                     }
                     else
                     {
                         AddArraySegment(readBuffer, offset + skipByteCount, requiredSize, false);
-                        var commandInfo = new WebSocketCommandInfo(BufferSegments.Decode(Encoding.UTF8));
+                        var commandInfo = new WebSocketRequestInfo(BufferSegments.Decode(Encoding.UTF8));
                         Reset();
                         return commandInfo;
                     }

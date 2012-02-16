@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using SuperSocket.SocketBase.Command;
 using Newtonsoft.Json;
+using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket.SubProtocol
 {
@@ -27,7 +28,7 @@ namespace SuperWebSocket.SubProtocol
             m_Name = Name;
         }
 
-        public override void ExecuteCommand(TWebSocketSession session, StringCommandInfo commandInfo)
+        public override void ExecuteCommand(TWebSocketSession session, StringRequestInfo commandInfo)
         {
             if (string.IsNullOrEmpty(commandInfo.Data))
             {

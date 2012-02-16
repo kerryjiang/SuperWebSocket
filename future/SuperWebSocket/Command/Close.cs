@@ -8,7 +8,7 @@ using SuperWebSocket.Protocol;
 
 namespace SuperWebSocket.Command
 {
-    public class Close<TWebSocketSession> : CommandBase<TWebSocketSession, WebSocketCommandInfo>
+    public class Close<TWebSocketSession> : CommandBase<TWebSocketSession, WebSocketRequestInfo>
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
         public override string Name
@@ -19,7 +19,7 @@ namespace SuperWebSocket.Command
             }
         }
 
-        public override void ExecuteCommand(TWebSocketSession session, WebSocketCommandInfo commandInfo)
+        public override void ExecuteCommand(TWebSocketSession session, WebSocketRequestInfo requestInfo)
         {
             //the close handshake started from server side, now received a handshake response
             if (session.InClosing)
@@ -29,13 +29,13 @@ namespace SuperWebSocket.Command
                 return;
             }
 
-            int closeStatusCode = commandInfo.CloseStatusCode;
+            int closeStatusCode = requestInfo.CloseStatusCode;
 
             if (closeStatusCode <= 0)
                 closeStatusCode = session.ProtocolProcessor.CloseStatusClode.NoStatusCode;
 
             //Send handshake response
-            session.CloseWithHandshake(closeStatusCode, commandInfo.Text);
+            session.CloseWithHandshake(closeStatusCode, requestInfo.Text);
         }
     }
 }

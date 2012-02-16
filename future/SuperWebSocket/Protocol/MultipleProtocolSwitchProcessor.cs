@@ -36,7 +36,7 @@ namespace SuperWebSocket.Protocol
 
         public IProtocolProcessor NextProcessor { get; set; }
 
-        public bool Handshake(IWebSocketSession session, WebSocketReaderBase previousReader, out ICommandReader<WebSocketCommandInfo> dataFrameReader)
+        public bool Handshake(IWebSocketSession session, WebSocketRequestFilterBase previousReader, out IRequestFilter<WebSocketRequestInfo> dataFrameReader)
         {
             dataFrameReader = null;
             session.SocketSession.SendResponse(m_SwitchResponse, 0, m_SwitchResponse.Length);

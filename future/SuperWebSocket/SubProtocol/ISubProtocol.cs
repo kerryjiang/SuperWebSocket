@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using SuperSocket.SocketBase.Command;
-using System.Reflection;
 using SuperSocket.SocketBase.Config;
+using SuperSocket.SocketBase.Protocol;
 using SuperWebSocket.Config;
 
 namespace SuperWebSocket.SubProtocol
@@ -16,7 +17,7 @@ namespace SuperWebSocket.SubProtocol
 
         string Name { get; }
 
-        ICommandParser SubCommandParser { get; }
+        IRequestInfoParser<StringRequestInfo> SubCommandParser { get; }
 
         bool TryGetCommand(string name, out ISubCommand<TWebSocketSession> command);
     }

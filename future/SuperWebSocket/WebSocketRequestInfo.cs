@@ -2,20 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SuperSocket.SocketBase.Command;
-using SuperWebSocket.Protocol;
 using SuperSocket.Common;
+using SuperSocket.SocketBase.Command;
+using SuperSocket.SocketBase.Protocol;
+using SuperWebSocket.Protocol;
 
 namespace SuperWebSocket
 {
-    public class WebSocketCommandInfo : ICommandInfo
+    public class WebSocketRequestInfo : IRequestInfo
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="WebSocketCommandInfo"/> class.
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="text">The text data.</param>
-        public WebSocketCommandInfo(string key, string text)
+        public WebSocketRequestInfo(string key, string text)
         {
             Key = key;
             Text = text;
@@ -24,13 +25,13 @@ namespace SuperWebSocket
         /// Initializes a new instance of the <see cref="WebSocketCommandInfo"/> class.
         /// </summary>
         /// <param name="text">The text data.</param>
-        public WebSocketCommandInfo(string text)
+        public WebSocketRequestInfo(string text)
         {
             Key = "1";
             Text = text;
         }
 
-        public WebSocketCommandInfo(IList<WebSocketDataFrame> frames)
+        public WebSocketRequestInfo(IList<WebSocketDataFrame> frames)
         {
             var opCode = frames[0].OpCode;
             Key = opCode.ToString();
@@ -136,7 +137,7 @@ namespace SuperWebSocket
         /// </summary>
         /// <param name="frame">The frame.</param>
         /// <param name="left">The left.</param>
-        public WebSocketCommandInfo(WebSocketDataFrame frame)
+        public WebSocketRequestInfo(WebSocketDataFrame frame)
         {
             Key = frame.OpCode.ToString();
 

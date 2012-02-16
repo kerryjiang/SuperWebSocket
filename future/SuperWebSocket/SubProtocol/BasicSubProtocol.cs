@@ -7,6 +7,7 @@ using System.Reflection;
 using SuperSocket.Common;
 using SuperSocket.SocketBase.Command;
 using SuperWebSocket.Config;
+using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket.SubProtocol
 {
@@ -30,7 +31,7 @@ namespace SuperWebSocket.SubProtocol
 
         }
 
-        public BasicSubProtocol(string name, IEnumerable<Assembly> commandAssemblies, ICommandParser commandParser)
+        public BasicSubProtocol(string name, IEnumerable<Assembly> commandAssemblies, IRequestInfoParser<StringRequestInfo> commandParser)
             : base(name, commandAssemblies, commandParser)
         {
             
@@ -77,7 +78,7 @@ namespace SuperWebSocket.SubProtocol
 
         }
 
-        public BasicSubProtocol(string name, IEnumerable<Assembly> commandAssemblies, ICommandParser commandParser)
+        public BasicSubProtocol(string name, IEnumerable<Assembly> commandAssemblies, IRequestInfoParser<StringRequestInfo> commandParser)
             : base(name)
         {
             //The items in commandAssemblies may be null, so filter here
@@ -105,7 +106,7 @@ namespace SuperWebSocket.SubProtocol
                 cmdbuilder.AppendLine(c.Name);
             }
 
-            LogUtil.LogDebug(cmdbuilder.ToString());
+            //LogUtil.LogDebug(cmdbuilder.ToString());
 #endif
 
             m_CommandDict = new Dictionary<string, ISubCommand<TWebSocketSession>>(subCommands.Count, StringComparer.OrdinalIgnoreCase);
@@ -147,20 +148,13 @@ namespace SuperWebSocket.SubProtocol
 
         private bool ResolveCommmandAssembly(string definition)
         {
-            try
-            {
-                var assemblies = AssemblyUtil.GetAssembliesFromString(definition);
+            var assemblies = AssemblyUtil.GetAssembliesFromString(definition);
 
-                if (assemblies.Any())
-                    m_CommandAssemblies.AddRange(assemblies);
-
-                return true;
-            }
-            catch (Exception e)
-            {
-                LogUtil.LogError(e);
+            if (!assemblies.Any())
                 return false;
-            }
+
+            m_CommandAssemblies.AddRange(assemblies);
+            return true;
         }
 
         public override bool TryGetCommand(string name, out ISubCommand<TWebSocketSession> command)

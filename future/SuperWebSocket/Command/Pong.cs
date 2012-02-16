@@ -7,7 +7,7 @@ using SuperWebSocket.Protocol;
 
 namespace SuperWebSocket.Command
 {
-    public class Pong<TWebSocketSession> : CommandBase<TWebSocketSession, WebSocketCommandInfo>
+    public class Pong<TWebSocketSession> : CommandBase<TWebSocketSession, WebSocketRequestInfo>
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
         public override string Name
@@ -18,7 +18,7 @@ namespace SuperWebSocket.Command
             }
         }
 
-        public override void ExecuteCommand(TWebSocketSession session, WebSocketCommandInfo commandInfo)
+        public override void ExecuteCommand(TWebSocketSession session, WebSocketRequestInfo requestInfo)
         {
             //Do nothing, last active time has been updated automatically
         }

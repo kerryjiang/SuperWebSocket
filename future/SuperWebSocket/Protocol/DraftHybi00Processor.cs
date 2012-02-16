@@ -22,14 +22,14 @@ namespace SuperWebSocket.Protocol
 
         }
 
-        public override bool Handshake(IWebSocketSession session, WebSocketReaderBase previousReader, out ICommandReader<WebSocketCommandInfo> dataFrameReader)
+        public override bool Handshake(IWebSocketSession session, WebSocketRequestFilterBase previousFilter, out IRequestFilter<WebSocketRequestInfo> dataFrameReader)
         {
             var secKey1 = session.Items.GetValue<string>(WebSocketConstant.SecWebSocketKey1, string.Empty);
             var secKey2 = session.Items.GetValue<string>(WebSocketConstant.SecWebSocketKey2, string.Empty);
 
             if (string.IsNullOrEmpty(secKey1) && string.IsNullOrEmpty(secKey2) && NextProcessor != null)
             {
-                return NextProcessor.Handshake(session, previousReader, out dataFrameReader);
+                return NextProcessor.Handshake(session, previousFilter, out dataFrameReader);
             }
 
             session.ProtocolProcessor = this;
@@ -53,12 +53,13 @@ namespace SuperWebSocket.Protocol
                 responseBuilder.AppendFormatWithCrCf(WebSocketConstant.ResponseProtocolLine, subProtocol);
 
             responseBuilder.AppendWithCrCf();
-            session.SocketSession.SendResponse(responseBuilder.ToString());
+            byte[] data = Encoding.UTF8.GetBytes(responseBuilder.ToString());
+            session.SocketSession.SendResponse(data, 0, data.Length);
             //Encrypt message
             byte[] secret = GetResponseSecurityKey(secKey1, secKey2, secKey3);
             session.SocketSession.SendResponse(secret, 0, secret.Length);
 
-            dataFrameReader = new WebSocketDataReader(previousReader);
+            dataFrameReader = new WebSocketDataRequestFilter(previousFilter);
 
             return true;
         }

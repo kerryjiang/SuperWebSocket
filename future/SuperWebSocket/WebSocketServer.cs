@@ -53,7 +53,7 @@ namespace SuperWebSocket
         }
     }
 
-    public abstract class WebSocketServer<TWebSocketSession> : AppServer<TWebSocketSession, WebSocketCommandInfo>, IWebSocketServer
+    public abstract class WebSocketServer<TWebSocketSession> : AppServer<TWebSocketSession, WebSocketRequestInfo>, IWebSocketServer
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
         public WebSocketServer(IEnumerable<ISubProtocol<TWebSocketSession>> subProtocols)
@@ -133,11 +133,11 @@ namespace SuperWebSocket
             get { return m_WebSocketProtocolProcessor; }
         }
 
-        public new WebSocketProtocol Protocol
+        public new WebSocketProtocol RequestFilterFactory
         {
             get
             {
-                return (WebSocketProtocol)base.Protocol;
+                return (WebSocketProtocol)base.RequestFilterFactory;
             }
         }
 
@@ -145,7 +145,8 @@ namespace SuperWebSocket
         {
             if (m_SubProtocols.ContainsKey(subProtocol.Name))
             {
-                Logger.LogError(string.Format("Cannot register duplicate name sub protocol! Duplicate name: {0}.", subProtocol.Name));
+                if(Logger.IsErrorEnabled)
+                    Logger.ErrorFormat("Cannot register duplicate name sub protocol! Duplicate name: {0}.", subProtocol.Name);
                 return false;
             }
 
@@ -175,9 +176,15 @@ namespace SuperWebSocket
 
                         if (!string.IsNullOrEmpty(protocolConfig.Type))
                         {
-                            Exception exception;
-                            if (!AssemblyUtil.TryCreateInstance<ISubProtocol<TWebSocketSession>>(protocolConfig.Type, new object[] { originalProtocolName }, out subProtocolInstance, out exception))
+                            try
+                            {
+                                subProtocolInstance = AssemblyUtil.CreateInstance<ISubProtocol<TWebSocketSession>>(protocolConfig.Type, new object[] { originalProtocolName });
+                            }
+                            catch (Exception e)
+                            {
+                                Logger.Error(e);
                                 return false;
+                            }
 
                             if (!RegisterSubProtocol(subProtocolInstance))
                                 return false;
@@ -199,7 +206,8 @@ namespace SuperWebSocket
 
                         if (!string.IsNullOrEmpty(protocolConfig.Type))
                         {
-                            Logger.LogError("You needn't set Type attribute for SubProtocol, if you don't set Name attribute!");
+                            if(Logger.IsErrorEnabled)
+                                Logger.Error("You needn't set Type attribute for SubProtocol, if you don't set Name attribute!");
                             return false;
                         }
                     }
@@ -224,9 +232,22 @@ namespace SuperWebSocket
 
                 subProtocolConfigDict.TryGetValue(subProtocol.Name, out protocolConfig);
 
-                if (!subProtocol.Initialize(config, protocolConfig))
+                bool initialized = false;
+
+                try
                 {
-                    Logger.LogError(string.Format("Failed to initialize the sub protocol '{0}'!", subProtocol.Name));
+                    initialized = subProtocol.Initialize(config, protocolConfig);
+                }
+                catch (Exception e)
+                {
+                    initialized = false;
+                    Logger.Error(e);
+                }
+
+                if (!initialized)
+                {
+                    if (Logger.IsErrorEnabled)
+                        Logger.ErrorFormat("Failed to initialize the sub protocol '{0}'!", subProtocol.Name);
                     return false;
                 }
             }
@@ -234,7 +255,7 @@ namespace SuperWebSocket
             return true;
         }
 
-        public override bool Setup(IRootConfig rootConfig, IServerConfig config, ISocketServerFactory socketServerFactory, ICustomProtocol<WebSocketCommandInfo> protocol)
+        public override bool Setup(IRootConfig rootConfig, IServerConfig config, ISocketServerFactory socketServerFactory, IRequestFilterFactory<WebSocketRequestInfo> protocol)
         {
             if (!base.Setup(rootConfig, config, socketServerFactory, protocol))
                 return false;
@@ -323,7 +344,8 @@ namespace SuperWebSocket
             }
             catch (Exception e)
             {
-                Logger.LogError(e);
+                if(Logger.IsErrorEnabled)
+                    Logger.Error(e);
             }
             finally
             {
@@ -331,9 +353,9 @@ namespace SuperWebSocket
             }
         }
 
-        public override TWebSocketSession CreateAppSession(ISocketSession socketSession)
+        public override IAppSession CreateAppSession(ISocketSession socketSession)
         {
-            var session = base.CreateAppSession(socketSession);
+            var session = base.CreateAppSession(socketSession) as TWebSocketSession;
 
             if (session != NullAppSession)
                 m_HandshakePendingQueue.Enqueue(session);
@@ -386,12 +408,13 @@ namespace SuperWebSocket
             {
                 if (session.SubProtocol == null)
                 {
-                    Logger.LogError("No SubProtocol selected! This session cannot process any message!");
+                    if(Logger.IsErrorEnabled)
+                        Logger.Error("No SubProtocol selected! This session cannot process any message!");
                     session.CloseWithHandshake(session.ProtocolProcessor.CloseStatusClode.ProtocolError, "No SubProtocol selected");
                     return;
                 }
 
-                ExecuteSubCommand(session, session.SubProtocol.SubCommandParser.ParseCommand(message));
+                ExecuteSubCommand(session, session.SubProtocol.SubCommandParser.ParseRequestInfo(message));
             }
             else
             {
@@ -483,9 +506,9 @@ namespace SuperWebSocket
             session.HttpVersion = metaInfo[2];
         }
 
-        protected override bool SetupCommands(Dictionary<string, ICommand<TWebSocketSession, WebSocketCommandInfo>> commandDict)
+        protected override bool SetupCommands(Dictionary<string, ICommand<TWebSocketSession, WebSocketRequestInfo>> commandDict)
         {
-            var commands = new List<ICommand<TWebSocketSession, WebSocketCommandInfo>>
+            var commands = new List<ICommand<TWebSocketSession, WebSocketRequestInfo>>
                 {
                     new HandShake<TWebSocketSession>(),
                     new Text<TWebSocketSession>(),  
@@ -500,7 +523,7 @@ namespace SuperWebSocket
             try
             {
                 //Still require it because we need to ensure commandfilters dictionary is not null
-                base.SetupCommands(new Dictionary<string, ICommand<TWebSocketSession, WebSocketCommandInfo>>());
+                base.SetupCommands(new Dictionary<string, ICommand<TWebSocketSession, WebSocketRequestInfo>>());
             }
             catch
             {
@@ -512,7 +535,7 @@ namespace SuperWebSocket
             return true;
         }
 
-        private void ExecuteSubCommand(TWebSocketSession session, StringCommandInfo subCommandInfo)
+        private void ExecuteSubCommand(TWebSocketSession session, StringRequestInfo subCommandInfo)
         {
             ISubCommand<TWebSocketSession> subCommand;
 
@@ -522,8 +545,8 @@ namespace SuperWebSocket
                 subCommand.ExecuteCommand(session, subCommandInfo);
                 session.PrevCommand = subCommandInfo.Key;
 
-                if (Config.LogCommand)
-                    Logger.LogError(session, string.Format("Command - {0} - {1}", session.IdentityKey, subCommandInfo.Key));
+                if (Config.LogCommand && Logger.IsInfoEnabled)
+                    Logger.Info(session, string.Format("Command - {0} - {1}", session.SessionID, subCommandInfo.Key));
             }
             else
             {

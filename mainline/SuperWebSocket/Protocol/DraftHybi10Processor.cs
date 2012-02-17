@@ -165,11 +165,6 @@ namespace SuperWebSocket.Protocol
                 });
         }
 
-        private void SendMessage(IWebSocketSession session, int opCode, string message, int statusCode)
-        {
-            
-        }
-
         private void SendMessage(IWebSocketSession session, int opCode, string message)
         {
             byte[] playloadData = Encoding.UTF8.GetBytes(message);

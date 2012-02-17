@@ -512,6 +512,18 @@ namespace SuperWebSocket
             return true;
         }
 
+        public override void ExecuteCommand(TWebSocketSession session, WebSocketCommandInfo commandInfo)
+        {
+            if (session.InClosing)
+            {
+                //Only handle closing handshake if the session is in closing
+                if (commandInfo.Key != OpCode.Close.ToString())
+                    return;
+            }
+
+            base.ExecuteCommand(session, commandInfo);
+        }
+
         private void ExecuteSubCommand(TWebSocketSession session, StringCommandInfo subCommandInfo)
         {
             ISubCommand<TWebSocketSession> subCommand;

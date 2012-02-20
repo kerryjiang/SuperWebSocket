@@ -55,6 +55,14 @@ namespace SuperWebSocket
 
         private volatile bool m_InSending = false;
 
+        /// <summary>
+        /// Gets or sets the current token. It's only usefull when a command is executing
+        /// </summary>
+        /// <value>
+        /// The current token.
+        /// </value>
+        public string CurrentToken { get; internal set; }
+
         public new WebSocketServer<TWebSocketSession> AppServer
         {
             get { return (WebSocketServer<TWebSocketSession>)base.AppServer; }

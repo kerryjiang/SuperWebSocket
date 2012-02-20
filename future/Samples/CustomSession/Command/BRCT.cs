@@ -12,12 +12,12 @@ namespace SuperWebSocket.Samples.CustomSession.Command
     /// </summary>
     public class BRCT : JsonSubCommand<CRMSession, BroadcastMessage>
     {
-        protected override void ExecuteJsonCommand(CRMSession session, string token, BroadcastMessage commandInfo)
+        protected override void ExecuteJsonCommand(CRMSession session, BroadcastMessage commandInfo)
         {
             if (commandInfo.CompanyId <= 0)
                 return;
 
-            string message = GetJsonResponse("MSG", token, commandInfo);
+            string message = GetJsonResponse("MSG", commandInfo);
 
             foreach(var s in session.AppServer.GetSessions(s => s.CompanyId == commandInfo.CompanyId))
             {

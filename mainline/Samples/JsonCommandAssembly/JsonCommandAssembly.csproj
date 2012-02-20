@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Command\ADD.cs" />
+    <Compile Include="Command\ADDX.cs" />
     <Compile Include="Command\CHAT.cs" />
     <Compile Include="Command\ECHO.cs" />
     <Compile Include="JsonObject\AddParameter.cs" />

@@ -48,7 +48,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Command\ADD.cs" />
     <Compile Include="Command\CHAT.cs" />
+    <Compile Include="Command\ECHO.cs" />
+    <Compile Include="JsonObject\AddParameter.cs" />
+    <Compile Include="JsonObject\AddResult.cs" />
     <Compile Include="JsonObject\ChatMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

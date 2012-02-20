@@ -56,6 +56,8 @@ namespace SuperWebSocket
 
         private volatile bool m_InSending = false;
 
+        public string CurrentToken { get; internal set; }
+
         public new WebSocketServer<TWebSocketSession> AppServer
         {
             get { return (WebSocketServer<TWebSocketSession>)base.AppServer; }

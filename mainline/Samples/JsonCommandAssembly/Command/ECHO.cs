@@ -9,10 +9,10 @@ namespace SuperWebSocket.Samples.JsonCommandAssembly.Command
 {
     public class ECHO : JsonSubCommand<ChatMessage>
     {
-        protected override void ExecuteJsonCommand(WebSocketSession session, string token, ChatMessage commandInfo)
+        protected override void ExecuteJsonCommand(WebSocketSession session, ChatMessage commandInfo)
         {
             //Send the received message back to client
-            SendJsonResponse(session, token, commandInfo);
+            SendJsonResponse(session, commandInfo);
         }
     }
 }

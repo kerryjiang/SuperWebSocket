@@ -31,7 +31,7 @@ namespace SuperWebSocket.SubProtocol
         {
             if (string.IsNullOrEmpty(commandInfo.Data))
             {
-                ExecuteJsonCommand(session, string.Empty, null);
+                ExecuteJsonCommand(session, null);
                 return;
             }
 
@@ -42,24 +42,33 @@ namespace SuperWebSocket.SubProtocol
             {
                 int pos = data.IndexOf(' ');
 
-                token = data.Substring(0, pos);
+                session.CurrentToken = data.Substring(0, pos);
                 data = data.Substring(pos + 1);
+            }
+            else
+            {
+                session.CurrentToken = string.Empty;
             }
 
             var jsonCommandInfo = JsonConvert.DeserializeObject<TJsonCommandInfo>(data);
-            ExecuteJsonCommand(session, token, jsonCommandInfo);
+            ExecuteJsonCommand(session, jsonCommandInfo);
         }
 
-        protected abstract void ExecuteJsonCommand(TWebSocketSession session, string token, TJsonCommandInfo commandInfo);
+        protected abstract void ExecuteJsonCommand(TWebSocketSession session, TJsonCommandInfo commandInfo);
 
         protected string SerializeObject(object value)
         {
             return JsonConvert.SerializeObject(value);
         }
 
-        private void SendJsonResponse(TWebSocketSession session, object content)
+        protected string GetJsonResponse(TWebSocketSession session, object content)
         {
-            SendJsonResponse(session, string.Empty, content);
+            return GetJsonResponse(session, m_Name, content);
+        }
+
+        protected string GetJsonResponse(TWebSocketSession session, string name, object content)
+        {
+            return GetJsonResponse(name, session.CurrentToken, content);
         }
 
         protected string GetJsonResponse(string token, object content)
@@ -75,9 +84,24 @@ namespace SuperWebSocket.SubProtocol
                 return string.Format(m_QueryTemplateA, name, token, SerializeObject(content));
         }
 
-        protected void SendJsonResponse(TWebSocketSession session, string token, object content)
+        protected void SendJsonResponse(TWebSocketSession session, object content)
         {
-            session.SendResponse(GetJsonResponse(token, content));
+            session.SendResponse(GetJsonResponse(session, content));
+        }
+
+        protected void SendJsonResponse(TWebSocketSession session, string name, object content)
+        {
+            session.SendResponse(GetJsonResponse(session, name, content));
+        }
+
+        protected void SendJsonResponseWithToken(TWebSocketSession session, string name, string token, object content)
+        {
+            session.SendResponse(GetJsonResponse(name, token, content));
+        }
+
+        protected void SendJsonResponseWithToken(TWebSocketSession session, string token, object content)
+        {
+            session.SendResponse(GetJsonResponse(m_Name, token, content));
         }
     }
 }

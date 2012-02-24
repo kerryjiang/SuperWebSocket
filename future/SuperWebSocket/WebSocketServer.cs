@@ -89,12 +89,19 @@ namespace SuperWebSocket
 
         private bool m_SubProtocolConfigured = false;
 
-        private ConcurrentQueue<TWebSocketSession> m_HandshakePendingQueue = new ConcurrentQueue<TWebSocketSession>();
+        private ConcurrentQueue<TWebSocketSession> m_OpenHandshakePendingQueue = new ConcurrentQueue<TWebSocketSession>();
+
+        private ConcurrentQueue<TWebSocketSession> m_CloseHandshakePendingQueue = new ConcurrentQueue<TWebSocketSession>();
 
         /// <summary>
-        /// The handshake timeout, in seconds
+        /// The openning handshake timeout, in seconds
         /// </summary>
-        private int m_HandshakeTimeOut;
+        private int m_OpenHandshakeTimeOut;
+
+        /// <summary>
+        /// The closing handshake timeout, in seconds
+        /// </summary>
+        private int m_CloseHandshakeTimeOut;
 
         /// <summary>
         /// The interval of checking handshake pending queue, in seconds
@@ -282,8 +289,11 @@ namespace SuperWebSocket
                 m_HandshakePendingQueueCheckingInterval = 60;// 1 minute default
 
 
-            if (!int.TryParse(config.Options.GetValue("handshakeTimeOut"), out m_HandshakeTimeOut))
-                m_HandshakeTimeOut = 120;// 2 minute default
+            if (!int.TryParse(config.Options.GetValue("openHandshakeTimeOut"), out m_OpenHandshakeTimeOut))
+                m_OpenHandshakeTimeOut = 120;// 2 minute default
+
+            if (!int.TryParse(config.Options.GetValue("closeHandshakeTimeOut"), out m_CloseHandshakeTimeOut))
+                m_CloseHandshakeTimeOut = 120;// 2 minute default
 
             return true;
         }
@@ -324,22 +334,45 @@ namespace SuperWebSocket
                 {
                     TWebSocketSession session;
 
-                    if (!m_HandshakePendingQueue.TryPeek(out session))
+                    if (!m_OpenHandshakePendingQueue.TryPeek(out session))
                         break;
 
                     if (session.Handshaked || session.Status != SessionStatus.Healthy)
                     {
                         //Handshaked or not connected
-                        m_HandshakePendingQueue.TryDequeue(out session);
+                        m_OpenHandshakePendingQueue.TryDequeue(out session);
                         continue;
                     }
 
-                    if (DateTime.Now < session.StartTime.AddSeconds(m_HandshakeTimeOut))
+                    if (DateTime.Now < session.StartTime.AddSeconds(m_OpenHandshakeTimeOut))
                         break;
 
                     //Timeout, dequeue and then close
-                    m_HandshakePendingQueue.TryDequeue(out session);
+                    m_OpenHandshakePendingQueue.TryDequeue(out session);
                     session.Close(CloseReason.TimeOut);
+                }
+
+                while (true)
+                {
+                    TWebSocketSession session;
+
+                    if (!m_CloseHandshakePendingQueue.TryPeek(out session))
+                        break;
+
+                    if (session.Status != SessionStatus.Healthy)
+                    {
+                        //the session has been closed
+                        m_CloseHandshakePendingQueue.TryDequeue(out session);
+                        continue;
+                    }
+
+                    if (DateTime.Now < session.StartClosingHandshakeTime.AddSeconds(m_CloseHandshakeTimeOut))
+                        break;
+
+                    //Timeout, dequeue and then close
+                    m_CloseHandshakePendingQueue.TryDequeue(out session);
+                    //Needn't send closing handshake again
+                    session.Close(CloseReason.ServerClosing);
                 }
             }
             catch (Exception e)
@@ -353,12 +386,17 @@ namespace SuperWebSocket
             }
         }
 
+        internal void PushToCloseHandshakeQueue(IAppSession appSession)
+        {
+            m_CloseHandshakePendingQueue.Enqueue((TWebSocketSession)appSession);
+        }
+
         public override IAppSession CreateAppSession(ISocketSession socketSession)
         {
             var session = base.CreateAppSession(socketSession) as TWebSocketSession;
 
             if (session != NullAppSession)
-                m_HandshakePendingQueue.Enqueue(session);
+                m_OpenHandshakePendingQueue.Enqueue(session);
 
             return session;
         }

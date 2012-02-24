@@ -56,6 +56,8 @@ namespace SuperWebSocket
 
         private volatile bool m_InSending = false;
 
+        internal DateTime StartClosingHandshakeTime { get; private set; }
+
         public string CurrentToken { get; internal set; }
 
         public new WebSocketServer<TWebSocketSession> AppServer
@@ -251,6 +253,9 @@ namespace SuperWebSocket
                 InClosing = true;
 
             ProtocolProcessor.SendCloseHandshake(this, statusCode, reasonText);
+
+            StartClosingHandshakeTime = DateTime.Now;
+            AppServer.PushToCloseHandshakeQueue(this);
         }
 
         public override void Close(CloseReason reason)

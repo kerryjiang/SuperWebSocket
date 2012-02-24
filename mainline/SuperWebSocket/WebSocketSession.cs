@@ -55,6 +55,8 @@ namespace SuperWebSocket
 
         private volatile bool m_InSending = false;
 
+        internal DateTime StartClosingHandshakeTime { get; private set; }
+
         /// <summary>
         /// Gets or sets the current token. It's only usefull when a command is executing
         /// </summary>
@@ -255,6 +257,9 @@ namespace SuperWebSocket
                 InClosing = true;
 
             ProtocolProcessor.SendCloseHandshake(this, statusCode, reasonText);
+
+            StartClosingHandshakeTime = DateTime.Now;
+            AppServer.PushToCloseHandshakeQueue(this);
         }
 
         public override void Close(CloseReason reason)

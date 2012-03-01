@@ -15,23 +15,31 @@ namespace SuperWebSocket.SubProtocol
 
     public abstract class JsonSubCommand<TWebSocketSession, TJsonCommandInfo> : SubCommandBase<TWebSocketSession>
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
-        where TJsonCommandInfo : class, new()
     {
         private string m_Name;
 
         private const string m_QueryTemplateA = "{0} {1} {2}";
         private const string m_QueryTemplateB = "{0} {1}";
 
+        private bool m_IsPrimitiveType = false;
+
+        private Type m_CommandInfoType;
+
         public JsonSubCommand()
         {
             m_Name = Name;
+
+            m_CommandInfoType = typeof(TJsonCommandInfo);
+
+            if (m_CommandInfoType.IsPrimitive)
+                m_IsPrimitiveType = true;
         }
 
         public override void ExecuteCommand(TWebSocketSession session, StringCommandInfo commandInfo)
         {
             if (string.IsNullOrEmpty(commandInfo.Data))
             {
-                ExecuteJsonCommand(session, null);
+                ExecuteJsonCommand(session, default(TJsonCommandInfo));
                 return;
             }
 
@@ -50,7 +58,13 @@ namespace SuperWebSocket.SubProtocol
                 session.CurrentToken = string.Empty;
             }
 
-            var jsonCommandInfo = JsonConvert.DeserializeObject<TJsonCommandInfo>(data);
+            TJsonCommandInfo jsonCommandInfo;
+
+            if (!m_IsPrimitiveType)
+                jsonCommandInfo = JsonConvert.DeserializeObject<TJsonCommandInfo>(data);
+            else
+                jsonCommandInfo = (TJsonCommandInfo)Convert.ChangeType(data, m_CommandInfoType);
+
             ExecuteJsonCommand(session, jsonCommandInfo);
         }
 

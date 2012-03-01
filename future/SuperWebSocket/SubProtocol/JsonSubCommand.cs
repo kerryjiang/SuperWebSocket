@@ -79,10 +79,18 @@ namespace SuperWebSocket.SubProtocol
 
         protected string GetJsonResponse(string name, string token, object content)
         {
-            if (string.IsNullOrEmpty(token))
-                return string.Format(m_QueryTemplateB, name, SerializeObject(content));
+            string strOutput;
+
+            //Needn't serialize primitive type object
+            if (content.GetType().IsPrimitive)
+                strOutput = content.ToString();
             else
-                return string.Format(m_QueryTemplateA, name, token, SerializeObject(content));
+                strOutput = SerializeObject(content);
+
+            if (string.IsNullOrEmpty(token))
+                return string.Format(m_QueryTemplateB, name, strOutput);
+            else
+                return string.Format(m_QueryTemplateA, name, token, strOutput);
         }
 
         protected void SendJsonResponse(TWebSocketSession session, object content)

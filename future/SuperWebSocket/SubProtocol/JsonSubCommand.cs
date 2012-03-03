@@ -9,14 +9,12 @@ using SuperSocket.SocketBase.Protocol;
 namespace SuperWebSocket.SubProtocol
 {
     public abstract class JsonSubCommand<TJsonCommandInfo> : JsonSubCommand<WebSocketSession, TJsonCommandInfo>
-        where TJsonCommandInfo : class, new()
     {
 
     }
 
     public abstract class JsonSubCommand<TWebSocketSession, TJsonCommandInfo> : SubCommandBase<TWebSocketSession>
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
-        where TJsonCommandInfo : class, new()
     {
         private string m_Name;
 
@@ -41,7 +39,7 @@ namespace SuperWebSocket.SubProtocol
         {
             if (string.IsNullOrEmpty(commandInfo.Data))
             {
-                ExecuteJsonCommand(session, null);
+                ExecuteJsonCommand(session, default(TJsonCommandInfo));
                 return;
             }
 

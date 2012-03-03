@@ -8,7 +8,6 @@ using Newtonsoft.Json;
 namespace SuperWebSocket.SubProtocol
 {
     public abstract class JsonSubCommand<TJsonCommandInfo> : JsonSubCommand<WebSocketSession, TJsonCommandInfo>
-        where TJsonCommandInfo : class, new()
     {
 
     }

@@ -51,6 +51,11 @@ function WebSocketEx(uri, protocol, onopen, onclose, onmessage, onerror) {
                         onmessage(e);
                     }
                 };
+                websocket.onerror = function (s, e) {
+                    if (onerror != null) {
+                        onerror(e);
+                    }
+                };
 
                 return websocket;
             }

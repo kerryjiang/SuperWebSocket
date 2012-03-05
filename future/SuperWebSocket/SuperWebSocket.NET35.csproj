@@ -96,11 +96,13 @@
     <Compile Include="Protocol\WebSocketHeaderRequestFilter.cs" />
     <Compile Include="Protocol\WebSocketRequestFilterBase.cs" />
     <Compile Include="Protocol\WebSocketSecKey3RequestFilter.cs" />
+    <Compile Include="SubProtocol\AsyncJsonSubCommand.cs" />
     <Compile Include="SubProtocol\BasicSubCommandParser.cs" />
     <Compile Include="SubProtocol\BasicSubProtocol.cs" />
     <Compile Include="SubProtocol\ISubCommand.cs" />
     <Compile Include="SubProtocol\ISubProtocol.cs" />
     <Compile Include="SubProtocol\JsonSubCommand.cs" />
+    <Compile Include="SubProtocol\JsonSubCommandBase.cs" />
     <Compile Include="SubProtocol\SubCommandBase.cs" />
     <Compile Include="SubProtocol\SubProtocolBase.cs" />
     <Compile Include="WebSocketConst.cs" />

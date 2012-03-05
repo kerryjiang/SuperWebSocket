@@ -86,8 +86,10 @@
     <Compile Include="Protocol\WebSocketDataFrame.cs" />
     <Compile Include="Protocol\WebSocketDataFrameReader.cs" />
     <Compile Include="Protocol\WebSocketSecKey3Reader.cs" />
+    <Compile Include="SubProtocol\AsyncJsonSubCommand.cs" />
     <Compile Include="SubProtocol\BasicSubCommandParser.cs" />
     <Compile Include="SubProtocol\BasicSubProtocol.cs" />
+    <Compile Include="SubProtocol\JsonSubCommandBase.cs" />
     <Compile Include="SubProtocol\ISubCommand.cs" />
     <Compile Include="SubProtocol\ISubProtocol.cs" />
     <Compile Include="SubProtocol\JsonSubCommand.cs" />

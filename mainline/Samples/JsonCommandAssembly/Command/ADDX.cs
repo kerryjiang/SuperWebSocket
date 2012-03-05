@@ -9,28 +9,15 @@ using SuperWebSocket.SubProtocol;
 
 namespace SuperWebSocket.Samples.JsonCommandAssembly.Command
 {
-    public class ADDX : JsonSubCommand<AddParameter>
+    public class ADDX : AsyncJsonSubCommand<AddParameter>
     {
-        protected override void ExecuteJsonCommand(WebSocketSession session, AddParameter commandInfo)
+        protected override void ExecuteAsyncJsonCommand(WebSocketSession session, string token, AddParameter commandInfo)
         {
-            Async.Run((o) => Calculate(o), new
-                {
-                    Session = session,
-                    Parameter = commandInfo,
-                    Token = session.CurrentToken
-                });
-        }
-
-        private void Calculate(dynamic state)
-        {
-            var session = state.Session as WebSocketSession;
-            var parameter = state.Parameter as AddParameter;
-
-            var result = new AddResult { Result = parameter.A + parameter.B };
+            var result = new AddResult { Result = commandInfo.A + commandInfo.B };
 
             Thread.Sleep(5000);
 
-            this.SendJsonResponseWithToken(session, state.Token, result);
+            this.SendJsonResponse(session, token, result);
         }
     }
 }

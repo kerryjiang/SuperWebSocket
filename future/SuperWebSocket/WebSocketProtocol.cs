@@ -17,7 +17,7 @@ namespace SuperWebSocket
 
         }
 
-        public IRequestFilter<WebSocketRequestInfo> CreateFilter(IAppServer appServer)
+        public IRequestFilter<WebSocketRequestInfo> CreateFilter(IAppServer appServer, ISocketSession socketSession)
         {
             return new WebSocketHeaderRequestFilter();
         }

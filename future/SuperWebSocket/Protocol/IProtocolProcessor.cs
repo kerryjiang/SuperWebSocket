@@ -23,7 +23,9 @@ namespace SuperWebSocket.Protocol
 
         void SendCloseHandshake(IWebSocketSession session, int statusCode, string closeReason);
 
-        void SendPong(IWebSocketSession session, string ping);
+        void SendPong(IWebSocketSession session, string pong);
+
+        void SendPing(IWebSocketSession session, string ping);
 
         int Version { get; }
     }

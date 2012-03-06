@@ -115,7 +115,12 @@ namespace SuperWebSocket.Protocol
             session.SocketSession.SendResponse(WebSocketConstant.ClosingHandshake, 0, WebSocketConstant.ClosingHandshake.Length);
         }
 
-        public override void SendPong(IWebSocketSession session, string ping)
+        public override void SendPong(IWebSocketSession session, string pong)
+        {
+
+        }
+
+        public override void SendPing(IWebSocketSession session, string ping)
         {
 
         }

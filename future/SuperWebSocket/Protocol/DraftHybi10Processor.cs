@@ -117,9 +117,14 @@ namespace SuperWebSocket.Protocol
             }
         }
 
-        public override void SendPong(IWebSocketSession session, string ping)
+        public override void SendPong(IWebSocketSession session, string pong)
         {
-            SendMessage(session, OpCode.Pong, ping);
+            SendMessage(session, OpCode.Pong, pong);
+        }
+
+        public override void SendPing(IWebSocketSession session, string ping)
+        {
+            SendMessage(session, OpCode.Ping, ping);
         }
 
         private void SendPackage(IWebSocketSession session, int opCode, byte[] data, int offset, int length)

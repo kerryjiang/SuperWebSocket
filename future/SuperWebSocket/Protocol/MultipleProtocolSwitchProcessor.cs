@@ -58,7 +58,12 @@ namespace SuperWebSocket.Protocol
             throw new NotImplementedException();
         }
 
-        public void SendPong(IWebSocketSession session, string ping)
+        public void SendPong(IWebSocketSession session, string pong)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SendPing(IWebSocketSession session, string ping)
         {
             throw new NotImplementedException();
         }

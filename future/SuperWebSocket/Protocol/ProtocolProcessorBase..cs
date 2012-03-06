@@ -23,7 +23,9 @@ namespace SuperWebSocket.Protocol
 
         public abstract void SendCloseHandshake(IWebSocketSession session, int statusCode, string closeReason);
 
-        public abstract void SendPong(IWebSocketSession session, string ping);
+        public abstract void SendPong(IWebSocketSession session, string pong);
+
+        public abstract void SendPing(IWebSocketSession session, string ping);
 
         public abstract bool CanSendBinaryData { get; }
 

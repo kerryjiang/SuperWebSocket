@@ -162,12 +162,19 @@ namespace SuperWebSocket.Protocol
 
             headData[0] = (byte)(opCode | 0x80);
 
-            session.EnqueueSend(
-                new ArraySegment<byte>[]
+            if (length > 0)
+            {
+                session.EnqueueSend(
+                    new ArraySegment<byte>[]
                 {
                     new ArraySegment<byte>(headData, 0, headData.Length),
                     new ArraySegment<byte>(data, offset, length)
                 });
+            }
+            else
+            {
+                session.EnqueueSend(new ArraySegment<byte>(headData, 0, headData.Length));
+            }
         }
 
         private void SendMessage(IWebSocketSession session, int opCode, string message)

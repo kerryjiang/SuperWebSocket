@@ -19,7 +19,7 @@ namespace SuperWebSocket
         public const string Cookie = "Cookie";
         public const string Upgrade = "Upgrade";
         public const string Origin = "Origin";
-        public const string ResponseHeadLine00 = "HTTP/1.1 101 Web Socket Protocol Handshake";
+        public const string ResponseHeadLine00 = "HTTP/1.1 101 WebSocket Protocol Handshake";
         public const string ResponseHeadLine10 = "HTTP/1.1 101 Switching Protocols";
         public const string ResponseUpgradeLine = Upgrade + ": WebSocket";
         public const string ResponseConnectionLine = Connection + ": Upgrade";

@@ -35,7 +35,9 @@ namespace SuperWebSocket.Command
                 closeStatusCode = session.ProtocolProcessor.CloseStatusClode.NoStatusCode;
 
             //Send handshake response
-            session.CloseWithHandshake(closeStatusCode, commandInfo.Text);
+            session.SendCloseHandshakeResponse(closeStatusCode);
+            //After both sending and receiving a Close message, the server MUST close the underlying TCP connection immediately
+            session.Close(CloseReason.ClientClosing);
         }
     }
 }

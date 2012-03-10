@@ -262,6 +262,14 @@ namespace SuperWebSocket
             AppServer.PushToCloseHandshakeQueue(this);
         }
 
+        public void SendCloseHandshakeResponse(int statusCode)
+        {
+            if (!InClosing)
+                InClosing = true;
+
+            ProtocolProcessor.SendCloseHandshake(this, statusCode, string.Empty);
+        }
+
         public override void Close(CloseReason reason)
         {
             if (reason == CloseReason.TimeOut && ProtocolProcessor != null)
@@ -278,6 +286,11 @@ namespace SuperWebSocket
         internal protected virtual void HandleUnknownCommand(StringCommandInfo commandInfo)
         {
 
+        }
+
+        public override void HandleUnknownCommand(WebSocketCommandInfo cmdInfo)
+        {
+            base.Close();
         }
     }
 }

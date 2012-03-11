@@ -553,7 +553,9 @@ namespace SuperWebSocket
                     new Binary<TWebSocketSession>(),
                     new Close<TWebSocketSession>(),
                     new Ping<TWebSocketSession>(),
-                    new Pong<TWebSocketSession>()
+                    new Pong<TWebSocketSession>(),
+                    new Continuation<TWebSocketSession>(),
+                    new Plain<TWebSocketSession>()
                 };
 
             commands.ForEach(c => commandDict.Add(c.Name, c));

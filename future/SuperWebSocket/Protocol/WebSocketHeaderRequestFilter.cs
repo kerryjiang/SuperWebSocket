@@ -22,7 +22,7 @@ namespace SuperWebSocket.Protocol
             m_SearchState = new SearchMarkState<byte>(m_HeaderTerminator);
         }
 
-        public override WebSocketRequestInfo Filter(IAppSession<WebSocketRequestInfo> session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
+        public override IWebSocketFragment Filter(IAppSession<IWebSocketFragment> session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
         {
             left = 0;
 

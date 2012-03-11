@@ -6,7 +6,7 @@ using SuperSocket.Common;
 
 namespace SuperWebSocket.Protocol
 {
-    public class WebSocketDataFrame
+    public class WebSocketDataFrame : IWebSocketFragment
     {
         private ArraySegmentList m_InnerData;
 
@@ -108,6 +108,11 @@ namespace SuperWebSocket.Protocol
             ExtensionData = new byte[0];
             ApplicationData = new byte[0];
             m_ActualPayloadLength = -1;
+        }
+
+        public string Key
+        {
+            get { return OpCode.ToString(); }
         }
     }
 }

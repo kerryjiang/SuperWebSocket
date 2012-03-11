@@ -15,7 +15,7 @@ namespace SuperWebSocket.Protocol
 
         IProtocolProcessor NextProcessor { get; set; }
 
-        bool Handshake(IWebSocketSession session, WebSocketReaderBase previousReader, out ICommandReader<WebSocketCommandInfo> dataFrameReader);
+        bool Handshake(IWebSocketSession session, WebSocketReaderBase previousReader, out ICommandReader<IWebSocketFragment> dataFrameReader);
 
         void SendMessage(IWebSocketSession session, string message);
 
@@ -23,10 +23,12 @@ namespace SuperWebSocket.Protocol
 
         void SendCloseHandshake(IWebSocketSession session, int statusCode, string closeReason);
 
-        void SendPong(IWebSocketSession session, string pong);
+        void SendPong(IWebSocketSession session, byte[] pong);
 
-        void SendPing(IWebSocketSession session, string ping);
+        void SendPing(IWebSocketSession session, byte[] ping);
 
         int Version { get; }
+
+        bool IsValidCloseCode(int code);
     }
 }

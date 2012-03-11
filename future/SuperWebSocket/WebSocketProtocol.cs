@@ -2,22 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Command;
 using SuperSocket.SocketBase.Protocol;
 using SuperWebSocket.Protocol;
 using SuperWebSocket.SubProtocol;
-using SuperSocket.SocketBase;
 
 namespace SuperWebSocket
 {
-    public class WebSocketProtocol : IRequestFilterFactory<WebSocketRequestInfo>
+    public class WebSocketProtocol : IRequestFilterFactory<IWebSocketFragment>
     {
         public WebSocketProtocol()
         {
 
         }
 
-        public IRequestFilter<WebSocketRequestInfo> CreateFilter(IAppServer appServer, ISocketSession socketSession)
+        public IRequestFilter<IWebSocketFragment> CreateFilter(IAppServer appServer, ISocketSession socketSession)
         {
             return new WebSocketHeaderRequestFilter();
         }

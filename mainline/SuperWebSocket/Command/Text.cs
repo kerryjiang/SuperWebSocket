@@ -7,20 +7,42 @@ using SuperWebSocket.Protocol;
 
 namespace SuperWebSocket.Command
 {
-    public class Text<TWebSocketSession> : CommandBase<TWebSocketSession, WebSocketCommandInfo>
+    public class Text<TWebSocketSession> : FragmentCommand<TWebSocketSession>
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
         public override string Name
         {
             get
             {
-                return OpCode.Text.ToString();
+                return OpCode.TextTag;
             }
         }
 
-        public override void ExecuteCommand(TWebSocketSession session, WebSocketCommandInfo commandInfo)
+        public override void ExecuteCommand(TWebSocketSession session, IWebSocketFragment commandInfo)
         {
-            session.AppServer.OnNewMessageReceived(session, commandInfo.Text);
+            var frame = commandInfo as WebSocketDataFrame;
+
+            if (!CheckFrame(frame))
+            {
+                session.Close();
+                return;
+            }
+
+            if (frame.FIN)
+            {
+                if (session.Frames.Count > 0)
+                {
+                    session.Close();
+                    return;
+                }
+
+                var text = GetWebSocketText(frame);
+                session.AppServer.OnNewMessageReceived(session, text);
+            }
+            else
+            {
+                session.Frames.Add(frame);
+            }
         }
     }
 }

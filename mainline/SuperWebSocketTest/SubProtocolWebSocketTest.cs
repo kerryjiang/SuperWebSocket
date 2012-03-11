@@ -16,7 +16,7 @@ using SuperWebSocket.SubProtocol;
 namespace SuperWebSocketTest
 {
     [TestFixture]
-    public class SubProtocolWebSocketTest : WebSocketTest
+    public class SubProtocolWebSocketTest : WebSocketRawTest
     {
         private Encoding m_Encoding;
         

@@ -36,7 +36,7 @@ namespace SuperWebSocket.Protocol
 
         public IProtocolProcessor NextProcessor { get; set; }
 
-        public bool Handshake(IWebSocketSession session, WebSocketReaderBase previousReader, out ICommandReader<WebSocketCommandInfo> dataFrameReader)
+        public bool Handshake(IWebSocketSession session, WebSocketReaderBase previousReader, out ICommandReader<IWebSocketFragment> dataFrameReader)
         {
             dataFrameReader = null;
             session.SocketSession.SendResponse(m_SwitchResponse, 0, m_SwitchResponse.Length);
@@ -58,12 +58,12 @@ namespace SuperWebSocket.Protocol
             throw new NotImplementedException();
         }
 
-        public void SendPong(IWebSocketSession session, string pong)
+        public void SendPong(IWebSocketSession session, byte[] pong)
         {
             throw new NotImplementedException();
         }
 
-        public void SendPing(IWebSocketSession session, string ping)
+        public void SendPing(IWebSocketSession session, byte[] ping)
         {
             throw new NotImplementedException();
         }
@@ -71,6 +71,11 @@ namespace SuperWebSocket.Protocol
         public int Version
         {
             get { return 0; }
+        }
+
+        public bool IsValidCloseCode(int code)
+        {
+            throw new NotImplementedException();
         }
     }
 }

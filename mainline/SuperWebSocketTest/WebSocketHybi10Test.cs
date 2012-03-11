@@ -13,7 +13,7 @@ using SuperSocket.Common;
 
 namespace SuperWebSocketTest
 {
-    public class WebSocketHybi10Test : WebSocketTest
+    public class WebSocketHybi10Test : WebSocketRawTest
     {
         private const string m_Magic = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 

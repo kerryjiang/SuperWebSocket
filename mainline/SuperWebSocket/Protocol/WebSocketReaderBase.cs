@@ -9,13 +9,13 @@ using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket.Protocol
 {
-    public abstract class WebSocketReaderBase : CommandReaderBase<WebSocketCommandInfo>
+    public abstract class WebSocketReaderBase : CommandReaderBase<IWebSocketFragment>
     {
         protected const int SecKey3Len = 8;
 
         static WebSocketReaderBase()
         {
-            HandshakeCommandInfo = new WebSocketCommandInfo(OpCode.Handshake.ToString(), string.Empty);
+            HandshakeCommandInfo = new HandshakeRequest();
         }
 
         public WebSocketReaderBase(IAppServer appServer)
@@ -32,7 +32,7 @@ namespace SuperWebSocket.Protocol
 
         protected bool Handshake(IProtocolProcessor protocolProcessor, IWebSocketSession session)
         {
-            ICommandReader<WebSocketCommandInfo> dataFrameReader;
+            ICommandReader<IWebSocketFragment> dataFrameReader;
 
             if (!protocolProcessor.Handshake(session, this, out dataFrameReader))
             {
@@ -52,6 +52,6 @@ namespace SuperWebSocket.Protocol
             return true;
         }
 
-        protected static WebSocketCommandInfo HandshakeCommandInfo { get; private set; }
+        protected static HandshakeRequest HandshakeCommandInfo { get; private set; }
     }
 }

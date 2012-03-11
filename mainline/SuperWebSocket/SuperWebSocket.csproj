@@ -29,6 +29,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\superwebsocket.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net">
       <HintPath>..\Reference\log4net.dll</HintPath>
@@ -58,8 +64,11 @@
     </Compile>
     <Compile Include="Command\Binary.cs" />
     <Compile Include="Command\Close.cs" />
+    <Compile Include="Command\Continuation.cs" />
+    <Compile Include="Command\FragmentCommand.cs" />
     <Compile Include="Command\HandShake.cs" />
     <Compile Include="Command\Ping.cs" />
+    <Compile Include="Command\Plain.cs" />
     <Compile Include="Command\Pong.cs" />
     <Compile Include="Command\Text.cs" />
     <Compile Include="Config\CommandConfig.cs" />
@@ -67,6 +76,7 @@
     <Compile Include="Config\SubProtocolConfig.cs" />
     <Compile Include="Config\SubProtocolConfigCollection.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Protocol\PlainFragment.cs" />
     <Compile Include="Protocol\CloseStatusCodeHybi10.cs" />
     <Compile Include="Protocol\CloseStatusCodeRfc6455.cs" />
     <Compile Include="Protocol\DraftHybi00Processor.cs" />
@@ -77,7 +87,9 @@
     <Compile Include="Protocol\FramePartReader\IDataFramePartReader.cs" />
     <Compile Include="Protocol\FramePartReader\MaskKeyReader.cs" />
     <Compile Include="Protocol\FramePartReader\PayloadDataReader.cs" />
+    <Compile Include="Protocol\HandshakeRequest.cs" />
     <Compile Include="Protocol\ICloseStatusCode.cs" />
+    <Compile Include="Protocol\IWebSocketFragment.cs" />
     <Compile Include="Protocol\MultipleProtocolSwitchProcessor.cs" />
     <Compile Include="Protocol\OpCode.cs" />
     <Compile Include="Protocol\ProtocolProcessorBase..cs" />
@@ -95,7 +107,6 @@
     <Compile Include="SubProtocol\JsonSubCommand.cs" />
     <Compile Include="SubProtocol\SubCommandBase.cs" />
     <Compile Include="SubProtocol\SubProtocolBase.cs" />
-    <Compile Include="WebSocketCommandInfo.cs" />
     <Compile Include="WebSocketConst.cs" />
     <Compile Include="WebSocketProtocol.cs" />
     <Compile Include="WebSocketServer.cs" />
@@ -105,7 +116,6 @@
     <Compile Include="Protocol\WebSocketDataReader.cs" />
     <Compile Include="Protocol\WebSocketHeaderReader.cs" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -15,7 +15,7 @@ namespace SuperWebSocket.Protocol
             VersionTag = version.ToString();
         }
 
-        public abstract bool Handshake(IWebSocketSession session, WebSocketRequestFilterBase previousFilter, out IRequestFilter<WebSocketRequestInfo> dataFrameReader);
+        public abstract bool Handshake(IWebSocketSession session, WebSocketRequestFilterBase previousFilter, out IRequestFilter<IWebSocketFragment> dataFrameReader);
 
         public IProtocolProcessor NextProcessor { get; set; }
 
@@ -23,9 +23,9 @@ namespace SuperWebSocket.Protocol
 
         public abstract void SendCloseHandshake(IWebSocketSession session, int statusCode, string closeReason);
 
-        public abstract void SendPong(IWebSocketSession session, string pong);
+        public abstract void SendPong(IWebSocketSession session, byte[] pong);
 
-        public abstract void SendPing(IWebSocketSession session, string ping);
+        public abstract void SendPing(IWebSocketSession session, byte[] ping);
 
         public abstract bool CanSendBinaryData { get; }
 
@@ -36,5 +36,7 @@ namespace SuperWebSocket.Protocol
         public int Version { get; private set; }
 
         protected string VersionTag { get; private set; }
+
+        public abstract bool IsValidCloseCode(int code);
     }
 }

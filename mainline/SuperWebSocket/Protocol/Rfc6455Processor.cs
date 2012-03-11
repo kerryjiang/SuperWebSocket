@@ -15,5 +15,36 @@ namespace SuperWebSocket.Protocol
         {
 
         }
+
+        public override bool IsValidCloseCode(int code)
+        {
+            var closeCode = this.CloseStatusClode;
+
+            if (code >= 0 && code <= 999)
+                return false;
+
+            if (code >= 1000 && code <= 2999)
+            {
+                if (code == closeCode.NormalClosure
+                    || code == closeCode.GoingAway
+                    || code == closeCode.ProtocolError
+                    || code == closeCode.NotAcceptableData
+                    || code == closeCode.TooLargeFrame
+                    || code == closeCode.InvalidUTF8
+                    || code == closeCode.ViolatePolicy
+                    || code == closeCode.ExtensionNotMatch
+                    || code == closeCode.UnexpectedCondition)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+            if (code >= 3000 && code <= 4999)
+                return true;
+
+            return false;
+        }
     }
 }

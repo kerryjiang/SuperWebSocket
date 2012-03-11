@@ -7,20 +7,28 @@ using SuperWebSocket.Protocol;
 
 namespace SuperWebSocket.Command
 {
-    public class Pong<TWebSocketSession> : CommandBase<TWebSocketSession, WebSocketRequestInfo>
+    public class Pong<TWebSocketSession> : FragmentCommand<TWebSocketSession>
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
         public override string Name
         {
             get
             {
-                return OpCode.Pong.ToString();
+                return OpCode.PongTag;
             }
         }
 
-        public override void ExecuteCommand(TWebSocketSession session, WebSocketRequestInfo requestInfo)
+        public override void ExecuteCommand(TWebSocketSession session, IWebSocketFragment requestInfo)
         {
             //Do nothing, last active time has been updated automatically
+
+            var frame = requestInfo as WebSocketDataFrame;
+
+            if (!CheckControlFrame(frame))
+            {
+                session.Close();
+                return;
+            }
         }
     }
 }

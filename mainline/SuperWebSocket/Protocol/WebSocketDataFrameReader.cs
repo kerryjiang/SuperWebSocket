@@ -9,9 +9,8 @@ using SuperWebSocket.Protocol.FramePartReader;
 
 namespace SuperWebSocket.Protocol
 {
-    class WebSocketDataFrameReader : ICommandReader<WebSocketCommandInfo>
+    class WebSocketDataFrameReader : ICommandReader<IWebSocketFragment>
     {
-        private List<WebSocketDataFrame> m_PreviousFrames;
         private WebSocketDataFrame m_Frame;
         private IDataFramePartReader m_PartReader;
         private int m_LastPartLength = 0;
@@ -23,7 +22,7 @@ namespace SuperWebSocket.Protocol
             get { return m_Frame.InnerData.Count; }
         }
 
-        public ICommandReader<WebSocketCommandInfo> NextCommandReader
+        public ICommandReader<IWebSocketFragment> NextCommandReader
         {
             get { return this; }
         }
@@ -31,7 +30,6 @@ namespace SuperWebSocket.Protocol
         public WebSocketDataFrameReader(IAppServer appServer)
         {
             AppServer = appServer;
-            m_Frame = new WebSocketDataFrame(new ArraySegmentList());
             m_PartReader = DataFramePartReader.NewReader;
         }
 
@@ -40,8 +38,11 @@ namespace SuperWebSocket.Protocol
             segments.AddSegment(buffer, offset, length, isReusableBuffer);
         }
 
-        public WebSocketCommandInfo FindCommandInfo(IAppSession session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
+        public IWebSocketFragment FindCommandInfo(IAppSession session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
         {
+            if(m_Frame == null)
+                m_Frame = new WebSocketDataFrame(new ArraySegmentList());
+
             this.AddArraySegment(m_Frame.InnerData, readBuffer, offset, length, isReusableBuffer);
 
             IDataFramePartReader nextPartReader;
@@ -63,48 +64,12 @@ namespace SuperWebSocket.Protocol
                 //Means this part reader is the last one
                 if (nextPartReader == null)
                 {
-                    WebSocketCommandInfo commandInfo;
-
-                    if (m_Frame.FIN)
-                    {
-                        if (!m_Frame.HasMask)
-                        {
-                            //Mask is required for client to server fragment
-                            //http://tools.ietf.org/html/rfc6455#section-5.3
-                            var websocketSession = session as WebSocketSession;
-                            websocketSession.CloseWithHandshake(websocketSession.ProtocolProcessor.CloseStatusClode.ProtocolError, "Mask is required!");
-                            return null;
-                        }
-
-                        if (m_PreviousFrames != null && m_PreviousFrames.Count > 0)
-                        {
-                            m_PreviousFrames.Add(m_Frame);
-                            m_Frame = new WebSocketDataFrame(new ArraySegmentList());
-                            commandInfo = new WebSocketCommandInfo(m_PreviousFrames);
-                            m_PreviousFrames = null;
-                        }
-                        else
-                        {
-                            commandInfo = new WebSocketCommandInfo(m_Frame);
-                            m_Frame.Clear();
-                        }
-                    }
-                    else
-                    {
-                        if (m_PreviousFrames == null)
-                            m_PreviousFrames = new List<WebSocketDataFrame>();
-
-                        m_PreviousFrames.Add(m_Frame);
-                        m_Frame = new WebSocketDataFrame(new ArraySegmentList());
-
-                        commandInfo = null;
-                    }
-
-                    //BufferSegments.ClearSegements();
                     m_LastPartLength = 0;
                     m_PartReader = DataFramePartReader.NewReader;
 
-                    return commandInfo;
+                    var frame = m_Frame;
+                    m_Frame = null;
+                    return frame;
                 }
                 else
                 {

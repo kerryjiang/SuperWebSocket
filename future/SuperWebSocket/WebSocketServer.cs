@@ -53,7 +53,7 @@ namespace SuperWebSocket
         }
     }
 
-    public abstract class WebSocketServer<TWebSocketSession> : AppServer<TWebSocketSession, WebSocketRequestInfo>, IWebSocketServer
+    public abstract class WebSocketServer<TWebSocketSession> : AppServer<TWebSocketSession, IWebSocketFragment>, IWebSocketServer
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
         public WebSocketServer(IEnumerable<ISubProtocol<TWebSocketSession>> subProtocols)
@@ -262,7 +262,7 @@ namespace SuperWebSocket
             return true;
         }
 
-        public override bool Setup(IRootConfig rootConfig, IServerConfig config, ISocketServerFactory socketServerFactory, IRequestFilterFactory<WebSocketRequestInfo> protocol)
+        public override bool Setup(IRootConfig rootConfig, IServerConfig config, ISocketServerFactory socketServerFactory, IRequestFilterFactory<IWebSocketFragment> protocol)
         {
             if (!base.Setup(rootConfig, config, socketServerFactory, protocol))
                 return false;
@@ -544,9 +544,9 @@ namespace SuperWebSocket
             session.HttpVersion = metaInfo[2];
         }
 
-        protected override bool SetupCommands(Dictionary<string, ICommand<TWebSocketSession, WebSocketRequestInfo>> commandDict)
+        protected override bool SetupCommands(Dictionary<string, ICommand<TWebSocketSession, IWebSocketFragment>> commandDict)
         {
-            var commands = new List<ICommand<TWebSocketSession, WebSocketRequestInfo>>
+            var commands = new List<ICommand<TWebSocketSession, IWebSocketFragment>>
                 {
                     new HandShake<TWebSocketSession>(),
                     new Text<TWebSocketSession>(),  
@@ -561,7 +561,7 @@ namespace SuperWebSocket
             try
             {
                 //Still require it because we need to ensure commandfilters dictionary is not null
-                base.SetupCommands(new Dictionary<string, ICommand<TWebSocketSession, WebSocketRequestInfo>>());
+                base.SetupCommands(new Dictionary<string, ICommand<TWebSocketSession, IWebSocketFragment>>());
             }
             catch
             {
@@ -573,7 +573,7 @@ namespace SuperWebSocket
             return true;
         }
 
-        protected override void ExecuteCommand(TWebSocketSession session, WebSocketRequestInfo requestInfo)
+        protected override void ExecuteCommand(TWebSocketSession session, IWebSocketFragment requestInfo)
         {
             if (session.InClosing)
             {

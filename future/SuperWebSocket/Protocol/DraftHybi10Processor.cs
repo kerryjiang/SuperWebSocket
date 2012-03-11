@@ -31,7 +31,7 @@ namespace SuperWebSocket.Protocol
 
         }
 
-        public override bool Handshake(IWebSocketSession session, WebSocketRequestFilterBase previousFilter, out IRequestFilter<WebSocketRequestInfo> dataFrameReader)
+        public override bool Handshake(IWebSocketSession session, WebSocketRequestFilterBase previousFilter, out IRequestFilter<IWebSocketFragment> dataFrameReader)
         {
             if (!VersionTag.Equals(session.SecWebSocketVersion) && NextProcessor != null)
             {
@@ -117,43 +117,43 @@ namespace SuperWebSocket.Protocol
             }
         }
 
-        public override void SendPong(IWebSocketSession session, string pong)
+        public override void SendPong(IWebSocketSession session, byte[] pong)
         {
-            SendMessage(session, OpCode.Pong, pong);
+            SendPackage(session, OpCode.Pong, pong, 0, pong.Length);
         }
 
-        public override void SendPing(IWebSocketSession session, string ping)
+        public override void SendPing(IWebSocketSession session, byte[] ping)
         {
-            SendMessage(session, OpCode.Ping, ping);
+            SendPackage(session, OpCode.Ping, ping, 0, ping.Length);
         }
 
         private void SendPackage(IWebSocketSession session, int opCode, byte[] data, int offset, int length)
         {
-            byte[] headData;
+            byte[] fragment;
 
             if (length < 126)
             {
-                headData = new byte[2];
-                headData[1] = (byte)length;
+                fragment = new byte[2 + length];
+                fragment[1] = (byte)length;
             }
             else if (length < 65536)
             {
-                headData = new byte[4];
-                headData[1] = (byte)126;
-                headData[2] = (byte)(length / 256);
-                headData[3] = (byte)(length % 256);
+                fragment = new byte[4 + length];
+                fragment[1] = (byte)126;
+                fragment[2] = (byte)(length / 256);
+                fragment[3] = (byte)(length % 256);
             }
             else
             {
-                headData = new byte[10];
-                headData[1] = (byte)127;
+                fragment = new byte[10 + length];
+                fragment[1] = (byte)127;
 
                 int left = length;
                 int unit = 256;
 
                 for (int i = 9; i > 1; i--)
                 {
-                    headData[i] = (byte)(left % unit);
+                    fragment[i] = (byte)(left % unit);
                     left = left / unit;
 
                     if (left == 0)
@@ -161,20 +161,16 @@ namespace SuperWebSocket.Protocol
                 }
             }
 
-            headData[0] = (byte)(opCode | 0x80);
+            fragment[0] = (byte)(opCode | 0x80);
 
             if (length > 0)
             {
-                session.EnqueueSend(
-                    new ArraySegment<byte>[]
-                {
-                    new ArraySegment<byte>(headData, 0, headData.Length),
-                    new ArraySegment<byte>(data, offset, length)
-                });
+                Buffer.BlockCopy(data, offset, fragment, fragment.Length - length, length);
+                session.EnqueueSend(new ArraySegment<byte>(fragment, 0, fragment.Length));
             }
             else
             {
-                session.EnqueueSend(new ArraySegment<byte>(headData, 0, headData.Length));
+                session.EnqueueSend(new ArraySegment<byte>(fragment, 0, fragment.Length));
             }
         }
 
@@ -182,6 +178,34 @@ namespace SuperWebSocket.Protocol
         {
             byte[] playloadData = Encoding.UTF8.GetBytes(message);
             SendPackage(session, opCode, playloadData, 0, playloadData.Length);
+        }
+
+        public override bool IsValidCloseCode(int code)
+        {
+            var closeCode = this.CloseStatusClode;
+
+            if (code >= 0 && code <= 999)
+                return false;
+
+            if (code >= 1000 && code <= 1999)
+            {
+                if (code == closeCode.NormalClosure
+                    || code == closeCode.GoingAway
+                    || code == closeCode.ProtocolError
+                    || code == closeCode.NotAcceptableData
+                    || code == closeCode.TooLargeFrame
+                    || code == closeCode.InvalidUTF8)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+            if (code >= 2000 && code <= 4999)
+                return true;
+
+            return false;
         }
     }
 }

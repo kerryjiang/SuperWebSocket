@@ -23,7 +23,7 @@ namespace SuperWebSocket.Protocol
 
         }
 
-        public override WebSocketRequestInfo Filter(IAppSession<WebSocketRequestInfo> session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
+        public override IWebSocketFragment Filter(IAppSession<IWebSocketFragment> session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
         {
             left = 0;
 
@@ -51,14 +51,14 @@ namespace SuperWebSocket.Protocol
 
                         if (BufferSegments.Count <= 0)
                         {
-                            var commandInfo = new WebSocketRequestInfo(Encoding.UTF8.GetString(readBuffer, offset + skipByteCount, i - offset - skipByteCount));
+                            var commandInfo = new PlainFragment(Encoding.UTF8.GetString(readBuffer, offset + skipByteCount, i - offset - skipByteCount));
                             Reset();
                             return commandInfo;
                         }
                         else
                         {
                             AddArraySegment(readBuffer, offset + skipByteCount, i - offset - skipByteCount, false);
-                            var commandInfo = new WebSocketRequestInfo(BufferSegments.Decode(Encoding.UTF8));
+                            var commandInfo = new PlainFragment(BufferSegments.Decode(Encoding.UTF8));
                             Reset();
                             return commandInfo;
                         }
@@ -112,14 +112,14 @@ namespace SuperWebSocket.Protocol
 
                     if (BufferSegments.Count <= 0)
                     {
-                        var commandInfo = new WebSocketRequestInfo(Encoding.UTF8.GetString(readBuffer, offset + skipByteCount, requiredSize));
+                        var commandInfo = new PlainFragment(Encoding.UTF8.GetString(readBuffer, offset + skipByteCount, requiredSize));
                         Reset();
                         return commandInfo;
                     }
                     else
                     {
                         AddArraySegment(readBuffer, offset + skipByteCount, requiredSize, false);
-                        var commandInfo = new WebSocketRequestInfo(BufferSegments.Decode(Encoding.UTF8));
+                        var commandInfo = new PlainFragment(BufferSegments.Decode(Encoding.UTF8));
                         Reset();
                         return commandInfo;
                     }

@@ -16,7 +16,7 @@ namespace SuperWebSocket.Protocol
             
         }
 
-        public override WebSocketCommandInfo FindCommandInfo(IAppSession session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
+        public override IWebSocketFragment FindCommandInfo(IAppSession session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
         {
             var webSocketSession = session as IWebSocketSession;
 

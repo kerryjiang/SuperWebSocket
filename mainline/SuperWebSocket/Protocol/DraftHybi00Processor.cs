@@ -22,7 +22,7 @@ namespace SuperWebSocket.Protocol
 
         }
 
-        public override bool Handshake(IWebSocketSession session, WebSocketReaderBase previousReader, out ICommandReader<WebSocketCommandInfo> dataFrameReader)
+        public override bool Handshake(IWebSocketSession session, WebSocketReaderBase previousReader, out ICommandReader<IWebSocketFragment> dataFrameReader)
         {
             var secKey1 = session.Items.GetValue<string>(WebSocketConstant.SecWebSocketKey1, string.Empty);
             var secKey2 = session.Items.GetValue<string>(WebSocketConstant.SecWebSocketKey2, string.Empty);
@@ -114,12 +114,12 @@ namespace SuperWebSocket.Protocol
             session.SocketSession.SendResponse(WebSocketConstant.ClosingHandshake, 0, WebSocketConstant.ClosingHandshake.Length);
         }
 
-        public override void SendPong(IWebSocketSession session, string pong)
+        public override void SendPong(IWebSocketSession session, byte[] pong)
         {
 
         }
 
-        public override void SendPing(IWebSocketSession session, string ping)
+        public override void SendPing(IWebSocketSession session, byte[] ping)
         {
 
         }
@@ -130,6 +130,11 @@ namespace SuperWebSocket.Protocol
         }
 
         public override void SendData(IWebSocketSession session, byte[] data, int offset, int length)
+        {
+            throw new NotSupportedException();
+        }
+
+        public override bool IsValidCloseCode(int code)
         {
             throw new NotSupportedException();
         }

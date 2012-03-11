@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
 using System.Text;
 using SuperSocket.Common;
 using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Command;
-using System.Collections.Specialized;
-using SuperWebSocket.SubProtocol;
-using SuperWebSocket.Protocol;
 using SuperSocket.SocketBase.Protocol;
+using SuperWebSocket.Protocol;
+using SuperWebSocket.SubProtocol;
 
 namespace SuperWebSocket
 {
@@ -39,7 +39,7 @@ namespace SuperWebSocket
         }
     }
 
-    public class WebSocketSession<TWebSocketSession> : AppSession<TWebSocketSession, WebSocketRequestInfo>, IWebSocketSession
+    public class WebSocketSession<TWebSocketSession> : AppSession<TWebSocketSession, IWebSocketFragment>, IWebSocketSession
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
         public string Method { get; set; }
@@ -55,6 +55,8 @@ namespace SuperWebSocket
         private Queue<ArraySegment<byte>> m_SendingQueue = new Queue<ArraySegment<byte>>();
 
         private volatile bool m_InSending = false;
+
+        internal List<WebSocketDataFrame> Frames { get; private set; }
 
         internal DateTime StartClosingHandshakeTime { get; private set; }
 
@@ -118,6 +120,12 @@ namespace SuperWebSocket
         }
 
         public bool InClosing { get; private set; }
+
+        protected override void OnInit()
+        {
+            Frames = new List<WebSocketDataFrame>();
+            base.OnInit();
+        }
 
         private void SetCookie()
         {
@@ -284,7 +292,7 @@ namespace SuperWebSocket
 
         }
 
-        public override void HandleUnknownRequest(WebSocketRequestInfo requestInfo)
+        public override void HandleUnknownRequest(IWebSocketFragment requestInfo)
         {
             base.Close();
         }

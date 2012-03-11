@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
 using System.Text;
 using SuperSocket.Common;
 using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Command;
-using System.Collections.Specialized;
-using SuperWebSocket.SubProtocol;
 using SuperWebSocket.Protocol;
+using SuperWebSocket.SubProtocol;
 
 namespace SuperWebSocket
 {
@@ -38,7 +38,7 @@ namespace SuperWebSocket
         }
     }
 
-    public class WebSocketSession<TWebSocketSession> : AppSession<TWebSocketSession, WebSocketCommandInfo>, IWebSocketSession
+    public class WebSocketSession<TWebSocketSession> : AppSession<TWebSocketSession, IWebSocketFragment>, IWebSocketSession
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
         public string Method { get; set; }
@@ -57,6 +57,8 @@ namespace SuperWebSocket
 
         internal DateTime StartClosingHandshakeTime { get; private set; }
 
+        internal List<WebSocketDataFrame> Frames { get; private set; }
+
         /// <summary>
         /// Gets or sets the current token. It's only usefull when a command is executing
         /// </summary>
@@ -73,6 +75,12 @@ namespace SuperWebSocket
         IWebSocketServer IWebSocketSession.AppServer
         {
             get { return (IWebSocketServer)base.AppServer; }
+        }
+
+        protected override void OnInit()
+        {
+            Frames = new List<WebSocketDataFrame>();
+            base.OnInit();
         }
 
         string IWebSocketSession.GetAvailableSubProtocol(string protocol)
@@ -288,9 +296,15 @@ namespace SuperWebSocket
 
         }
 
-        public override void HandleUnknownCommand(WebSocketCommandInfo cmdInfo)
+        public override void HandleUnknownCommand(IWebSocketFragment cmdInfo)
         {
             base.Close();
+        }
+
+        public override void HandleExceptionalError(Exception e)
+        {
+            Logger.LogError(e);
+            this.Close();
         }
     }
 }

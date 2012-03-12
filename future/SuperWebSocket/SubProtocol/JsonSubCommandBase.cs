@@ -42,7 +42,6 @@ namespace SuperWebSocket.SubProtocol
                 return;
             }
 
-            var token = string.Empty;
             var data = commandInfo.Data;
 
             if (data[0] != '{')

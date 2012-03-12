@@ -11,14 +11,10 @@ namespace SuperWebSocket.Protocol
     /// </summary>
     class MultipleProtocolSwitchProcessor : IProtocolProcessor
     {
-        private int[] m_AvailableVersions;
-
         private byte[] m_SwitchResponse;
 
         public MultipleProtocolSwitchProcessor(int[] availableVersions)
         {
-            m_AvailableVersions = availableVersions;
-
             var responseBuilder = new StringBuilder();
 
             responseBuilder.AppendWithCrCf("HTTP/1.1 400 Bad Request");

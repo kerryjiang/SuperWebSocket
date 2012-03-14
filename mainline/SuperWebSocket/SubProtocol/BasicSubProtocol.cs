@@ -1,35 +1,87 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using SuperSocket.SocketBase.Config;
 using System.Reflection;
+using System.Text;
 using SuperSocket.Common;
 using SuperSocket.SocketBase.Command;
+using SuperSocket.SocketBase.Config;
 using SuperWebSocket.Config;
 
 namespace SuperWebSocket.SubProtocol
 {
+    /// <summary>
+    /// Default basic sub protocol implementation
+    /// </summary>
     public class BasicSubProtocol : BasicSubProtocol<WebSocketSession>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BasicSubProtocol"/> class.
+        /// </summary>
         public BasicSubProtocol()
             : base()
         {
 
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BasicSubProtocol"/> class.
+        /// </summary>
+        /// <param name="name">The sub protocol name.</param>
+        public BasicSubProtocol(string name)
+            : base(name)
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BasicSubProtocol"/> class.
+        /// </summary>
+        /// <param name="commandAssembly">The command assembly.</param>
+        public BasicSubProtocol(Assembly commandAssembly)
+            : base(commandAssembly)
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BasicSubProtocol"/> class.
+        /// </summary>
+        /// <param name="commandAssemblies">The command assemblies.</param>
         public BasicSubProtocol(IEnumerable<Assembly> commandAssemblies)
             : base(commandAssemblies)
         {
 
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BasicSubProtocol"/> class.
+        /// </summary>
+        /// <param name="name">The sub protocol name.</param>
+        /// <param name="commandAssembly">The command assembly.</param>
+        public BasicSubProtocol(string name, Assembly commandAssembly)
+            : base(name, commandAssembly)
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BasicSubProtocol"/> class.
+        /// </summary>
+        /// <param name="name">The sub protocol name.</param>
+        /// <param name="commandAssemblies">The command assemblies.</param>
         public BasicSubProtocol(string name, IEnumerable<Assembly> commandAssemblies)
             : base(name, commandAssemblies)
         {
 
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BasicSubProtocol"/> class.
+        /// </summary>
+        /// <param name="name">The sub protocol name.</param>
+        /// <param name="commandAssemblies">The command assemblies.</param>
+        /// <param name="commandParser">The command parser.</param>
         public BasicSubProtocol(string name, IEnumerable<Assembly> commandAssemblies, ICommandParser commandParser)
             : base(name, commandAssemblies, commandParser)
         {
@@ -37,6 +89,9 @@ namespace SuperWebSocket.SubProtocol
         }
     }
 
+    /// <summary>
+    /// Default basic sub protocol implementation
+    /// </summary>
     public class BasicSubProtocol<TWebSocketSession> : SubProtocolBase<TWebSocketSession>
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
@@ -48,35 +103,80 @@ namespace SuperWebSocket.SubProtocol
 
         public static BasicSubProtocol<TWebSocketSession> DefaultInstance { get; private set; }
 
+        private ILogger m_Logger;
+
         static BasicSubProtocol()
         {
-            DefaultInstance = new BasicSubProtocol<TWebSocketSession>();
+            DefaultInstance = new BasicSubProtocol<TWebSocketSession>(DefaultName, new List<Assembly>());
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BasicSubProtocol&lt;TWebSocketSession&gt;"/> class with the calling aseembly as command assembly
+        /// </summary>
+        public BasicSubProtocol()
+            : this(DefaultName, Assembly.GetCallingAssembly())
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BasicSubProtocol&lt;TWebSocketSession&gt;"/> class with the calling aseembly as command assembly
+        /// </summary>
+        /// <param name="name">The sub protocol name.</param>
+        public BasicSubProtocol(string name)
+            : this(name, Assembly.GetCallingAssembly())
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BasicSubProtocol&lt;TWebSocketSession&gt;"/> class with command assemblies
+        /// </summary>
+        /// <param name="commandAssemblies">The command assemblies.</param>
         public BasicSubProtocol(IEnumerable<Assembly> commandAssemblies)
             : this(DefaultName, commandAssemblies, new BasicSubCommandParser())
         {
 
         }
 
-        public BasicSubProtocol()
-            : this(DefaultName)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BasicSubProtocol&lt;TWebSocketSession&gt;"/> class with single command assembly.
+        /// </summary>
+        /// <param name="commandAssembly">The command assembly.</param>
+        public BasicSubProtocol(Assembly commandAssembly)
+            : this(DefaultName, new List<Assembly> { commandAssembly }, new BasicSubCommandParser())
         {
 
         }
 
-        public BasicSubProtocol(string name)
-            : this(name, new List<Assembly>() )
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BasicSubProtocol&lt;TWebSocketSession&gt;"/> class with name and single command assembly.
+        /// </summary>
+        /// <param name="name">The sub protocol name.</param>
+        /// <param name="commandAssembly">The command assembly.</param>
+        public BasicSubProtocol(string name, Assembly commandAssembly)
+            : this(name, new List<Assembly> { commandAssembly }, new BasicSubCommandParser())
         {
 
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BasicSubProtocol&lt;TWebSocketSession&gt;"/> class with name and command assemblies.
+        /// </summary>
+        /// <param name="name">The sub protocol name.</param>
+        /// <param name="commandAssemblies">The command assemblies.</param>
         public BasicSubProtocol(string name, IEnumerable<Assembly> commandAssemblies)
             : this(name, commandAssemblies, new BasicSubCommandParser())
         {
 
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BasicSubProtocol&lt;TWebSocketSession&gt;"/> class.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="commandAssemblies">The command assemblies.</param>
+        /// <param name="commandParser">The command parser.</param>
         public BasicSubProtocol(string name, IEnumerable<Assembly> commandAssemblies, ICommandParser commandParser)
             : base(name)
         {
@@ -105,15 +205,24 @@ namespace SuperWebSocket.SubProtocol
                 cmdbuilder.AppendLine(c.Name);
             }
 
-            LogUtil.LogDebug(cmdbuilder.ToString());
+            m_Logger.LogDebug(cmdbuilder.ToString());
 #endif
 
             m_CommandDict = new Dictionary<string, ISubCommand<TWebSocketSession>>(subCommands.Count, StringComparer.OrdinalIgnoreCase);
             subCommands.ForEach(c => m_CommandDict.Add(c.Name, c));
         }
 
-        public override bool Initialize(IServerConfig config, SubProtocolConfig protocolConfig)
+        /// <summary>
+        /// Initializes the sub protocol.
+        /// </summary>
+        /// <param name="config">The config.</param>
+        /// <param name="protocolConfig">The protocol config.</param>
+        /// <param name="logger">The logger.</param>
+        /// <returns></returns>
+        public override bool Initialize(IServerConfig config, SubProtocolConfig protocolConfig, ILogger logger)
         {
+            m_Logger = logger;
+
             if (Name.Equals(DefaultName, StringComparison.OrdinalIgnoreCase))
             {
                 var commandAssembly = config.Options.GetValue("commandAssembly");
@@ -163,6 +272,12 @@ namespace SuperWebSocket.SubProtocol
             }
         }
 
+        /// <summary>
+        /// Tries get command from the sub protocol's command inventory.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="command">The command.</param>
+        /// <returns></returns>
         public override bool TryGetCommand(string name, out ISubCommand<TWebSocketSession> command)
         {
             return m_CommandDict.TryGetValue(name, out command);

@@ -231,7 +231,7 @@ namespace SuperWebSocket
 
                 subProtocolConfigDict.TryGetValue(subProtocol.Name, out protocolConfig);
 
-                if (!subProtocol.Initialize(config, protocolConfig))
+                if (!subProtocol.Initialize(config, protocolConfig, Logger))
                 {
                     Logger.LogError(string.Format("Failed to initialize the sub protocol '{0}'!", subProtocol.Name));
                     return false;
@@ -537,15 +537,6 @@ namespace SuperWebSocket
                 };
 
             commands.ForEach(c => commandDict.Add(c.Name, c));
-
-            try
-            {
-                //Still require it because we need to ensure commandfilters dictionary is not null
-                base.SetupCommands(new Dictionary<string, ICommand<TWebSocketSession, IWebSocketFragment>>());
-            }
-            catch
-            {
-            }
 
             if (!SetupSubProtocols(Config))
                 return false;

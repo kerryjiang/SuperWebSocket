@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SuperSocket.Common.Logging;
 using SuperSocket.SocketBase.Command;
+using SuperSocket.SocketBase.Config;
 using SuperSocket.SocketBase.Protocol;
+using SuperWebSocket.Config;
 
 namespace SuperWebSocket.SubProtocol
 {
@@ -22,7 +25,7 @@ namespace SuperWebSocket.SubProtocol
 
         public string Name { get; private set; }
 
-        public abstract bool Initialize(SuperSocket.SocketBase.Config.IServerConfig config, Config.SubProtocolConfig protocolConfig);
+        public abstract bool Initialize(IServerConfig config, SubProtocolConfig protocolConfig, ILog logger);
 
         public IRequestInfoParser<StringRequestInfo> SubCommandParser { get; protected set; }
 

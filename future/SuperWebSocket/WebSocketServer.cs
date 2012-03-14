@@ -243,7 +243,7 @@ namespace SuperWebSocket
 
                 try
                 {
-                    initialized = subProtocol.Initialize(config, protocolConfig);
+                    initialized = subProtocol.Initialize(config, protocolConfig, Logger);
                 }
                 catch (Exception e)
                 {

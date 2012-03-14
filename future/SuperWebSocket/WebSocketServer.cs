@@ -409,7 +409,7 @@ namespace SuperWebSocket
             remove { m_NewSessionConnected -= value; }
         }
 
-        internal void OnNewSessionConnected(TWebSocketSession session)
+        protected internal virtual void OnNewSessionConnected(TWebSocketSession session)
         {
             if (m_NewSessionConnected != null)
                 m_NewSessionConnected(session);

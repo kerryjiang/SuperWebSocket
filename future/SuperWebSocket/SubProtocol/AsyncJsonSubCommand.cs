@@ -43,7 +43,7 @@ namespace SuperWebSocket.SubProtocol
 
         protected void SendJsonResponse(TWebSocketSession session, string token, object content)
         {
-            session.SendResponse(GetJsonResponse(this.NameField, token, content));
+            session.SendResponse(GetJsonResponse(this.Name, token, content));
         }
 
         protected void SendJsonResponse(TWebSocketSession session, string name, string token, object content)

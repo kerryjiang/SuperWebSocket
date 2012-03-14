@@ -83,6 +83,7 @@
     <Compile Include="Config\SubProtocolConfig.cs" />
     <Compile Include="Config\SubProtocolConfigCollection.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="JsonWebSocketSession.cs" />
     <Compile Include="Protocol\CloseStatusCodeHybi10.cs" />
     <Compile Include="Protocol\CloseStatusCodeRfc6455.cs" />
     <Compile Include="Protocol\DraftHybi00Processor.cs" />

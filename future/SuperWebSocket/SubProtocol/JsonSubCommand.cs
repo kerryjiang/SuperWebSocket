@@ -18,7 +18,7 @@ namespace SuperWebSocket.SubProtocol
     {
         protected string GetJsonResponse(TWebSocketSession session, object content)
         {
-            return GetJsonResponse(session, NameField, content);
+            return GetJsonResponse(session, Name, content);
         }
 
         protected string GetJsonResponse(TWebSocketSession session, string name, object content)

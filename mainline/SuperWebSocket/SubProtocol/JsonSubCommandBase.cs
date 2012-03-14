@@ -10,13 +10,6 @@ namespace SuperWebSocket.SubProtocol
     public abstract class JsonSubCommandBase<TWebSocketSession, TJsonCommandInfo> : SubCommandBase<TWebSocketSession>
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
-        private string m_Name;
-
-        protected string NameField
-        {
-            get { return m_Name; }
-        }
-
         private const string m_QueryTemplateA = "{0} {1} {2}";
         private const string m_QueryTemplateB = "{0} {1}";
 
@@ -26,8 +19,6 @@ namespace SuperWebSocket.SubProtocol
 
         public JsonSubCommandBase()
         {
-            m_Name = Name;
-
             m_CommandInfoType = typeof(TJsonCommandInfo);
 
             if (m_CommandInfoType.IsPrimitive)
@@ -75,7 +66,7 @@ namespace SuperWebSocket.SubProtocol
 
         protected string GetJsonResponse(string token, object content)
         {
-            return GetJsonResponse(m_Name, token, content);
+            return GetJsonResponse(Name, token, content);
         }
 
         protected string GetJsonResponse(string name, string token, object content)

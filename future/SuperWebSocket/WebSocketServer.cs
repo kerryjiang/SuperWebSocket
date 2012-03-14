@@ -580,7 +580,7 @@ namespace SuperWebSocket
             if (session.InClosing)
             {
                 //Only handle closing handshake if the session is in closing
-                if (requestInfo.Key != OpCode.Close.ToString())
+                if (requestInfo.Key != OpCode.CloseTag)
                     return;
             }
 

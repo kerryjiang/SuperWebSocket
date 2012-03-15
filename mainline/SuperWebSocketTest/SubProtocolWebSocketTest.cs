@@ -33,7 +33,7 @@ namespace SuperWebSocketTest
 
             m_Encoding = new UTF8Encoding();
 
-            m_WebSocketServer = new WebSocketServer(new BasicSubProtocol("Basic", new List<Assembly>{ this.GetType().Assembly } ));
+            m_WebSocketServer = new WebSocketServer(new BasicSubProtocol());
             m_WebSocketServer.Setup(new RootConfig(), new ServerConfig
             {
                 Port = 2012,

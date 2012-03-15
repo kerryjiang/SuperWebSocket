@@ -30,8 +30,7 @@ namespace SuperWebSocketTest
         [TestFixtureSetUp]
         public virtual void Setup()
         {
-            LogUtil.Setup(new ConsoleLogger());			
-
+            LogUtil.Setup(new ConsoleLogger());
             m_WebSocketServer = new WebSocketServer();
             m_WebSocketServer.Setup(new RootConfig(), new ServerConfig
                 {

@@ -21,7 +21,7 @@ namespace SuperWebSocket.SubProtocol
         /// Initializes a new instance of the <see cref="BasicSubProtocol"/> class.
         /// </summary>
         public BasicSubProtocol()
-            : base()
+            : base(Assembly.GetCallingAssembly())
         {
 
         }
@@ -31,7 +31,7 @@ namespace SuperWebSocket.SubProtocol
         /// </summary>
         /// <param name="name">The sub protocol name.</param>
         public BasicSubProtocol(string name)
-            : base(name)
+            : base(name, Assembly.GetCallingAssembly())
         {
 
         }

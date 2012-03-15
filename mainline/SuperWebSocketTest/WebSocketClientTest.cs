@@ -65,7 +65,7 @@ namespace SuperWebSocketTest
         {
             LogUtil.Setup(new ConsoleLogger());
 
-            WebSocketServer = new WebSocketServer(new BasicSubProtocol("Basic", new List<Assembly> { this.GetType().Assembly }));
+            WebSocketServer = new WebSocketServer(new BasicSubProtocol());
             WebSocketServer.NewDataReceived += new SessionEventHandler<WebSocketSession, byte[]>(WebSocketServer_NewDataReceived);
             WebSocketServer.Setup(new RootConfig(), new ServerConfig
             {

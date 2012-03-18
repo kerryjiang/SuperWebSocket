@@ -38,6 +38,9 @@ namespace SuperWebSocket.Protocol
 
         public IWebSocketFragment Filter(IAppSession<IWebSocketFragment> session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
         {
+            if (m_Frame == null)
+                m_Frame = new WebSocketDataFrame(new ArraySegmentList());
+
             this.AddArraySegment(m_Frame.InnerData, readBuffer, offset, length, isReusableBuffer);
 
             IDataFramePartReader nextPartReader;

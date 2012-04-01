@@ -10,12 +10,11 @@ namespace SuperWebSocketTest.Command
 {
     public class ECHO : SubCommandBase
     {
-        public override void ExecuteCommand(WebSocketSession session, StringCommandInfo commandInfo)
+        public override void ExecuteCommand(WebSocketSession session, SubRequestInfo requestInfo)
         {
-            foreach(var p in commandInfo.Parameters)
-            {
-                session.SendResponse(p);
-            }
+            var paramsArray = requestInfo.Data.Split(' ');
+            for (var i = 0; i < paramsArray.Length; i++)
+                session.SendResponse(paramsArray[i]);
         }
     }
 }

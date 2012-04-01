@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SuperWebSocket
 {
-    public class WebSocketConstant
+    class WebSocketConstant
     {
         public const string Host = "Host";
         public const string Connection = "Connection";

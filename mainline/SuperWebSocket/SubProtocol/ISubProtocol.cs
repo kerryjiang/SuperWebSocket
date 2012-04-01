@@ -32,7 +32,7 @@ namespace SuperWebSocket.SubProtocol
         /// <summary>
         /// Gets the sub command parser.
         /// </summary>
-        ICommandParser SubCommandParser { get; }
+        IRequestInfoParser<SubRequestInfo> SubCommandParser { get; }
 
         /// <summary>
         /// Tries get the command.

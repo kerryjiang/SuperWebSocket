@@ -82,7 +82,7 @@ namespace SuperWebSocket.SubProtocol
         /// <param name="name">The sub protocol name.</param>
         /// <param name="commandAssemblies">The command assemblies.</param>
         /// <param name="commandParser">The command parser.</param>
-        public BasicSubProtocol(string name, IEnumerable<Assembly> commandAssemblies, ICommandParser commandParser)
+        public BasicSubProtocol(string name, IEnumerable<Assembly> commandAssemblies, IRequestInfoParser<SubRequestInfo> commandParser)
             : base(name, commandAssemblies, commandParser)
         {
             
@@ -177,7 +177,7 @@ namespace SuperWebSocket.SubProtocol
         /// <param name="name">The name.</param>
         /// <param name="commandAssemblies">The command assemblies.</param>
         /// <param name="commandParser">The command parser.</param>
-        public BasicSubProtocol(string name, IEnumerable<Assembly> commandAssemblies, ICommandParser commandParser)
+        public BasicSubProtocol(string name, IEnumerable<Assembly> commandAssemblies, IRequestInfoParser<SubRequestInfo> commandParser)
             : base(name)
         {
             //The items in commandAssemblies may be null, so filter here

@@ -7,6 +7,11 @@ using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket.SubProtocol
 {
+    /// <summary>
+    /// Json SubCommand base
+    /// </summary>
+    /// <typeparam name="TWebSocketSession">The type of the web socket session.</typeparam>
+    /// <typeparam name="TJsonCommandInfo">The type of the json command info.</typeparam>
     public abstract class JsonSubCommandBase<TWebSocketSession, TJsonCommandInfo> : SubCommandBase<TWebSocketSession>
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
@@ -17,6 +22,9 @@ namespace SuperWebSocket.SubProtocol
 
         private Type m_CommandInfoType;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JsonSubCommandBase&lt;TWebSocketSession, TJsonCommandInfo&gt;"/> class.
+        /// </summary>
         public JsonSubCommandBase()
         {
             m_CommandInfoType = typeof(TJsonCommandInfo);
@@ -25,50 +33,67 @@ namespace SuperWebSocket.SubProtocol
                 m_IsPrimitiveType = true;
         }
 
-        public override void ExecuteCommand(TWebSocketSession session, StringRequestInfo commandInfo)
+        /// <summary>
+        /// Executes the command.
+        /// </summary>
+        /// <param name="session">The session.</param>
+        /// <param name="requestInfo">The request info.</param>
+        public override void ExecuteCommand(TWebSocketSession session, SubRequestInfo requestInfo)
         {
-            if (string.IsNullOrEmpty(commandInfo.Data))
+            if (string.IsNullOrEmpty(requestInfo.Data))
             {
                 ExecuteJsonCommand(session, default(TJsonCommandInfo));
                 return;
             }
 
-            var data = commandInfo.Data;
-
-            if (data[0] != '{')
-            {
-                int pos = data.IndexOf(' ');
-
-                session.CurrentToken = data.Substring(0, pos);
-                data = data.Substring(pos + 1);
-            }
-            else
-            {
-                session.CurrentToken = string.Empty;
-            }
-
             TJsonCommandInfo jsonCommandInfo;
 
+            if (!string.IsNullOrEmpty(requestInfo.Token))
+                session.CurrentToken = requestInfo.Token;
+
             if (!m_IsPrimitiveType)
-                jsonCommandInfo = JsonConvert.DeserializeObject<TJsonCommandInfo>(data);
+                jsonCommandInfo = JsonConvert.DeserializeObject<TJsonCommandInfo>(requestInfo.Data);
             else
-                jsonCommandInfo = (TJsonCommandInfo)Convert.ChangeType(data, m_CommandInfoType);
+                jsonCommandInfo = (TJsonCommandInfo)Convert.ChangeType(requestInfo.Data, m_CommandInfoType);
 
             ExecuteJsonCommand(session, jsonCommandInfo);
         }
 
+        /// <summary>
+        /// Executes the json command.
+        /// </summary>
+        /// <param name="session">The session.</param>
+        /// <param name="commandInfo">The command info.</param>
         protected abstract void ExecuteJsonCommand(TWebSocketSession session, TJsonCommandInfo commandInfo);
 
+        /// <summary>
+        /// Serializes the object.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns></returns>
         protected string SerializeObject(object value)
         {
             return JsonConvert.SerializeObject(value);
         }
 
+        /// <summary>
+        /// Gets the json response.
+        /// </summary>
+        /// <param name="token">The token.</param>
+        /// <param name="content">The content.</param>
+        /// <returns></returns>
         protected string GetJsonResponse(string token, object content)
         {
             return GetJsonResponse(Name, token, content);
         }
 
+        /// <summary>
+        /// Gets the json response.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="token">The token.</param>
+        /// <param name="content">The content.</param>
+        /// <returns></returns>
         protected string GetJsonResponse(string name, string token, object content)
         {
             string strOutput;

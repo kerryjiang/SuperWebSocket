@@ -291,7 +291,7 @@ namespace SuperWebSocket
 
         public IProtocolProcessor ProtocolProcessor { get; set; }
 
-        internal protected virtual void HandleUnknownCommand(StringCommandInfo commandInfo)
+        internal protected virtual void HandleUnknownCommand(SubRequestInfo requestInfo)
         {
 
         }

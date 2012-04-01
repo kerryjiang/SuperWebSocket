@@ -10,7 +10,7 @@ using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket.Protocol
 {
-    public class WebSocketHeaderRequestFilter : WebSocketRequestFilterBase
+    class WebSocketHeaderRequestFilter : WebSocketRequestFilterBase
     {
         private static readonly byte[] m_HeaderTerminator = Encoding.UTF8.GetBytes("\r\n\r\n");
 

@@ -21,31 +21,63 @@ using SuperWebSocket.SubProtocol;
 
 namespace SuperWebSocket
 {
+    /// <summary>
+    /// WebSocket server interface
+    /// </summary>
     public interface IWebSocketServer : IAppServer
     {
+        /// <summary>
+        /// Gets the web socket protocol processor.
+        /// </summary>
         IProtocolProcessor WebSocketProtocolProcessor { get; }
     }
 
+    /// <summary>
+    /// Session related event handler
+    /// </summary>
+    /// <typeparam name="TWebSocketSession">The type of the web socket session.</typeparam>
+    /// <param name="session">The session.</param>
     public delegate void SessionEventHandler<TWebSocketSession>(TWebSocketSession session)
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new();
 
+    /// <summary>
+    /// Session related event handler
+    /// </summary>
+    /// <typeparam name="TWebSocketSession">The type of the web socket session.</typeparam>
+    /// <typeparam name="TEventArgs">The type of the event args.</typeparam>
+    /// <param name="session">The session.</param>
+    /// <param name="e">The instance containing the event data.</param>
     public delegate void SessionEventHandler<TWebSocketSession, TEventArgs>(TWebSocketSession session, TEventArgs e)
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new();
 
+    /// <summary>
+    /// WebSocket AppServer
+    /// </summary>
     public class WebSocketServer : WebSocketServer<WebSocketSession>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WebSocketServer"/> class.
+        /// </summary>
+        /// <param name="subProtocols">The sub protocols.</param>
         public WebSocketServer(IEnumerable<ISubProtocol<WebSocketSession>> subProtocols)
             : base(subProtocols)
         {
 
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WebSocketServer"/> class.
+        /// </summary>
+        /// <param name="subProtocol">The sub protocol.</param>
         public WebSocketServer(ISubProtocol<WebSocketSession> subProtocol)
             : base(subProtocol)
         {
 
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WebSocketServer"/> class.
+        /// </summary>
         public WebSocketServer()
             : base(new List<ISubProtocol<WebSocketSession>>())
         {
@@ -53,9 +85,17 @@ namespace SuperWebSocket
         }
     }
 
+    /// <summary>
+    /// WebSocket AppServer
+    /// </summary>
+    /// <typeparam name="TWebSocketSession">The type of the web socket session.</typeparam>
     public abstract class WebSocketServer<TWebSocketSession> : AppServer<TWebSocketSession, IWebSocketFragment>, IWebSocketServer
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WebSocketServer&lt;TWebSocketSession&gt;"/> class.
+        /// </summary>
+        /// <param name="subProtocols">The sub protocols.</param>
         public WebSocketServer(IEnumerable<ISubProtocol<TWebSocketSession>> subProtocols)
             : this()
         {
@@ -71,12 +111,19 @@ namespace SuperWebSocket
             m_SubProtocolConfigured = true;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WebSocketServer&lt;TWebSocketSession&gt;"/> class.
+        /// </summary>
+        /// <param name="subProtocol">The sub protocol.</param>
         public WebSocketServer(ISubProtocol<TWebSocketSession> subProtocol)
             : this(new List<ISubProtocol<TWebSocketSession>> { subProtocol })
         {
             
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WebSocketServer&lt;TWebSocketSession&gt;"/> class.
+        /// </summary>
         public WebSocketServer()
             : base(new WebSocketProtocol())
         {
@@ -140,6 +187,9 @@ namespace SuperWebSocket
             get { return m_WebSocketProtocolProcessor; }
         }
 
+        /// <summary>
+        /// Gets the request filter factory.
+        /// </summary>
         public new WebSocketProtocol RequestFilterFactory
         {
             get
@@ -262,6 +312,14 @@ namespace SuperWebSocket
             return true;
         }
 
+        /// <summary>
+        /// Setups with the specified root config and other parameters.
+        /// </summary>
+        /// <param name="rootConfig">The root config.</param>
+        /// <param name="config">The config.</param>
+        /// <param name="socketServerFactory">The socket server factory.</param>
+        /// <param name="protocol">The protocol.</param>
+        /// <returns></returns>
         public override bool Setup(IRootConfig rootConfig, IServerConfig config, ISocketServerFactory socketServerFactory, IRequestFilterFactory<IWebSocketFragment> protocol)
         {
             if (!base.Setup(rootConfig, config, socketServerFactory, protocol))
@@ -318,6 +376,9 @@ namespace SuperWebSocket
             thisProcessor.NextProcessor = new MultipleProtocolSwitchProcessor(availableVersions.ToArray());
         }
 
+        /// <summary>
+        /// Called when [startup].
+        /// </summary>
         protected override void OnStartup()
         {
             m_HandshakePendingQueueCheckingTimer = new Timer(HandshakePendingQueueCheckingCallback, null, m_HandshakePendingQueueCheckingInterval * 1000, m_HandshakePendingQueueCheckingInterval * 1000);
@@ -391,6 +452,11 @@ namespace SuperWebSocket
             m_CloseHandshakePendingQueue.Enqueue((TWebSocketSession)appSession);
         }
 
+        /// <summary>
+        /// Creates the app session.
+        /// </summary>
+        /// <param name="socketSession">The socket session.</param>
+        /// <returns></returns>
         public override IAppSession CreateAppSession(ISocketSession socketSession)
         {
             var session = base.CreateAppSession(socketSession) as TWebSocketSession;
@@ -403,12 +469,19 @@ namespace SuperWebSocket
 
         private SessionEventHandler<TWebSocketSession> m_NewSessionConnected;
 
+        /// <summary>
+        /// Occurs when [new session connected].
+        /// </summary>
         public event SessionEventHandler<TWebSocketSession> NewSessionConnected
         {
             add { m_NewSessionConnected += value; }
             remove { m_NewSessionConnected -= value; }
         }
 
+        /// <summary>
+        /// Called when [new session connected].
+        /// </summary>
+        /// <param name="session">The session.</param>
         protected internal virtual void OnNewSessionConnected(TWebSocketSession session)
         {
             if (m_NewSessionConnected != null)
@@ -417,6 +490,9 @@ namespace SuperWebSocket
 
         private SessionEventHandler<TWebSocketSession, CloseReason> m_SessionClosed;
 
+        /// <summary>
+        /// Occurs when [session closed].
+        /// </summary>
         public event SessionEventHandler<TWebSocketSession, CloseReason> SessionClosed
         {
             add { m_SessionClosed += value; }
@@ -425,6 +501,9 @@ namespace SuperWebSocket
 
         private SessionEventHandler<TWebSocketSession, string> m_NewMessageReceived;
 
+        /// <summary>
+        /// Occurs when [new message received].
+        /// </summary>
         public event SessionEventHandler<TWebSocketSession, string> NewMessageReceived
         {
             add
@@ -452,7 +531,7 @@ namespace SuperWebSocket
                     return;
                 }
 
-                ExecuteSubCommand(session, session.SubProtocol.SubCommandParser.ParseRequestInfo(message));
+                ExecuteSubCommand(session, session.SubProtocol.SubRequestParser.ParseRequestInfo(message));
             }
             else
             {
@@ -462,6 +541,9 @@ namespace SuperWebSocket
 
         private SessionEventHandler<TWebSocketSession, byte[]> m_NewDataReceived;
 
+        /// <summary>
+        /// Occurs when [new data received].
+        /// </summary>
         public event SessionEventHandler<TWebSocketSession, byte[]> NewDataReceived
         {
             add
@@ -544,6 +626,11 @@ namespace SuperWebSocket
             session.HttpVersion = metaInfo[2];
         }
 
+        /// <summary>
+        /// Setups the commands.
+        /// </summary>
+        /// <param name="commandDict">The command dict.</param>
+        /// <returns></returns>
         protected override bool SetupCommands(Dictionary<string, ICommand<TWebSocketSession, IWebSocketFragment>> commandDict)
         {
             var commands = new List<ICommand<TWebSocketSession, IWebSocketFragment>>
@@ -560,21 +647,17 @@ namespace SuperWebSocket
 
             commands.ForEach(c => commandDict.Add(c.Name, c));
 
-            try
-            {
-                //Still require it because we need to ensure commandfilters dictionary is not null
-                base.SetupCommands(new Dictionary<string, ICommand<TWebSocketSession, IWebSocketFragment>>());
-            }
-            catch
-            {
-            }
-
             if (!SetupSubProtocols(Config))
                 return false;
 
             return true;
         }
 
+        /// <summary>
+        /// Executes the command.
+        /// </summary>
+        /// <param name="session">The session.</param>
+        /// <param name="requestInfo">The request info.</param>
         protected override void ExecuteCommand(TWebSocketSession session, IWebSocketFragment requestInfo)
         {
             if (session.InClosing)
@@ -587,27 +670,32 @@ namespace SuperWebSocket
             base.ExecuteCommand(session, requestInfo);
         }
 
-        private void ExecuteSubCommand(TWebSocketSession session, StringRequestInfo subCommandInfo)
+        private void ExecuteSubCommand(TWebSocketSession session, SubRequestInfo requestInfo)
         {
             ISubCommand<TWebSocketSession> subCommand;
 
-            if (session.SubProtocol.TryGetCommand(subCommandInfo.Key, out subCommand))
+            if (session.SubProtocol.TryGetCommand(requestInfo.Key, out subCommand))
             {
-                session.CurrentCommand = subCommandInfo.Key;
-                subCommand.ExecuteCommand(session, subCommandInfo);
-                session.PrevCommand = subCommandInfo.Key;
+                session.CurrentCommand = requestInfo.Key;
+                subCommand.ExecuteCommand(session, requestInfo);
+                session.PrevCommand = requestInfo.Key;
 
                 if (Config.LogCommand && Logger.IsInfoEnabled)
-                    Logger.Info(session, string.Format("Command - {0} - {1}", session.SessionID, subCommandInfo.Key));
+                    Logger.Info(session, string.Format("Command - {0} - {1}", session.SessionID, requestInfo.Key));
             }
             else
             {
-                session.HandleUnknownCommand(subCommandInfo);
+                session.HandleUnknownCommand(requestInfo);
             }
 
             session.LastActiveTime = DateTime.Now;
         }
 
+        /// <summary>
+        /// Called when [app session closed].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="SuperSocket.SocketBase.AppSessionClosedEventArgs&lt;TWebSocketSession&gt;"/> instance containing the event data.</param>
         protected override void OnAppSessionClosed(object sender, AppSessionClosedEventArgs<TWebSocketSession> e)
         {
             if (m_SessionClosed != null)

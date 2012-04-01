@@ -85,7 +85,7 @@ namespace SuperWebSocket.SubProtocol
         /// <param name="name">The name.</param>
         /// <param name="commandAssemblies">The command assemblies.</param>
         /// <param name="requestInfoParser">The request info parser.</param>
-        public BasicSubProtocol(string name, IEnumerable<Assembly> commandAssemblies, IRequestInfoParser<StringRequestInfo> requestInfoParser)
+        public BasicSubProtocol(string name, IEnumerable<Assembly> commandAssemblies, IRequestInfoParser<SubRequestInfo> requestInfoParser)
             : base(name, commandAssemblies, requestInfoParser)
         {
 
@@ -98,12 +98,18 @@ namespace SuperWebSocket.SubProtocol
     public class BasicSubProtocol<TWebSocketSession> : SubProtocolBase<TWebSocketSession>
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
+        /// <summary>
+        /// Default basic sub protocol name
+        /// </summary>
         public const string DefaultName = "Basic";
 
         private List<Assembly> m_CommandAssemblies = new List<Assembly>();
 
         private Dictionary<string, ISubCommand<TWebSocketSession>> m_CommandDict;
 
+        /// <summary>
+        /// Gets the default basic protocol instance.
+        /// </summary>
         public static BasicSubProtocol<TWebSocketSession> DefaultInstance { get; private set; }
 
         private ILog m_Logger;
@@ -179,13 +185,13 @@ namespace SuperWebSocket.SubProtocol
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="commandAssemblies">The command assemblies.</param>
-        /// <param name="commandParser">The command parser.</param>
-        public BasicSubProtocol(string name, IEnumerable<Assembly> commandAssemblies, IRequestInfoParser<StringRequestInfo> requestInfoParser)
+        /// <param name="requestInfoParser">The request info parser.</param>
+        public BasicSubProtocol(string name, IEnumerable<Assembly> commandAssemblies, IRequestInfoParser<SubRequestInfo> requestInfoParser)
             : base(name)
         {
             //The items in commandAssemblies may be null, so filter here
             m_CommandAssemblies.AddRange(commandAssemblies.Where(a => a != null));
-            SubCommandParser = requestInfoParser;
+            SubRequestParser = requestInfoParser;
         }
 
         #region ISubProtocol Members
@@ -216,6 +222,13 @@ namespace SuperWebSocket.SubProtocol
             subCommands.ForEach(c => m_CommandDict.Add(c.Name, c));
         }
 
+        /// <summary>
+        /// Initializes with the specified config.
+        /// </summary>
+        /// <param name="config">The config.</param>
+        /// <param name="protocolConfig">The protocol config.</param>
+        /// <param name="logger">The logger.</param>
+        /// <returns></returns>
         public override bool Initialize(IServerConfig config, SubProtocolConfig protocolConfig, ILog logger)
         {
             m_Logger = logger;

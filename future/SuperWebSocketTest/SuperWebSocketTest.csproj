@@ -58,6 +58,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SuperWebSocket\WebSocketConst.cs">
+      <Link>WebSocketConst.cs</Link>
+    </Compile>
     <Compile Include="Command\ECHO.cs" />
     <Compile Include="Command\QUIT.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

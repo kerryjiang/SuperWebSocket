@@ -7,9 +7,16 @@ using SuperWebSocket.Protocol;
 
 namespace SuperWebSocket.Command
 {
-    public class Continuation<TWebSocketSession> : FragmentCommand<TWebSocketSession>
+    /// <summary>
+    /// The command handling continuation fragment
+    /// </summary>
+    /// <typeparam name="TWebSocketSession">The type of the web socket session.</typeparam>
+    class Continuation<TWebSocketSession> : FragmentCommand<TWebSocketSession>
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
+        /// <summary>
+        /// Gets the name.
+        /// </summary>
         public override string Name
         {
             get
@@ -18,6 +25,11 @@ namespace SuperWebSocket.Command
             }
         }
 
+        /// <summary>
+        /// Executes the command.
+        /// </summary>
+        /// <param name="session">The session.</param>
+        /// <param name="requestInfo">The request info.</param>
         public override void ExecuteCommand(TWebSocketSession session, IWebSocketFragment requestInfo)
         {
             var frame = requestInfo as WebSocketDataFrame;

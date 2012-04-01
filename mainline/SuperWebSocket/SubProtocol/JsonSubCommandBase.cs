@@ -25,34 +25,23 @@ namespace SuperWebSocket.SubProtocol
                 m_IsPrimitiveType = true;
         }
 
-        public override void ExecuteCommand(TWebSocketSession session, StringCommandInfo commandInfo)
+        public override void ExecuteCommand(TWebSocketSession session, SubRequestInfo requestInfo)
         {
-            if (string.IsNullOrEmpty(commandInfo.Data))
+            if (string.IsNullOrEmpty(requestInfo.Data))
             {
                 ExecuteJsonCommand(session, default(TJsonCommandInfo));
                 return;
             }
 
-            var data = commandInfo.Data;
-
-            if (data[0] != '{')
-            {
-                int pos = data.IndexOf(' ');
-
-                session.CurrentToken = data.Substring(0, pos);
-                data = data.Substring(pos + 1);
-            }
-            else
-            {
-                session.CurrentToken = string.Empty;
-            }
-
             TJsonCommandInfo jsonCommandInfo;
 
+            if (!string.IsNullOrEmpty(requestInfo.Token))
+                session.CurrentToken = requestInfo.Token;
+
             if (!m_IsPrimitiveType)
-                jsonCommandInfo = JsonConvert.DeserializeObject<TJsonCommandInfo>(data);
+                jsonCommandInfo = JsonConvert.DeserializeObject<TJsonCommandInfo>(requestInfo.Data);
             else
-                jsonCommandInfo = (TJsonCommandInfo)Convert.ChangeType(data, m_CommandInfoType);
+                jsonCommandInfo = (TJsonCommandInfo)Convert.ChangeType(requestInfo.Data, m_CommandInfoType);
 
             ExecuteJsonCommand(session, jsonCommandInfo);
         }

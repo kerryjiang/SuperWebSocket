@@ -11,6 +11,6 @@ namespace SuperWebSocket.SubProtocol
     {
         string Name { get; }
 
-        void ExecuteCommand(TWebSocketSession session, StringCommandInfo commandInfo);
+        void ExecuteCommand(TWebSocketSession session, SubRequestInfo requestInfo);
     }
 }

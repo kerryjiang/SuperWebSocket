@@ -430,7 +430,7 @@ namespace SuperWebSocket
                     return;
                 }
 
-                ExecuteSubCommand(session, session.SubProtocol.SubCommandParser.ParseCommand(message));
+                ExecuteSubCommand(session, session.SubProtocol.SubCommandParser.ParseRequestInfo(message));
             }
             else
             {
@@ -556,22 +556,22 @@ namespace SuperWebSocket
             base.ExecuteCommand(session, commandInfo);
         }
 
-        private void ExecuteSubCommand(TWebSocketSession session, StringCommandInfo subCommandInfo)
+        private void ExecuteSubCommand(TWebSocketSession session, SubRequestInfo requestInfo)
         {
             ISubCommand<TWebSocketSession> subCommand;
 
-            if (session.SubProtocol.TryGetCommand(subCommandInfo.Key, out subCommand))
+            if (session.SubProtocol.TryGetCommand(requestInfo.Key, out subCommand))
             {
-                session.CurrentCommand = subCommandInfo.Key;
-                subCommand.ExecuteCommand(session, subCommandInfo);
-                session.PrevCommand = subCommandInfo.Key;
+                session.CurrentCommand = requestInfo.Key;
+                subCommand.ExecuteCommand(session, requestInfo);
+                session.PrevCommand = requestInfo.Key;
 
                 if (Config.LogCommand)
-                    Logger.LogError(session, string.Format("Command - {0} - {1}", session.IdentityKey, subCommandInfo.Key));
+                    Logger.LogError(session, string.Format("Command - {0} - {1}", session.IdentityKey, requestInfo.Key));
             }
             else
             {
-                session.HandleUnknownCommand(subCommandInfo);
+                session.HandleUnknownCommand(requestInfo);
             }
 
             session.LastActiveTime = DateTime.Now;

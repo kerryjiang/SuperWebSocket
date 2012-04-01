@@ -7,22 +7,42 @@ using SuperWebSocket.Protocol;
 
 namespace SuperWebSocket.Command
 {
-    public abstract class FragmentCommand<TWebSocketSession> : CommandBase<TWebSocketSession, IWebSocketFragment>
+    /// <summary>
+    /// FragmentCommand
+    /// </summary>
+    /// <typeparam name="TWebSocketSession">The type of the web socket session.</typeparam>
+    abstract class FragmentCommand<TWebSocketSession> : CommandBase<TWebSocketSession, IWebSocketFragment>
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
+        /// <summary>
+        /// Gets the UTF8 encoding which has been set ExceptionFallback.
+        /// </summary>
         protected Encoding Utf8Encoding { get; private set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FragmentCommand&lt;TWebSocketSession&gt;"/> class.
+        /// </summary>
         public FragmentCommand()
         {
             Utf8Encoding = Encoding.GetEncoding(65001, EncoderFallback.ExceptionFallback, DecoderFallback.ExceptionFallback);
         }
 
+        /// <summary>
+        /// Checks the frame.
+        /// </summary>
+        /// <param name="frame">The frame.</param>
+        /// <returns></returns>
         protected bool CheckFrame(WebSocketDataFrame frame)
         {
             //Check RSV
             return (frame.InnerData[0] & 0x70) == 0x00;
         }
 
+        /// <summary>
+        /// Checks the control frame.
+        /// </summary>
+        /// <param name="frame">The frame.</param>
+        /// <returns></returns>
         protected bool CheckControlFrame(WebSocketDataFrame frame)
         {
             if (!CheckFrame(frame))
@@ -38,6 +58,11 @@ namespace SuperWebSocket.Command
             return true;
         }
 
+        /// <summary>
+        /// Gets data from websocket frames.
+        /// </summary>
+        /// <param name="frames">The frames.</param>
+        /// <returns></returns>
         protected byte[] GetWebSocketData(IList<WebSocketDataFrame> frames)
         {
             int offset, length;
@@ -68,12 +93,22 @@ namespace SuperWebSocket.Command
             return resultBuffer;
         }
 
+        /// <summary>
+        /// Gets text string from websocket frames.
+        /// </summary>
+        /// <param name="frames">The frames.</param>
+        /// <returns></returns>
         protected string GetWebSocketText(IList<WebSocketDataFrame> frames)
         {
             var data = GetWebSocketData(frames);
             return Utf8Encoding.GetString(data);
         }
 
+        /// <summary>
+        /// Gets data from a websocket frame.
+        /// </summary>
+        /// <param name="frame">The frame.</param>
+        /// <returns></returns>
         protected byte[] GetWebSocketData(WebSocketDataFrame frame)
         {
             int offset = frame.InnerData.Count - (int)frame.ActualPayloadLength;
@@ -94,6 +129,11 @@ namespace SuperWebSocket.Command
             return data;
         }
 
+        /// <summary>
+        /// Gets text string from a websocket frame.
+        /// </summary>
+        /// <param name="frame">The frame.</param>
+        /// <returns></returns>
         protected string GetWebSocketText(WebSocketDataFrame frame)
         {
             int offset = frame.InnerData.Count - (int)frame.ActualPayloadLength;

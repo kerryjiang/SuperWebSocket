@@ -13,7 +13,7 @@ namespace SuperWebSocket.Samples.CommandAssembly
     /// </summary>
     public class QUIT : SubCommandBase
     {
-        public override void ExecuteCommand(WebSocketSession session, StringRequestInfo commandInfo)
+        public override void ExecuteCommand(WebSocketSession session, SubRequestInfo requestInfo)
         {
             session.Close();
         }

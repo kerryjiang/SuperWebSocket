@@ -7,13 +7,21 @@ using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket.SubProtocol
 {
-    public class BasicSubCommandParser : IRequestInfoParser<StringRequestInfo>
+    /// <summary>
+    /// Basic sub command parser
+    /// </summary>
+    public class BasicSubCommandParser : IRequestInfoParser<SubRequestInfo>
     {
         #region ISubProtocolCommandParser Members
 
-        public StringRequestInfo ParseRequestInfo(string command)
+        /// <summary>
+        /// Parses the request info.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        public SubRequestInfo ParseRequestInfo(string source)
         {
-            var cmd = command.Trim();
+            var cmd = source.Trim();
             int pos = cmd.IndexOf(' ');
             string name;
             string param;
@@ -29,18 +37,16 @@ namespace SuperWebSocket.SubProtocol
                 param = string.Empty;
             }
 
-            string[] paramArray;
+            pos = name.IndexOf('-');
 
-            if (!string.IsNullOrEmpty(param))
+            string token = string.Empty;
+
+            if (pos > 0)
             {
-                paramArray = param.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-            }
-            else
-            {
-                paramArray = new string[0];
+                token = name.Substring(pos + 1);
             }
 
-            return new StringRequestInfo(name, param, paramArray);
+            return new SubRequestInfo(name, token, param);
         }
 
         #endregion

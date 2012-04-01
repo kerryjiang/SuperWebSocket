@@ -36,13 +36,14 @@ namespace SuperWebSocket.SubProtocol
         /// <returns></returns>
         public abstract bool Initialize(IServerConfig config, SubProtocolConfig protocolConfig, ILogger logger);
 
+
         /// <summary>
         /// Gets or sets the sub command parser.
         /// </summary>
         /// <value>
         /// The sub command parser.
         /// </value>
-        public ICommandParser SubCommandParser { get; protected set; }
+        public IRequestInfoParser<SubRequestInfo> SubCommandParser { get; protected set; }
 
         /// <summary>
         /// Tries get the command.

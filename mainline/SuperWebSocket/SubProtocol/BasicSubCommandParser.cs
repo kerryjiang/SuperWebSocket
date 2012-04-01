@@ -6,13 +6,13 @@ using SuperSocket.SocketBase.Command;
 
 namespace SuperWebSocket.SubProtocol
 {
-    public class BasicSubCommandParser : ICommandParser
+    public class BasicSubCommandParser : IRequestInfoParser<SubRequestInfo>
     {
         #region ISubProtocolCommandParser Members
 
-        public StringCommandInfo ParseCommand(string command)
+        public SubRequestInfo ParseRequestInfo(string source)
         {
-            var cmd = command.Trim();
+            var cmd = source.Trim();
             int pos = cmd.IndexOf(' ');
             string name;
             string param;
@@ -28,18 +28,16 @@ namespace SuperWebSocket.SubProtocol
                 param = string.Empty;
             }
 
-            string[] paramArray;
+            pos = name.IndexOf('-');
 
-            if (!string.IsNullOrEmpty(param))
+            string token = string.Empty;
+
+            if (pos > 0)
             {
-                paramArray = param.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-            }
-            else
-            {
-                paramArray = new string[0];
+                token = name.Substring(pos + 1);
             }
 
-            return new StringCommandInfo(name, param, paramArray);
+            return new SubRequestInfo(name, token, param);
         }
 
         #endregion

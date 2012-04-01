@@ -21,7 +21,7 @@ namespace SuperWebSocket.SubProtocol
             get { return this.GetType().Name; }
         }
 
-        public abstract void ExecuteCommand(TWebSocketSession session, StringCommandInfo commandInfo);
+        public abstract void ExecuteCommand(TWebSocketSession session, SubRequestInfo requestInfo);
 
         #endregion
     }

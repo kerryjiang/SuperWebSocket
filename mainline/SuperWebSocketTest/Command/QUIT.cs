@@ -10,7 +10,7 @@ namespace SuperWebSocketTest.Command
 {
     public class QUIT : SubCommandBase
     {
-        public override void ExecuteCommand(WebSocketSession session, StringCommandInfo commandInfo)
+        public override void ExecuteCommand(WebSocketSession session, SubRequestInfo requestInfo)
         {
             session.Close();
         }

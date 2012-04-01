@@ -20,6 +20,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Debug\SuperWebSocket.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -28,6 +30,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Release\SuperWebSocket.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -108,6 +112,7 @@
     <Compile Include="SubProtocol\JsonSubCommandBase.cs" />
     <Compile Include="SubProtocol\SubCommandBase.cs" />
     <Compile Include="SubProtocol\SubProtocolBase.cs" />
+    <Compile Include="SubProtocol\SubRequestInfo.cs" />
     <Compile Include="WebSocketConst.cs" />
     <Compile Include="WebSocketProtocol.cs" />
     <Compile Include="WebSocketServer.cs" />

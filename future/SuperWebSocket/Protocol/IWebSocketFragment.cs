@@ -8,6 +8,9 @@ using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket.Protocol
 {
+    /// <summary>
+    /// WebSocketFragment request info
+    /// </summary>
     public interface IWebSocketFragment : IRequestInfo
     {
 

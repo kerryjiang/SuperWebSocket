@@ -9,8 +9,14 @@ using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket.Protocol
 {
+    /// <summary>
+    /// WebSocketRequestFilter basis
+    /// </summary>
     public abstract class WebSocketRequestFilterBase : RequestFilterBase<IWebSocketFragment>
     {
+        /// <summary>
+        /// The length of Sec3Key
+        /// </summary>
         protected const int SecKey3Len = 8;
 
         static WebSocketRequestFilterBase()
@@ -18,18 +24,31 @@ namespace SuperWebSocket.Protocol
             HandshakeRequestInfo = new HandshakeRequest();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WebSocketRequestFilterBase"/> class.
+        /// </summary>
         public WebSocketRequestFilterBase()
             : base()
         {
 
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WebSocketRequestFilterBase"/> class.
+        /// </summary>
+        /// <param name="previousRequestFilter">The previous request filter.</param>
         public WebSocketRequestFilterBase(WebSocketRequestFilterBase previousRequestFilter)
             : base(previousRequestFilter)
         {
 
         }
 
+        /// <summary>
+        /// Handshakes the specified protocol processor.
+        /// </summary>
+        /// <param name="protocolProcessor">The protocol processor.</param>
+        /// <param name="session">The session.</param>
+        /// <returns></returns>
         protected bool Handshake(IProtocolProcessor protocolProcessor, IWebSocketSession session)
         {
             IRequestFilter<IWebSocketFragment> dataFrameReader;
@@ -52,6 +71,9 @@ namespace SuperWebSocket.Protocol
             return true;
         }
 
+        /// <summary>
+        /// Gets the handshake request info.
+        /// </summary>
         protected static IWebSocketFragment HandshakeRequestInfo { get; private set; }
     }
 }

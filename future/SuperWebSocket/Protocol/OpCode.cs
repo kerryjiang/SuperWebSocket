@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SuperWebSocket.Protocol
 {
-    public class OpCode
+    class OpCode
     {
         public const sbyte Plain = -2; // defined by SuperWebSocket, to support hybi-00
         public const string PlainTag = "-2";

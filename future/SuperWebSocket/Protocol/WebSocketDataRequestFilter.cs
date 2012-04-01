@@ -9,7 +9,7 @@ using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket.Protocol
 {
-    public class WebSocketDataRequestFilter : WebSocketRequestFilterBase
+    class WebSocketDataRequestFilter : WebSocketRequestFilterBase
     {
         private byte? m_Type;
         private int m_TempLength;

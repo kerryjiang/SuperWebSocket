@@ -6,7 +6,7 @@ using SuperSocket.Common;
 
 namespace SuperWebSocket.Protocol
 {
-    public class WebSocketDataFrame : IWebSocketFragment
+    class WebSocketDataFrame : IWebSocketFragment
     {
         private ArraySegmentList m_InnerData;
 

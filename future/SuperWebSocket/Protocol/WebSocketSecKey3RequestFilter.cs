@@ -8,7 +8,7 @@ using SuperSocket.SocketBase.Command;
 
 namespace SuperWebSocket.Protocol
 {
-    public class WebSocketSecKey3RequestFilter : WebSocketRequestFilterBase
+    class WebSocketSecKey3RequestFilter : WebSocketRequestFilterBase
     {
         public WebSocketSecKey3RequestFilter(WebSocketRequestFilterBase prevFilter)
             : base(prevFilter)

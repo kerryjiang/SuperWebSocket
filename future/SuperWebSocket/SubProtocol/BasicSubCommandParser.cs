@@ -44,6 +44,7 @@ namespace SuperWebSocket.SubProtocol
             if (pos > 0)
             {
                 token = name.Substring(pos + 1);
+                name = name.Substring(0, pos);
             }
 
             return new SubRequestInfo(name, token, param);

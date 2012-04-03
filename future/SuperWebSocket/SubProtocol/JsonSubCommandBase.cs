@@ -15,7 +15,7 @@ namespace SuperWebSocket.SubProtocol
     public abstract class JsonSubCommandBase<TWebSocketSession, TJsonCommandInfo> : SubCommandBase<TWebSocketSession>
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
-        private const string m_QueryTemplateA = "{0} {1} {2}";
+        private const string m_QueryTemplateA = "{0}-{1} {2}";
         private const string m_QueryTemplateB = "{0} {1}";
 
         private bool m_IsPrimitiveType = false;

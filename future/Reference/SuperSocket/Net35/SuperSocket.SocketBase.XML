@@ -462,7 +462,7 @@
             	<c>true</c> if this instance is running; otherwise, <c>false</c>.
             </value>
         </member>
-        <member name="E:SuperSocket.SocketBase.AppServerBase`2.CommandHandler">
+        <member name="E:SuperSocket.SocketBase.AppServerBase`2.RequestHandler">
             <summary>
             Occurs when a full request item received.
             </summary>
@@ -1041,15 +1041,6 @@
             </summary>
             <param name="session">The session.</param>
             <param name="command">The command.</param>
-        </member>
-        <member name="T:SuperSocket.SocketBase.CommandHandler`2">
-            <summary>
-            Command Handler
-            </summary>
-            <typeparam name="TAppSession">The type of the app session.</typeparam>
-            <typeparam name="TRequestInfo">The type of the request info.</typeparam>
-            <param name="session">The session.</param>
-            <param name="requestInfo">The request info.</param>
         </member>
         <member name="T:SuperSocket.SocketBase.Command.CommandBase`2">
             <summary>
@@ -2770,6 +2761,15 @@
             <summary>
             Gets the session ID.
             </summary>
+        </member>
+        <member name="T:SuperSocket.SocketBase.RequestHandler`2">
+            <summary>
+            Request handler
+            </summary>
+            <typeparam name="TAppSession">The type of the app session.</typeparam>
+            <typeparam name="TRequestInfo">The type of the request info.</typeparam>
+            <param name="session">The session.</param>
+            <param name="requestInfo">The request info.</param>
         </member>
         <member name="T:SuperSocket.SocketBase.Security.Certificate">
             <summary>

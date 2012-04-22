@@ -40,6 +40,18 @@
     <Reference Include="nunit.framework">
       <HintPath>..\Reference\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="SuperSocket.Common, Version=1.4.4.0, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Reference\SuperSocket\Net40\$(Configuration)\SuperSocket.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperSocket.SocketBase, Version=1.4.4.0, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Reference\SuperSocket\Net40\$(Configuration)\SuperSocket.SocketBase.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperSocket.SocketEngine, Version=1.4.4.0, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Reference\SuperSocket\Net40\$(Configuration)\SuperSocket.SocketEngine.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -47,15 +59,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="SuperSocket.Common">
-      <HintPath>..\Reference\SuperSocket\Net40\SuperSocket.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="SuperSocket.SocketBase">
-      <HintPath>..\Reference\SuperSocket\Net40\SuperSocket.SocketBase.dll</HintPath>
-    </Reference>
-    <Reference Include="SuperSocket.SocketEngine">
-      <HintPath>..\Reference\SuperSocket\Net40\SuperSocket.SocketEngine.dll</HintPath>
-    </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="WebSocket4Net, Version=0.5.0.0, Culture=neutral, PublicKeyToken=eb4e154b696bf72a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

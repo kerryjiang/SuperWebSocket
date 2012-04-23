@@ -39,17 +39,17 @@
     <Reference Include="nunit.framework">
       <HintPath>..\Reference\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="SuperSocket.Common, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SuperSocket.Common, Version=1.5.0.0, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference\SuperSocket\Net35\SuperSocket.Common.dll</HintPath>
+      <HintPath>..\Reference\SuperSocket\Net35\$(Configuration)\SuperSocket.Common.dll</HintPath>
     </Reference>
-    <Reference Include="SuperSocket.SocketBase, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SuperSocket.SocketBase, Version=1.5.0.0, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference\SuperSocket\Net35\SuperSocket.SocketBase.dll</HintPath>
+      <HintPath>..\Reference\SuperSocket\Net35\$(Configuration)\SuperSocket.SocketBase.dll</HintPath>
     </Reference>
-    <Reference Include="SuperSocket.SocketEngine, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SuperSocket.SocketEngine, Version=1.5.0.0, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference\SuperSocket\Net35\SuperSocket.SocketEngine.dll</HintPath>
+      <HintPath>..\Reference\SuperSocket\Net35\$(Configuration)\SuperSocket.SocketEngine.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -63,6 +63,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SuperWebSocket\WebSocketConst.cs">
+      <Link>WebSocketConst.cs</Link>
+    </Compile>
     <Compile Include="Command\ECHO.cs" />
     <Compile Include="Command\QUIT.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

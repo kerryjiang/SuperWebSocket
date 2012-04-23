@@ -7,13 +7,13 @@ using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
 using SuperSocket.Common;
+using SuperSocket.Common.Logging;
 using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Command;
 using SuperSocket.SocketBase.Config;
 using SuperSocket.SocketEngine;
 using SuperSocket.SocketEngine.Configuration;
 using SuperWebSocket;
-using SuperSocket.Common.Logging;
 
 namespace SuperWebSocketWeb
 {
@@ -56,11 +56,11 @@ namespace SuperWebSocketWeb
             Application["SecureWebSocketPort"] = secureSocketServer.Config.Port;
 
             socketServer.NewMessageReceived += new SessionEventHandler<WebSocketSession, string>(socketServer_NewMessageReceived);
-            socketServer.NewSessionConnected += new SessionEventHandler<WebSocketSession>(socketServer_NewSessionConnected);
-            socketServer.SessionClosed += new SessionEventHandler<WebSocketSession, CloseReason>(socketServer_SessionClosed);
+            socketServer.NewSessionConnected += socketServer_NewSessionConnected;
+            socketServer.SessionClosed += socketServer_SessionClosed;
 
-            secureSocketServer.NewSessionConnected += new SessionEventHandler<WebSocketSession>(secureSocketServer_NewSessionConnected);
-            secureSocketServer.SessionClosed += new SessionEventHandler<WebSocketSession, CloseReason>(secureSocketServer_SessionClosed);
+            secureSocketServer.NewSessionConnected += secureSocketServer_NewSessionConnected;
+            secureSocketServer.SessionClosed += secureSocketServer_SessionClosed;
 
             if (!SocketServerManager.Start())
                 SocketServerManager.Stop();
@@ -100,8 +100,8 @@ namespace SuperWebSocketWeb
                 }, SocketServerFactory.Instance);
 
             socketServer.NewMessageReceived += new SessionEventHandler<WebSocketSession, string>(socketServer_NewMessageReceived);
-            socketServer.NewSessionConnected += new SessionEventHandler<WebSocketSession>(socketServer_NewSessionConnected);
-            socketServer.SessionClosed += new SessionEventHandler<WebSocketSession, CloseReason>(socketServer_SessionClosed);
+            socketServer.NewSessionConnected += socketServer_NewSessionConnected;
+            socketServer.SessionClosed += socketServer_SessionClosed;
 
             var secureSocketServer = new WebSocketServer();
             secureSocketServer.Setup(
@@ -121,8 +121,8 @@ namespace SuperWebSocketWeb
                     }
                 }, SocketServerFactory.Instance);
 
-            secureSocketServer.NewSessionConnected += new SessionEventHandler<WebSocketSession>(secureSocketServer_NewSessionConnected);
-            secureSocketServer.SessionClosed += new SessionEventHandler<WebSocketSession, CloseReason>(secureSocketServer_SessionClosed);
+            secureSocketServer.NewSessionConnected += secureSocketServer_NewSessionConnected;
+            secureSocketServer.SessionClosed += secureSocketServer_SessionClosed;
 
             Application["WebSocketPort"] = socketServer.Config.Port;
             Application["SecureWebSocketPort"] = secureSocketServer.Config.Port;

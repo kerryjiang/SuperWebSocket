@@ -36,14 +36,6 @@ namespace SuperWebSocket
     /// Session related event handler
     /// </summary>
     /// <typeparam name="TWebSocketSession">The type of the web socket session.</typeparam>
-    /// <param name="session">The session.</param>
-    public delegate void SessionEventHandler<TWebSocketSession>(TWebSocketSession session)
-        where TWebSocketSession : WebSocketSession<TWebSocketSession>, new();
-
-    /// <summary>
-    /// Session related event handler
-    /// </summary>
-    /// <typeparam name="TWebSocketSession">The type of the web socket session.</typeparam>
     /// <typeparam name="TEventArgs">The type of the event args.</typeparam>
     /// <param name="session">The session.</param>
     /// <param name="e">The instance containing the event data.</param>
@@ -398,7 +390,7 @@ namespace SuperWebSocket
                     if (!m_OpenHandshakePendingQueue.TryPeek(out session))
                         break;
 
-                    if (session.Handshaked || session.Status != SessionStatus.Healthy)
+                    if (session.Handshaked || !session.Connected)
                     {
                         //Handshaked or not connected
                         m_OpenHandshakePendingQueue.TryDequeue(out session);
@@ -420,7 +412,7 @@ namespace SuperWebSocket
                     if (!m_CloseHandshakePendingQueue.TryPeek(out session))
                         break;
 
-                    if (session.Status != SessionStatus.Healthy)
+                    if (!session.Connected)
                     {
                         //the session has been closed
                         m_CloseHandshakePendingQueue.TryDequeue(out session);
@@ -453,50 +445,17 @@ namespace SuperWebSocket
         }
 
         /// <summary>
-        /// Creates the app session.
-        /// </summary>
-        /// <param name="socketSession">The socket session.</param>
-        /// <returns></returns>
-        public override IAppSession CreateAppSession(ISocketSession socketSession)
-        {
-            var session = base.CreateAppSession(socketSession) as TWebSocketSession;
-
-            if (session != NullAppSession)
-                m_OpenHandshakePendingQueue.Enqueue(session);
-
-            return session;
-        }
-
-        private SessionEventHandler<TWebSocketSession> m_NewSessionConnected;
-
-        /// <summary>
-        /// Occurs when [new session connected].
-        /// </summary>
-        public event SessionEventHandler<TWebSocketSession> NewSessionConnected
-        {
-            add { m_NewSessionConnected += value; }
-            remove { m_NewSessionConnected -= value; }
-        }
-
-        /// <summary>
         /// Called when [new session connected].
         /// </summary>
         /// <param name="session">The session.</param>
-        protected internal virtual void OnNewSessionConnected(TWebSocketSession session)
+        protected override void OnNewSessionConnected(TWebSocketSession session)
         {
-            if (m_NewSessionConnected != null)
-                m_NewSessionConnected(session);
+            m_OpenHandshakePendingQueue.Enqueue(session);
         }
 
-        private SessionEventHandler<TWebSocketSession, CloseReason> m_SessionClosed;
-
-        /// <summary>
-        /// Occurs when [session closed].
-        /// </summary>
-        public event SessionEventHandler<TWebSocketSession, CloseReason> SessionClosed
+        internal void FireOnNewSessionConnected(IAppSession appSession)
         {
-            add { m_SessionClosed += value; }
-            remove { m_SessionClosed -= value; }
+            base.OnNewSessionConnected((TWebSocketSession)appSession);
         }
 
         private SessionEventHandler<TWebSocketSession, string> m_NewMessageReceived;
@@ -689,17 +648,6 @@ namespace SuperWebSocket
             }
 
             session.LastActiveTime = DateTime.Now;
-        }
-
-        /// <summary>
-        /// Called when [app session closed].
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="SuperSocket.SocketBase.AppSessionClosedEventArgs&lt;TWebSocketSession&gt;"/> instance containing the event data.</param>
-        protected override void OnAppSessionClosed(object sender, AppSessionClosedEventArgs<TWebSocketSession> e)
-        {
-            if (m_SessionClosed != null)
-                m_SessionClosed(e.Session, e.Reason);
         }
     }
 }

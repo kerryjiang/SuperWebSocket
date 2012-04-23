@@ -140,7 +140,7 @@
             </summary>
             <value>The session ID.</value>
         </member>
-        <member name="E:SuperSocket.SocketEngine.SocketSession.Closed">
+        <member name="P:SuperSocket.SocketEngine.SocketSession.Closed">
             <summary>
             Occurs when [closed].
             </summary>

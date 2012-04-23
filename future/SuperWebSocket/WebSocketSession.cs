@@ -361,7 +361,7 @@ namespace SuperWebSocket
 
             while (true)
             {
-                if (Status != SessionStatus.Healthy)
+                if (!Connected)
                     break;
 
                 ArraySegment<byte> segment;

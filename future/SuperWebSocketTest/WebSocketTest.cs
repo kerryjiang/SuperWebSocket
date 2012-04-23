@@ -45,8 +45,8 @@ namespace SuperWebSocketTest
                 }, SocketServerFactory.Instance);
 
             m_WebSocketServer.NewMessageReceived += new SessionEventHandler<WebSocketSession, string>(m_WebSocketServer_NewMessageReceived);
-            m_WebSocketServer.NewSessionConnected += new SessionEventHandler<WebSocketSession>(m_WebSocketServer_NewSessionConnected);
-            m_WebSocketServer.SessionClosed += new SessionEventHandler<WebSocketSession, CloseReason>(m_WebSocketServer_SessionClosed);
+            m_WebSocketServer.NewSessionConnected += m_WebSocketServer_NewSessionConnected;
+            m_WebSocketServer.SessionClosed += m_WebSocketServer_SessionClosed;
         }
         
         protected WebSocketServer Server

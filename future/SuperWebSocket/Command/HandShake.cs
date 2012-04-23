@@ -33,7 +33,7 @@ namespace SuperWebSocket.Command
         public override void ExecuteCommand(TWebSocketSession session, IWebSocketFragment requestInfo)
         {
             session.Handshaked = true;
-            session.AppServer.OnNewSessionConnected(session);
+            session.AppServer.FireOnNewSessionConnected(session);
         }
     }
 }

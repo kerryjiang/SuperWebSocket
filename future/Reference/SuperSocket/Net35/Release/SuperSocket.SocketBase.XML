@@ -2358,7 +2358,7 @@
             <param name="session">The session.</param>
             <param name="message">The message.</param>
         </member>
-        <member name="M:SuperSocket.SocketBase.LoggerExtension.Perf(SuperSocket.SocketBase.IAppServer,System.String)">
+        <member name="M:SuperSocket.SocketBase.LoggerExtension.LogPerf(SuperSocket.SocketBase.IAppServer,System.String)">
             <summary>
             Logs the performance message
             </summary>

@@ -30,20 +30,20 @@ namespace SuperWebSocketTest
         [TestFixtureSetUp]
         public override void Setup()
         {
-            if (LogFactoryProvider.LogFactory == null)
-                LogFactoryProvider.Initialize(new ConsoleLogFactory());
+            m_Bootstrap = new DefaultBootstrap();
 
             m_Encoding = new UTF8Encoding();
 
             m_WebSocketServer = new WebSocketServer(new BasicSubProtocol("Basic", new List<Assembly>{ this.GetType().Assembly } ));
-            m_WebSocketServer.Setup(new RootConfig(), new ServerConfig
-            {
-                Port = 2012,
-                Ip = "Any",
-                MaxConnectionNumber = 100,
-                Mode = SocketMode.Tcp,
-                Name = "SuperWebSocket Server"
-            }, SocketServerFactory.Instance);
+
+            m_Bootstrap.Initialize(new RootConfig { DisablePerformanceDataCollector = true }, new IAppServer[] { m_WebSocketServer }, new IServerConfig[] { new ServerConfig
+                {
+                    Port = 2012,
+                    Ip = "Any",
+                    MaxConnectionNumber = 100,
+                    Mode = SocketMode.Tcp,
+                    Name = "SuperWebSocket Server"
+                }}, new ConsoleLogFactory());
         }
 
         protected override string SubProtocol

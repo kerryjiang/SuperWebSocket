@@ -312,7 +312,7 @@ namespace SuperWebSocket
         /// <param name="socketServerFactory">The socket server factory.</param>
         /// <param name="protocol">The protocol.</param>
         /// <returns></returns>
-        public override bool Setup(IRootConfig rootConfig, IServerConfig config, ISocketServerFactory socketServerFactory, IRequestFilterFactory<IWebSocketFragment> protocol)
+        protected override bool Setup(IRootConfig rootConfig, IServerConfig config, ISocketServerFactory socketServerFactory, IRequestFilterFactory<IWebSocketFragment> protocol)
         {
             if (!base.Setup(rootConfig, config, socketServerFactory, protocol))
                 return false;

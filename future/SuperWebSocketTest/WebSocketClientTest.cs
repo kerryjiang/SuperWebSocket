@@ -54,6 +54,7 @@ namespace SuperWebSocketTest
         private AutoResetEvent m_CloseEvent = new AutoResetEvent(false);
         private string m_CurrentMessage = string.Empty;
         private readonly WebSocketVersion m_Version;
+        private IBootstrap m_Bootstrap;
 
         public WebSocketClientTest(WebSocketVersion version)
         {
@@ -63,19 +64,18 @@ namespace SuperWebSocketTest
         [TestFixtureSetUp]
         public virtual void Setup()
         {
-            if (LogFactoryProvider.LogFactory == null)
-                LogFactoryProvider.Initialize(new ConsoleLogFactory());
+            m_Bootstrap = new DefaultBootstrap();
 
             m_WebSocketServer = new WebSocketServer(new BasicSubProtocol("Basic", new List<Assembly> { this.GetType().Assembly }));
             m_WebSocketServer.NewDataReceived += new SessionEventHandler<WebSocketSession, byte[]>(m_WebSocketServer_NewDataReceived);
-            m_WebSocketServer.Setup(new RootConfig(), new ServerConfig
-            {
-                Port = 2012,
-                Ip = "Any",
-                MaxConnectionNumber = 100,
-                Mode = SocketMode.Tcp,
-                Name = "SuperWebSocket Server"
-            }, SocketServerFactory.Instance);
+            m_Bootstrap.Initialize(new RootConfig { DisablePerformanceDataCollector = true }, new IAppServer[] { m_WebSocketServer }, new IServerConfig[] { new ServerConfig
+                {
+                    Port = 2012,
+                    Ip = "Any",
+                    MaxConnectionNumber = 100,
+                    Mode = SocketMode.Tcp,
+                    Name = "SuperWebSocket Server"
+                }}, new ConsoleLogFactory());
         }
         
         void m_WebSocketServer_NewDataReceived(WebSocketSession session, byte[] e)
@@ -87,13 +87,13 @@ namespace SuperWebSocketTest
         [SetUp]
         public void StartServer()
         {
-            m_WebSocketServer.Start();
+            m_Bootstrap.Start();
         }
 
         [TearDown]
         public void StopServer()
         {
-            m_WebSocketServer.Stop();
+            m_Bootstrap.Stop();
         }
 
         [Test]

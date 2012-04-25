@@ -22,6 +22,8 @@ namespace SuperWebSocketTest
         private Encoding m_Encoding;
         protected string NewLine { get; private set; }
 
+        protected IBootstrap m_Bootstrap;
+
         public WebSocketTest()
         {
             m_Encoding = new UTF8Encoding();
@@ -34,19 +36,22 @@ namespace SuperWebSocketTest
             if (LogFactoryProvider.LogFactory == null)
                 LogFactoryProvider.Initialize(new ConsoleLogFactory());
 
+            m_Bootstrap = new DefaultBootstrap();
+
             m_WebSocketServer = new WebSocketServer();
-            m_WebSocketServer.Setup(new RootConfig(), new ServerConfig
+
+            m_WebSocketServer.NewMessageReceived += new SessionEventHandler<WebSocketSession, string>(m_WebSocketServer_NewMessageReceived);
+            m_WebSocketServer.NewSessionConnected += m_WebSocketServer_NewSessionConnected;
+            m_WebSocketServer.SessionClosed += m_WebSocketServer_SessionClosed;
+
+            m_Bootstrap.Initialize(new RootConfig { DisablePerformanceDataCollector = true }, new IAppServer[] { m_WebSocketServer }, new IServerConfig[] { new ServerConfig
                 {
                     Port = 2012,
                     Ip = "Any",
                     MaxConnectionNumber = 100,
                     Mode = SocketMode.Tcp,
                     Name = "SuperWebSocket Server"
-                }, SocketServerFactory.Instance);
-
-            m_WebSocketServer.NewMessageReceived += new SessionEventHandler<WebSocketSession, string>(m_WebSocketServer_NewMessageReceived);
-            m_WebSocketServer.NewSessionConnected += m_WebSocketServer_NewSessionConnected;
-            m_WebSocketServer.SessionClosed += m_WebSocketServer_SessionClosed;
+                }}, new ConsoleLogFactory());
         }
         
         protected WebSocketServer Server
@@ -78,13 +83,13 @@ namespace SuperWebSocketTest
         [SetUp]
         public void StartServer()
         {
-            m_WebSocketServer.Start();
+            m_Bootstrap.Start();
         }
 
         [TearDown]
         public void StopServer()
         {
-            m_WebSocketServer.Stop();
+            m_Bootstrap.Stop();
         }
 
         protected void Handshake(out Socket socket, out Stream stream)

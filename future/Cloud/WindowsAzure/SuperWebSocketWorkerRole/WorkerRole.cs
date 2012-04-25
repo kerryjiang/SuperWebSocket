@@ -14,11 +14,14 @@ using SuperSocket.Common.Logging;
 using SuperSocket.SocketBase.Config;
 using SuperSocket.SocketEngine;
 using SuperSocket.SocketEngine.Configuration;
+using SuperSocket.SocketBase;
 
 namespace SuperWebSocketWorkerRole
 {
     public class WorkerRole : RoleEntryPoint
     {
+        private IBootstrap m_Bootstrap;
+
         public override void Run()
         {
             // This is a sample worker implementation. Replace with your logic.
@@ -33,23 +36,38 @@ namespace SuperWebSocketWorkerRole
 
         public override bool OnStart()
         {
-            LogFactoryProvider.Initialize();
+            m_Bootstrap = new DefaultBootstrap();
 
             // Set the maximum number of concurrent connections 
             ServicePointManager.DefaultConnectionLimit = 12;
 
             var serverConfig = ConfigurationManager.GetSection("socketServer") as SocketServiceConfig;
 
-            if (!SocketServerManager.Initialize(serverConfig, ResolveServerConfig))
+            if (!m_Bootstrap.Initialize(serverConfig, ResolveServerConfig))
             {
                 Trace.WriteLine("Failed to initialize SuperSocket!", "Error");
                 return false;
             }
 
-            if (!SocketServerManager.Start())
+            var result = m_Bootstrap.Start();
+
+            switch (result)
             {
-                Trace.WriteLine("Failed to start SuperSocket!", "Error");
-                return false;
+                case (StartResult.None):
+                    Trace.WriteLine("No server is configured, please check you configuration!");
+                    return false;
+
+                case (StartResult.Success):
+                    Trace.WriteLine("The server has been started!");
+                    break;
+
+                case (StartResult.Failed):
+                    Trace.WriteLine("Failed to start SuperWebSocket server! Please check error log for more information!");
+                    return false;
+
+                case (StartResult.PartialSuccess):
+                    Trace.WriteLine("Some server instances were started successfully, but the others failed to start! Please check error log for more information!");
+                    break;
             }
 
             return base.OnStart();
@@ -109,7 +127,9 @@ namespace SuperWebSocketWorkerRole
 
         public override void OnStop()
         {
-            SocketServerManager.Stop();
+            if (m_Bootstrap != null)
+                m_Bootstrap.Stop();
+
             base.OnStop();
         }
     }

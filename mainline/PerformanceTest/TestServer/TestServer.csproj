@@ -36,24 +36,24 @@
     </Reference>
     <Reference Include="SuperSocket.Common, Version=1.5.0.0, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Reference\SuperSocket\Net40\SuperSocket.Common.dll</HintPath>
+      <HintPath>..\..\Reference\SuperSocket\Net40\$(Configuration)\SuperSocket.Common.dll</HintPath>
     </Reference>
     <Reference Include="SuperSocket.Management.Server, Version=0.0.0.0, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Reference\SuperSocket\Net40\SuperSocket.Management.Server.dll</HintPath>
+      <HintPath>..\..\Reference\SuperSocket\Net40\$(Configuration)\SuperSocket.Management.Server.dll</HintPath>
     </Reference>
     <Reference Include="SuperSocket.Management.Shared, Version=0.0.0.0, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Reference\SuperSocket\Net40\SuperSocket.Management.Shared.dll</HintPath>
+      <HintPath>..\..\Reference\SuperSocket\Net40\$(Configuration)\SuperSocket.Management.Shared.dll</HintPath>
     </Reference>
     <Reference Include="SuperSocket.SocketBase, Version=1.5.0.0, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Reference\SuperSocket\Net40\SuperSocket.SocketBase.dll</HintPath>
+      <HintPath>..\..\Reference\SuperSocket\Net40\$(Configuration)\SuperSocket.SocketBase.dll</HintPath>
     </Reference>
     <Reference Include="SuperSocket.SocketService, Version=1.5.0.0, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <ExecutableExtension>.exe</ExecutableExtension>
-      <HintPath>..\..\Reference\SuperSocket\Net40\SuperSocket.SocketService.exe</HintPath>
+      <HintPath>..\..\Reference\SuperSocket\Net40\$(Configuration)\SuperSocket.SocketService.exe</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -72,11 +72,11 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\Reference\SuperSocket\Net40\InstallService.bat">
+    <Content Include="..\..\Reference\SuperSocket\Net40\$(Configuration)\InstallService.bat">
       <Link>InstallService.bat</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\Reference\SuperSocket\Net40\UninstallService.bat">
+    <Content Include="..\..\Reference\SuperSocket\Net40\$(Configuration)\UninstallService.bat">
       <Link>UninstallService.bat</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -94,7 +94,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\Reference\SuperSocket\Net40\RunServer.bat">
+    <Content Include="..\..\Reference\SuperSocket\Net40\$(Configuration)\RunServer.bat">
       <Link>RunServer.bat</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

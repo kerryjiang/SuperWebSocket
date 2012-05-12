@@ -32,7 +32,7 @@ namespace SuperWebSocket.PerformanceTest.TestClient
 
             m_PrintTimer = new Timer(OnPrintTimerCallback, null, 1000 * 5, 1000 * 5);
 
-            int group = 1000;
+            int group = 100;
 
             for (var i = 0; i < clientCount; i += group)
             {

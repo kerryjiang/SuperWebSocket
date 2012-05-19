@@ -35,7 +35,7 @@ namespace SuperWebSocket.Protocol
         public bool Handshake(IWebSocketSession session, WebSocketRequestFilterBase previousReader, out IRequestFilter<IWebSocketFragment> dataFrameReader)
         {
             dataFrameReader = null;
-            session.SocketSession.SendResponse(m_SwitchResponse, 0, m_SwitchResponse.Length);
+            session.SendRawResponse(m_SwitchResponse, 0, m_SwitchResponse.Length);
             return true;
         }
 

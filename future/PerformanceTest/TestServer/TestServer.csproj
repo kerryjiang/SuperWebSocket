@@ -35,19 +35,19 @@
       <HintPath>..\..\Reference\log4net.dll</HintPath>
     </Reference>
     <Reference Include="SuperSocket.Common">
-      <HintPath>..\..\Reference\SuperSocket\Net40\SuperSocket.Common.dll</HintPath>
+      <HintPath>..\..\Reference\SuperSocket\Net40\$(Configuration)\SuperSocket.Common.dll</HintPath>
     </Reference>
     <Reference Include="SuperSocket.Management.Server">
-      <HintPath>..\..\Reference\SuperSocket\Net40\SuperSocket.Management.Server.dll</HintPath>
+      <HintPath>..\..\Reference\SuperSocket\Net40\$(Configuration)\SuperSocket.Management.Server.dll</HintPath>
     </Reference>
     <Reference Include="SuperSocket.Management.Shared">
-      <HintPath>..\..\Reference\SuperSocket\Net40\SuperSocket.Management.Shared.dll</HintPath>
+      <HintPath>..\..\Reference\SuperSocket\Net40\$(Configuration)\SuperSocket.Management.Shared.dll</HintPath>
     </Reference>
     <Reference Include="SuperSocket.SocketBase">
-      <HintPath>..\..\Reference\SuperSocket\Net40\SuperSocket.SocketBase.dll</HintPath>
+      <HintPath>..\..\Reference\SuperSocket\Net40\$(Configuration)\SuperSocket.SocketBase.dll</HintPath>
     </Reference>
     <Reference Include="SuperSocket.SocketService">
-      <HintPath>..\..\Reference\SuperSocket\Net40\SuperSocket.SocketService.exe</HintPath>
+      <HintPath>..\..\Reference\SuperSocket\Net40\$(Configuration)\SuperSocket.SocketService.exe</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -72,11 +72,11 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\Reference\SuperSocket\Net40\InstallService.bat">
+    <Content Include="..\..\Reference\SuperSocket\Net40\$(Configuration)\InstallService.bat">
       <Link>InstallService.bat</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\Reference\SuperSocket\Net40\UninstallService.bat">
+    <Content Include="..\..\Reference\SuperSocket\Net40\$(Configuration)\UninstallService.bat">
       <Link>UninstallService.bat</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

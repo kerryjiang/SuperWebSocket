@@ -54,10 +54,10 @@ namespace SuperWebSocket.Protocol
 
             responseBuilder.AppendWithCrCf();
             byte[] data = Encoding.UTF8.GetBytes(responseBuilder.ToString());
-            session.SocketSession.SendResponse(data, 0, data.Length);
+            session.SendRawResponse(data, 0, data.Length);
             //Encrypt message
             byte[] secret = GetResponseSecurityKey(secKey1, secKey2, secKey3);
-            session.SocketSession.SendResponse(secret, 0, secret.Length);
+            session.SendRawResponse(secret, 0, secret.Length);
 
             dataFrameReader = new WebSocketDataRequestFilter(previousFilter);
 
@@ -107,12 +107,12 @@ namespace SuperWebSocket.Protocol
             int bytesCount = Encoding.UTF8.GetBytes(message, 0, message.Length, sendBuffer, 1);
             sendBuffer[1 + bytesCount] = WebSocketConstant.EndByte;
 
-            session.SocketSession.SendResponse(sendBuffer, 0, bytesCount + 2);
+            session.SendRawResponse(sendBuffer, 0, bytesCount + 2);
         }
 
         public override void SendCloseHandshake(IWebSocketSession session, int statusCode, string closeReason)
         {
-            session.SocketSession.SendResponse(WebSocketConstant.ClosingHandshake, 0, WebSocketConstant.ClosingHandshake.Length);
+            session.SendRawResponse(WebSocketConstant.ClosingHandshake, 0, WebSocketConstant.ClosingHandshake.Length);
         }
 
         public override void SendPong(IWebSocketSession session, byte[] pong)

@@ -62,19 +62,14 @@ namespace SuperWebSocket
         /// </summary>
         string UriScheme { get; }
 
-        /// <summary>
-        /// Sends the response.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        void SendResponse(string message);
 
         /// <summary>
-        /// Sends the response.
+        /// Sends the raw binary response.
         /// </summary>
         /// <param name="data">The data.</param>
         /// <param name="offset">The offset.</param>
         /// <param name="length">The length.</param>
-        void SendResponse(byte[] data, int offset, int length);
+        void SendRawResponse(byte[] data, int offset, int length);
 
         /// <summary>
         /// Gets the app server.
@@ -95,18 +90,6 @@ namespace SuperWebSocket
         /// <param name="protocol">The protocol.</param>
         /// <returns></returns>
         string GetAvailableSubProtocol(string protocol);
-
-        /// <summary>
-        /// Enqueues the data which should be sent.
-        /// </summary>
-        /// <param name="data">The data.</param>
-        void EnqueueSend(IList<ArraySegment<byte>> data);
-
-        /// <summary>
-        /// Enqueues the data which should be sent.
-        /// </summary>
-        /// <param name="data">The data.</param>
-        void EnqueueSend(ArraySegment<byte> data);
     }
 
     /// <summary>
@@ -183,10 +166,6 @@ namespace SuperWebSocket
         /// Gets the sec web socket protocol.
         /// </summary>
         public string SecWebSocketProtocol { get { return this.Items.GetValue<string>(WebSocketConstant.SecWebSocketProtocol, string.Empty); } }
-
-        private Queue<ArraySegment<byte>> m_SendingQueue = new Queue<ArraySegment<byte>>();
-
-        private volatile bool m_InSending = false;
 
         internal List<WebSocketDataFrame> Frames { get; private set; }
 
@@ -329,56 +308,6 @@ namespace SuperWebSocket
         /// </summary>
         public StringDictionary Cookies { get; private set; }
 
-        void IWebSocketSession.EnqueueSend(IList<ArraySegment<byte>> data)
-        {
-            lock (m_SendingQueue)
-            {
-                for (var i = 0; i < data.Count; i++)
-                {
-                    m_SendingQueue.Enqueue(data[i]);
-                }
-            }
-
-            DequeueSend();
-        }
-
-        void IWebSocketSession.EnqueueSend(ArraySegment<byte> data)
-        {
-            lock (m_SendingQueue)
-            {
-                m_SendingQueue.Enqueue(data);
-            }
-
-            DequeueSend();
-        }
-
-        private void DequeueSend()
-        {
-            if (m_InSending)
-                return;
-
-            m_InSending = true;
-
-            while (true)
-            {
-                if (!Connected)
-                    break;
-
-                ArraySegment<byte> segment;
-
-                lock (m_SendingQueue)
-                {
-                    if (m_SendingQueue.Count <= 0)
-                        break;
-
-                    segment = m_SendingQueue.Dequeue();
-                }
-
-                SocketSession.SendResponse(segment.Array, segment.Offset, segment.Count);
-            }
-
-            m_InSending = false;
-        }
 
         /// <summary>
         /// Sends the response.
@@ -405,7 +334,7 @@ namespace SuperWebSocket
         /// <param name="data">The data.</param>
         /// <param name="offset">The offset.</param>
         /// <param name="length">The length.</param>
-        public new void SendResponse(byte[] data, int offset, int length)
+        public override void SendResponse(byte[] data, int offset, int length)
         {
             if (!ProtocolProcessor.CanSendBinaryData)
             {
@@ -418,22 +347,23 @@ namespace SuperWebSocket
         }
 
         /// <summary>
-        /// Sends the response async.
+        /// Sends the response.
         /// </summary>
-        /// <param name="message">The message.</param>
-        public void SendResponseAsync(string message)
+        /// <param name="segment">The segment.</param>
+        public override void SendResponse(ArraySegment<byte> segment)
         {
-            Async.Run((s) => SendResponse((string)s), message);
+            this.SendResponse(segment.Array, segment.Offset, segment.Count);
         }
 
         /// <summary>
-        /// Sends the response async.
+        /// Sends the raw binary response.
         /// </summary>
-        /// <param name="message">The message.</param>
-        /// <param name="paramValues">The param values.</param>
-        public void SendResponseAsync(string message, params object[] paramValues)
+        /// <param name="data">The data.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="length">The length.</param>
+        void IWebSocketSession.SendRawResponse(byte[] data, int offset, int length)
         {
-            SendResponseAsync(string.Format(message, paramValues));
+            base.SendResponse(new ArraySegment<byte>(data, offset, length));
         }
 
         /// <summary>

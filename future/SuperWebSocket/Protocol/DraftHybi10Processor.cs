@@ -74,7 +74,7 @@ namespace SuperWebSocket.Protocol
 
             responseBuilder.AppendWithCrCf();
             byte[] data = Encoding.UTF8.GetBytes(responseBuilder.ToString());
-            session.SocketSession.SendResponse(data, 0, data.Length);
+            session.SendRawResponse(data, 0, data.Length);
 
             dataFrameReader = new WebSocketDataFrameRequestFilter();
 
@@ -166,11 +166,11 @@ namespace SuperWebSocket.Protocol
             if (length > 0)
             {
                 Buffer.BlockCopy(data, offset, fragment, fragment.Length - length, length);
-                session.EnqueueSend(new ArraySegment<byte>(fragment, 0, fragment.Length));
+                session.SendRawResponse(fragment, 0, fragment.Length);
             }
             else
             {
-                session.EnqueueSend(new ArraySegment<byte>(fragment, 0, fragment.Length));
+                session.SendRawResponse(fragment, 0, fragment.Length);
             }
         }
 

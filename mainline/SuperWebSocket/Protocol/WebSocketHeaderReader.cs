@@ -58,7 +58,16 @@ namespace SuperWebSocket.Protocol
 
             var webSocketSession = session as IWebSocketSession;
 
-            WebSocketServer.ParseHandshake(webSocketSession, new StringReader(header));
+            try
+            {
+                WebSocketServer.ParseHandshake(webSocketSession, new StringReader(header));
+            }
+            catch (Exception e)
+            {
+                session.Logger.LogError("Failed to parse handshake!" + Environment.NewLine + header, e);
+                session.Close(CloseReason.Unknown);
+                return null;
+            }
 
             var secWebSocketKey1 = webSocketSession.Items.GetValue<string>(WebSocketConstant.SecWebSocketKey1, string.Empty);
             var secWebSocketKey2 = webSocketSession.Items.GetValue<string>(WebSocketConstant.SecWebSocketKey2, string.Empty);

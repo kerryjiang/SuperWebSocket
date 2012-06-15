@@ -489,12 +489,20 @@ namespace SuperWebSocket
 
                 int pos = line.IndexOf(m_Colon);
 
+                if (pos <= 0)
+                    continue;
+
                 string key = line.Substring(0, pos);
 
                 if (!string.IsNullOrEmpty(key))
                     key = key.Trim();
 
-                string value = line.Substring(pos + 1);
+                var valueOffset = pos + 1;
+
+                if (line.Length <= valueOffset) //No value in this line
+                    continue;
+
+                string value = line.Substring(valueOffset);
                 if (!string.IsNullOrEmpty(value) && value.StartsWith(m_Space) && value.Length > 1)
                     value = value.Substring(1);
 

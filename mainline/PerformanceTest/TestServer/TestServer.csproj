@@ -94,8 +94,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\Reference\SuperSocket\Net40\$(Configuration)\RunServer.bat">
+    <Content Include="..\..\Reference\SuperSocket\Net40\Debug\RunServer.bat">
       <Link>RunServer.bat</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\log4net.unix.config">
+      <Link>Config\log4net.unix.config</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

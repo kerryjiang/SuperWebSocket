@@ -72,11 +72,11 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\Reference\SuperSocket\Net40\$(Configuration)\InstallService.bat">
+    <Content Include="..\..\Reference\SuperSocket\Net40\Debug\InstallService.bat">
       <Link>InstallService.bat</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\Reference\SuperSocket\Net40\$(Configuration)\UninstallService.bat">
+    <Content Include="..\..\Reference\SuperSocket\Net40\Debug\UninstallService.bat">
       <Link>UninstallService.bat</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

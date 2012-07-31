@@ -38,14 +38,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Reference\SuperSocket\Net40\Debug\SuperSocket.Common.dll</HintPath>
     </Reference>
-    <Reference Include="SuperSocket.Management.Server, Version=0.0.0.0, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Reference\SuperSocket\Net40\Debug\SuperSocket.Management.Server.dll</HintPath>
-    </Reference>
-    <Reference Include="SuperSocket.Management.Shared, Version=0.0.0.0, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Reference\SuperSocket\Net40\Debug\SuperSocket.Management.Shared.dll</HintPath>
-    </Reference>
     <Reference Include="SuperSocket.SocketBase, Version=1.5.0.0, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Reference\SuperSocket\Net40\Debug\SuperSocket.SocketBase.dll</HintPath>
@@ -60,7 +52,10 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ECHOY.cs" />
     <Compile Include="ECHO.cs" />
+    <Compile Include="ClientInfo.cs" />
+    <Compile Include="ECHOX.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestAppServer.cs" />
     <Compile Include="TestSession.cs" />

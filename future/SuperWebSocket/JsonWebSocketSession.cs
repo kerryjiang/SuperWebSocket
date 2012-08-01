@@ -23,19 +23,19 @@ namespace SuperWebSocket
     {
         private const string m_QueryTemplate = "{0} {1}";
 
-        private string GetJsonResponse(string name, object content)
+        private string GetJsonMessage(string name, object content)
         {
             return string.Format(m_QueryTemplate, name, JsonConvert.SerializeObject(content));
         }
 
         /// <summary>
-        /// Sends the json response.
+        /// Sends the json message.
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="content">The content.</param>
-        public void SendJsonResponse(string name, object content)
+        public void SendJsonMessage(string name, object content)
         {
-            this.SendResponse(GetJsonResponse(name, content));
+            this.Send(GetJsonMessage(name, content));
         }
     }
 }

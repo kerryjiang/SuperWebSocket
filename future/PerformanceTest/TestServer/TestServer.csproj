@@ -54,7 +54,9 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientInfo.cs" />
     <Compile Include="ECHO.cs" />
+    <Compile Include="ECHOX.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestAppServer.cs" />
     <Compile Include="TestSession.cs" />

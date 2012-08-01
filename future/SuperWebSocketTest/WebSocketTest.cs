@@ -9,9 +9,10 @@ using NUnit.Framework;
 using SuperSocket.Common;
 using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Config;
+using SuperSocket.SocketBase.Logging;
 using SuperSocket.SocketEngine;
 using SuperWebSocket;
-using SuperSocket.Common.Logging;
+using System.Threading;
 
 namespace SuperWebSocketTest
 {
@@ -33,10 +34,7 @@ namespace SuperWebSocketTest
         [TestFixtureSetUp]
         public virtual void Setup()
         {
-            if (LogFactoryProvider.LogFactory == null)
-                LogFactoryProvider.Initialize(new ConsoleLogFactory());
-
-            m_Bootstrap = new DefaultBootstrap();
+            var rootConfig = new RootConfig { DisablePerformanceDataCollector = true };
 
             m_WebSocketServer = new WebSocketServer();
 
@@ -44,14 +42,16 @@ namespace SuperWebSocketTest
             m_WebSocketServer.NewSessionConnected += m_WebSocketServer_NewSessionConnected;
             m_WebSocketServer.SessionClosed += m_WebSocketServer_SessionClosed;
 
-            m_Bootstrap.Initialize(new RootConfig { DisablePerformanceDataCollector = true }, new IAppServer[] { m_WebSocketServer }, new IServerConfig[] { new ServerConfig
+            m_WebSocketServer.Setup(rootConfig, new ServerConfig
                 {
                     Port = 2012,
                     Ip = "Any",
                     MaxConnectionNumber = 100,
                     Mode = SocketMode.Tcp,
                     Name = "SuperWebSocket Server"
-                }}, new ConsoleLogFactory());
+                }, SocketServerFactory.Instance);
+
+            m_Bootstrap = new DefaultBootstrap(rootConfig, new IWorkItem[] { m_WebSocketServer }, new ConsoleLogFactory());
         }
         
         protected WebSocketServer Server
@@ -67,7 +67,7 @@ namespace SuperWebSocketTest
         void m_WebSocketServer_NewMessageReceived(WebSocketSession session, string e)
         {
             Console.WriteLine("Server:" + e);
-            session.SendResponse(e);
+            session.Send(e);
         }
 
         void m_WebSocketServer_SessionClosed(WebSocketSession session, CloseReason reason)
@@ -294,7 +294,6 @@ namespace SuperWebSocketTest
 
             while ((thisRead = stream.Read(buffer, 0, Math.Min(left, buffer.Length))) > 0)
             {
-                Console.WriteLine("Current read: {0}", thisRead);
                 commandBuffer.AddSegment(buffer, 0, thisRead, true);
                 left -= thisRead;
 

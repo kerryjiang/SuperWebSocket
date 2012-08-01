@@ -13,7 +13,7 @@ namespace SuperWebSocket.Samples.JsonCommandAssembly.Command
         {
             var result = new AddResult { Result = commandInfo.A + commandInfo.B };
             //Send calculating result to client
-            SendJsonResponse(session, result);
+            SendJsonMessage(session, result);
         }
     }
 }

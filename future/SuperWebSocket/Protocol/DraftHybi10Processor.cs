@@ -74,7 +74,7 @@ namespace SuperWebSocket.Protocol
 
             responseBuilder.AppendWithCrCf();
             byte[] data = Encoding.UTF8.GetBytes(responseBuilder.ToString());
-            session.SendRawResponse(data, 0, data.Length);
+            session.SendRawData(data, 0, data.Length);
 
             dataFrameReader = new WebSocketDataFrameRequestFilter();
 
@@ -106,15 +106,15 @@ namespace SuperWebSocket.Protocol
             playloadData[0] = (byte)highByte;
             playloadData[1] = (byte)lowByte;
 
+            var playloadLength = playloadData.Length;
+
             if (!string.IsNullOrEmpty(closeReason))
             {
                 int bytesCount = Encoding.UTF8.GetBytes(closeReason, 0, closeReason.Length, playloadData, 2);
-                SendPackage(session, OpCode.Close, playloadData, 0, bytesCount + 2);
+                playloadLength = bytesCount + 2;
             }
-            else
-            {
-                SendPackage(session, OpCode.Close, playloadData, 0, playloadData.Length);
-            }
+
+            SendPackage(session, OpCode.Close, playloadData, 0, playloadLength);
         }
 
         public override void SendPong(IWebSocketSession session, byte[] pong)
@@ -166,12 +166,9 @@ namespace SuperWebSocket.Protocol
             if (length > 0)
             {
                 Buffer.BlockCopy(data, offset, fragment, fragment.Length - length, length);
-                session.SendRawResponse(fragment, 0, fragment.Length);
             }
-            else
-            {
-                session.SendRawResponse(fragment, 0, fragment.Length);
-            }
+
+            session.SendRawData(fragment, 0, fragment.Length);
         }
 
         private void SendMessage(IWebSocketSession session, int opCode, string message)

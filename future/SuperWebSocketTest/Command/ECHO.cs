@@ -6,6 +6,7 @@ using SuperSocket.SocketBase.Command;
 using SuperSocket.SocketBase.Protocol;
 using SuperWebSocket;
 using SuperWebSocket.SubProtocol;
+using System.Threading;
 
 namespace SuperWebSocketTest.Command
 {
@@ -15,7 +16,9 @@ namespace SuperWebSocketTest.Command
         {
             var paramsArray = requestInfo.Data.Split(' ');
             for (var i = 0; i < paramsArray.Length; i++)
-                session.SendResponse(paramsArray[i]);
+            {
+                session.Send(paramsArray[i]);
+            }
         }
     }
 }

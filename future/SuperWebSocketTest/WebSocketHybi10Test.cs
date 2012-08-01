@@ -237,8 +237,8 @@ namespace SuperWebSocketTest
                 receivedBuffer.ClearSegements();
             }
 
-            //socket.Shutdown(SocketShutdown.Both);
-            //socket.Close();
+            socket.Shutdown(SocketShutdown.Both);
+            socket.Close();
         }
 
         [Test]
@@ -262,7 +262,7 @@ namespace SuperWebSocketTest
 
             ArraySegmentList receivedBuffer = new ArraySegmentList();
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 1; i++)
             {
                 var sentMessages = new string[10];
                 var sentMessageSizes = new int[10];
@@ -278,7 +278,6 @@ namespace SuperWebSocketTest
 
                     Console.WriteLine("Client:" + currentCommand);
                     byte[] data = Encoding.UTF8.GetBytes(currentCommand);
-                    Console.WriteLine("Client Length:" + data.Length);
                     sentMessageSizes[j] = data.Length;
                     int dataLen = SendMessage(stream, 1, data);
                     sentLengths[j] = dataLen;
@@ -288,7 +287,6 @@ namespace SuperWebSocketTest
 
                 for (var j = 0; j < sentMessages.Length; j++)
                 {
-                    Console.WriteLine("Expected: " + sentLengths[j]);
                     ReceiveMessage(stream, receivedBuffer, sentLengths[j]);
 
                     int mlen = sentMessageSizes[j];
@@ -328,10 +326,12 @@ namespace SuperWebSocketTest
                         skip += 8;
                     }
 
-                    Assert.AreEqual(sentMessages[j], Encoding.UTF8.GetString(receivedBuffer.ToArrayData(skip, mlen)));
+                    var receivedMessage = Encoding.UTF8.GetString(receivedBuffer.ToArrayData(skip, mlen));
+                    Console.WriteLine("Received:{0}", receivedMessage);
+
+                    Assert.AreEqual(sentMessages[j], receivedMessage);
 
                     receivedBuffer.ClearSegements();
-                    Console.WriteLine("Passed " + j);
                 }
             }
 

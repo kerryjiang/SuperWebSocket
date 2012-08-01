@@ -19,14 +19,12 @@
             Initializes a new instance of the <see cref="T:SuperSocket.Facility.PolicyServer.PolicyServer"/> class.
             </summary>
         </member>
-        <member name="M:SuperSocket.Facility.PolicyServer.PolicyServer.Setup(SuperSocket.SocketBase.Config.IRootConfig,SuperSocket.SocketBase.Config.IServerConfig,SuperSocket.SocketBase.ISocketServerFactory,SuperSocket.SocketBase.Protocol.IRequestFilterFactory{SuperSocket.SocketBase.Protocol.BinaryRequestInfo})">
+        <member name="M:SuperSocket.Facility.PolicyServer.PolicyServer.Setup(SuperSocket.SocketBase.Config.IRootConfig,SuperSocket.SocketBase.Config.IServerConfig)">
             <summary>
             Setups the specified root config.
             </summary>
             <param name="rootConfig">The root config.</param>
             <param name="config">The config.</param>
-            <param name="socketServerFactory">The socket server factory.</param>
-            <param name="requestFilterFactory">The request filter factory.</param>
             <returns></returns>
         </member>
         <member name="M:SuperSocket.Facility.PolicyServer.PolicyServer.SetupPolicyResponse(System.Byte[])">
@@ -78,7 +76,7 @@
             </summary>
             <param name="size">The size.</param>
         </member>
-        <member name="M:SuperSocket.Facility.PolicyServer.PolicyRequestFilter.FilterBuffer(SuperSocket.SocketBase.IAppSession{SuperSocket.SocketBase.Protocol.BinaryRequestInfo},System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
+        <member name="M:SuperSocket.Facility.PolicyServer.PolicyRequestFilter.ProcessFixSizeRequest(SuperSocket.SocketBase.IAppSession{SuperSocket.SocketBase.Protocol.BinaryRequestInfo},System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
             <summary>
             Filters the buffer after the server receive the enough size of data.
             </summary>

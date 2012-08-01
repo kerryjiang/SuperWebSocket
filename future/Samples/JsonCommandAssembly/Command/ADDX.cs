@@ -17,7 +17,7 @@ namespace SuperWebSocket.Samples.JsonCommandAssembly.Command
 
             Thread.Sleep(5000);
 
-            this.SendJsonResponse(session, token, result);
+            this.SendJsonMessage(session, token, result);
         }
     }
 }

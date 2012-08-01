@@ -17,11 +17,11 @@ namespace SuperWebSocket.Samples.CustomSession.Command
             if (commandInfo.CompanyId <= 0)
                 return;
 
-            string message = GetJsonResponse("MSG", commandInfo);
+            string message = GetJsonMessage("MSG", commandInfo);
 
             foreach(var s in session.AppServer.GetSessions(s => s.CompanyId == commandInfo.CompanyId))
             {
-                s.SendResponseAsync(message);
+                s.Send(message);
             }
         }
     }

@@ -8,11 +8,11 @@ using NUnit.Framework;
 using SuperSocket.Common;
 using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Config;
+using SuperSocket.SocketBase.Logging;
 using SuperSocket.SocketEngine;
 using SuperWebSocket;
 using SuperWebSocket.SubProtocol;
 using WebSocket4Net;
-using SuperSocket.Common.Logging;
 
 namespace SuperWebSocketTest
 {
@@ -64,24 +64,27 @@ namespace SuperWebSocketTest
         [TestFixtureSetUp]
         public virtual void Setup()
         {
-            m_Bootstrap = new DefaultBootstrap();
+            var rootConfig = new RootConfig { DisablePerformanceDataCollector = true };
 
             m_WebSocketServer = new WebSocketServer(new BasicSubProtocol("Basic", new List<Assembly> { this.GetType().Assembly }));
             m_WebSocketServer.NewDataReceived += new SessionEventHandler<WebSocketSession, byte[]>(m_WebSocketServer_NewDataReceived);
-            m_Bootstrap.Initialize(new RootConfig { DisablePerformanceDataCollector = true }, new IAppServer[] { m_WebSocketServer }, new IServerConfig[] { new ServerConfig
+            m_WebSocketServer.Setup(rootConfig, new ServerConfig
                 {
                     Port = 2012,
                     Ip = "Any",
                     MaxConnectionNumber = 100,
                     Mode = SocketMode.Tcp,
                     Name = "SuperWebSocket Server"
-                }}, new ConsoleLogFactory());
+                }, SocketServerFactory.Instance);
+
+            m_Bootstrap = new DefaultBootstrap(rootConfig, new IWorkItem[] { m_WebSocketServer }, new ConsoleLogFactory());
+
         }
         
         void m_WebSocketServer_NewDataReceived(WebSocketSession session, byte[] e)
         {
             //Echo
-            session.SendResponse(e, 0, e.Length);
+            session.Send(e, 0, e.Length);
         }
 
         [SetUp]

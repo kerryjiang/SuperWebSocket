@@ -6,9 +6,9 @@ using SuperWebSocket.SubProtocol;
 
 namespace SuperWebSocket.PerformanceTest.TestServer
 {
-    public class ECHO : JsonSubCommand<TestSession, string>
+    public class ECHOX : JsonSubCommand<TestSession, ClientInfo>
     {
-        protected override void ExecuteJsonCommand(TestSession session, string commandInfo)
+        protected override void ExecuteJsonCommand(TestSession session, ClientInfo commandInfo)
         {
             SendJson(session, commandInfo);
         }

@@ -65,26 +65,26 @@ namespace SuperWebSocket.SubProtocol
         }
 
         /// <summary>
-        /// Sends the json response.
+        /// Sends the json message.
         /// </summary>
         /// <param name="session">The session.</param>
         /// <param name="token">The token.</param>
         /// <param name="content">The content.</param>
-        protected void SendJsonResponse(TWebSocketSession session, string token, object content)
+        protected void SendJsonMessage(TWebSocketSession session, string token, object content)
         {
-            session.SendResponse(GetJsonResponse(this.Name, token, content));
+            session.Send(GetJsonMessage(this.Name, token, content));
         }
 
         /// <summary>
-        /// Sends the json response.
+        /// Sends the json message.
         /// </summary>
         /// <param name="session">The session.</param>
         /// <param name="name">The name.</param>
         /// <param name="token">The token.</param>
         /// <param name="content">The content.</param>
-        protected void SendJsonResponse(TWebSocketSession session, string name, string token, object content)
+        protected void SendJsonMessage(TWebSocketSession session, string name, string token, object content)
         {
-            session.SendResponse(GetJsonResponse(name, token, content));
+            session.Send(GetJsonMessage(name, token, content));
         }
     }
 }

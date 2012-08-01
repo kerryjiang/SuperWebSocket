@@ -69,7 +69,7 @@ namespace SuperWebSocket
         /// <param name="data">The data.</param>
         /// <param name="offset">The offset.</param>
         /// <param name="length">The length.</param>
-        void SendRawResponse(byte[] data, int offset, int length);
+        void SendRawData(byte[] data, int offset, int length);
 
         /// <summary>
         /// Gets the app server.
@@ -313,19 +313,9 @@ namespace SuperWebSocket
         /// Sends the response.
         /// </summary>
         /// <param name="message">The message.</param>
-        public override void SendResponse(string message)
+        public override void Send(string message)
         {
             ProtocolProcessor.SendMessage(this, message);
-        }
-
-        /// <summary>
-        /// Sends the response.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        /// <param name="paramValues">The param values.</param>
-        public override void SendResponse(string message, params object[] paramValues)
-        {
-            ProtocolProcessor.SendMessage(this, string.Format(message, paramValues));
         }
 
         /// <summary>
@@ -334,7 +324,7 @@ namespace SuperWebSocket
         /// <param name="data">The data.</param>
         /// <param name="offset">The offset.</param>
         /// <param name="length">The length.</param>
-        public override void SendResponse(byte[] data, int offset, int length)
+        public override void Send(byte[] data, int offset, int length)
         {
             if (!ProtocolProcessor.CanSendBinaryData)
             {
@@ -350,20 +340,55 @@ namespace SuperWebSocket
         /// Sends the response.
         /// </summary>
         /// <param name="segment">The segment.</param>
-        public override void SendResponse(ArraySegment<byte> segment)
+        public override void Send(ArraySegment<byte> segment)
         {
-            this.SendResponse(segment.Array, segment.Offset, segment.Count);
+            this.Send(segment.Array, segment.Offset, segment.Count);
         }
 
         /// <summary>
-        /// Sends the raw binary response.
+        /// Sends the raw binary data.
         /// </summary>
         /// <param name="data">The data.</param>
         /// <param name="offset">The offset.</param>
         /// <param name="length">The length.</param>
-        void IWebSocketSession.SendRawResponse(byte[] data, int offset, int length)
+        void IWebSocketSession.SendRawData(byte[] data, int offset, int length)
         {
-            base.SendResponse(new ArraySegment<byte>(data, offset, length));
+            base.Send(data, offset, length);
+        }
+
+        /// <summary>
+        /// Sends the response.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <returns></returns>
+        [Obsolete("Use 'Send(string message)' instead")]
+        public override void SendResponse(string message)
+        {
+            this.Send(message);
+        }
+
+        /// <summary>
+        /// Sends the response.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="length">The length.</param>
+        /// <returns></returns>
+        [Obsolete("Use 'Send(byte[] data, int offset, int length)' instead")]
+        public override void SendResponse(byte[] data, int offset, int length)
+        {
+            this.Send(data, offset, length);
+        }
+
+        /// <summary>
+        /// Sends the response.
+        /// </summary>
+        /// <param name="segment">The segment.</param>
+        /// <returns></returns>
+        [Obsolete("Use 'Send(ArraySegment<byte> segment)' instead")]
+        public override void SendResponse(ArraySegment<byte> segment)
+        {
+            this.Send(segment);
         }
 
         /// <summary>

@@ -305,18 +305,13 @@ namespace SuperWebSocket
         }
 
         /// <summary>
-        /// Setups with the specified root config and other parameters.
+        /// Setups with the specified root config.
         /// </summary>
         /// <param name="rootConfig">The root config.</param>
         /// <param name="config">The config.</param>
-        /// <param name="socketServerFactory">The socket server factory.</param>
-        /// <param name="protocol">The protocol.</param>
         /// <returns></returns>
-        protected override bool Setup(IRootConfig rootConfig, IServerConfig config, ISocketServerFactory socketServerFactory, IRequestFilterFactory<IWebSocketFragment> protocol)
+        protected override bool Setup(IRootConfig rootConfig, IServerConfig config)
         {
-            if (!base.Setup(rootConfig, config, socketServerFactory, protocol))
-                return false;
-
             if (m_SubProtocols != null && m_SubProtocols.Count > 0)
                 DefaultSubProtocol = m_SubProtocols.Values.FirstOrDefault();
 

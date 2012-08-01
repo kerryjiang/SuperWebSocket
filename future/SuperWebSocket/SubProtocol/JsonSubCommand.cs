@@ -26,47 +26,47 @@ namespace SuperWebSocket.SubProtocol
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
         /// <summary>
-        /// Gets the json response.
+        /// Gets the json message.
         /// </summary>
         /// <param name="session">The session.</param>
         /// <param name="content">The content.</param>
         /// <returns></returns>
-        protected string GetJsonResponse(TWebSocketSession session, object content)
+        protected string GetJsonMessage(TWebSocketSession session, object content)
         {
-            return GetJsonResponse(session, Name, content);
+            return GetJsonMessage(session, Name, content);
         }
 
         /// <summary>
-        /// Gets the json response.
+        /// Gets the json message.
         /// </summary>
         /// <param name="session">The session.</param>
         /// <param name="name">The name.</param>
         /// <param name="content">The content.</param>
         /// <returns></returns>
-        protected string GetJsonResponse(TWebSocketSession session, string name, object content)
+        protected string GetJsonMessage(TWebSocketSession session, string name, object content)
         {
-            return GetJsonResponse(name, session.CurrentToken, content);
+            return GetJsonMessage(name, session.CurrentToken, content);
         }
 
         /// <summary>
-        /// Sends the json response.
+        /// Sends the json message.
         /// </summary>
         /// <param name="session">The session.</param>
         /// <param name="content">The content.</param>
-        protected void SendJsonResponse(TWebSocketSession session, object content)
+        protected void SendJsonMessage(TWebSocketSession session, object content)
         {
-            session.SendResponse(GetJsonResponse(session, content));
+            session.Send(GetJsonMessage(session, content));
         }
 
         /// <summary>
-        /// Sends the json response.
+        /// Sends the json message.
         /// </summary>
         /// <param name="session">The session.</param>
         /// <param name="name">The name.</param>
         /// <param name="content">The content.</param>
-        protected void SendJsonResponse(TWebSocketSession session, string name, object content)
+        protected void SendJsonMessageResponse(TWebSocketSession session, string name, object content)
         {
-            session.SendResponse(GetJsonResponse(session, name, content));
+            session.Send(GetJsonMessage(session, name, content));
         }
     }
 }

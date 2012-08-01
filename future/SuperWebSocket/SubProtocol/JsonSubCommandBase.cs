@@ -77,24 +77,24 @@ namespace SuperWebSocket.SubProtocol
         }
 
         /// <summary>
-        /// Gets the json response.
+        /// Gets the json message.
         /// </summary>
         /// <param name="token">The token.</param>
         /// <param name="content">The content.</param>
         /// <returns></returns>
-        protected string GetJsonResponse(string token, object content)
+        protected string GetJsonMessage(string token, object content)
         {
-            return GetJsonResponse(Name, token, content);
+            return GetJsonMessage(Name, token, content);
         }
 
         /// <summary>
-        /// Gets the json response.
+        /// Gets the json message.
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="token">The token.</param>
         /// <param name="content">The content.</param>
         /// <returns></returns>
-        protected string GetJsonResponse(string name, string token, object content)
+        protected string GetJsonMessage(string name, string token, object content)
         {
             string strOutput;
 

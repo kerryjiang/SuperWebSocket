@@ -9,10 +9,10 @@ using NUnit.Framework;
 using SuperSocket.Common;
 using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Config;
+using SuperSocket.SocketBase.Logging;
 using SuperSocket.SocketEngine;
 using SuperWebSocket;
 using SuperWebSocket.SubProtocol;
-using SuperSocket.Common.Logging;
 
 namespace SuperWebSocketTest
 {
@@ -30,20 +30,21 @@ namespace SuperWebSocketTest
         [TestFixtureSetUp]
         public override void Setup()
         {
-            m_Bootstrap = new DefaultBootstrap();
+            var rootConfig = new RootConfig { DisablePerformanceDataCollector = true };
 
             m_Encoding = new UTF8Encoding();
 
             m_WebSocketServer = new WebSocketServer(new BasicSubProtocol("Basic", new List<Assembly>{ this.GetType().Assembly } ));
-
-            m_Bootstrap.Initialize(new RootConfig { DisablePerformanceDataCollector = true }, new IAppServer[] { m_WebSocketServer }, new IServerConfig[] { new ServerConfig
+            m_WebSocketServer.Setup(rootConfig, new ServerConfig
                 {
                     Port = 2012,
                     Ip = "Any",
                     MaxConnectionNumber = 100,
                     Mode = SocketMode.Tcp,
                     Name = "SuperWebSocket Server"
-                }}, new ConsoleLogFactory());
+                }, SocketServerFactory.Instance);
+
+            m_Bootstrap = new DefaultBootstrap(rootConfig, new IWorkItem[] { m_WebSocketServer }, new ConsoleLogFactory());
         }
 
         protected override string SubProtocol

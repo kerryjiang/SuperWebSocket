@@ -12,7 +12,7 @@ namespace SuperWebSocket.Samples.JsonCommandAssembly.Command
         protected override void ExecuteJsonCommand(WebSocketSession session, ChatMessage commandInfo)
         {
             //Send the received message back to client
-            SendJsonResponse(session, commandInfo);
+            SendJsonMessage(session, commandInfo);
         }
     }
 }

@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SuperSocket.Facility</name>
+    </assembly>
+    <members>
+        <member name="T:SuperSocket.Facility.PolicyServer.FlashPolicyServer">
+            <summary>
+            Flash policy AppServer
+            </summary>
+        </member>
+        <member name="T:SuperSocket.Facility.PolicyServer.PolicyServer">
+            <summary>
+            PolicyServer base class
+            </summary>
+        </member>
+        <member name="M:SuperSocket.Facility.PolicyServer.PolicyServer.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.Facility.PolicyServer.PolicyServer"/> class.
+            </summary>
+        </member>
+        <member name="M:SuperSocket.Facility.PolicyServer.PolicyServer.Setup(SuperSocket.SocketBase.Config.IRootConfig,SuperSocket.SocketBase.Config.IServerConfig)">
+            <summary>
+            Setups the specified root config.
+            </summary>
+            <param name="rootConfig">The root config.</param>
+            <param name="config">The config.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.Facility.PolicyServer.PolicyServer.SetupPolicyResponse(System.Byte[])">
+            <summary>
+            Setups the policy response.
+            </summary>
+            <param name="policyFileData">The policy file data.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.Facility.PolicyServer.PolicyServer.GetPolicyFileResponse(System.Net.IPEndPoint)">
+            <summary>
+            Gets the policy file response.
+            </summary>
+            <param name="clientEndPoint">The client end point.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.Facility.PolicyServer.PolicyServer.ProcessRequest(SuperSocket.Facility.PolicyServer.PolicySession,System.Byte[])">
+            <summary>
+            Processes the request.
+            </summary>
+            <param name="session">The session.</param>
+            <param name="data">The data.</param>
+        </member>
+        <member name="P:SuperSocket.Facility.PolicyServer.PolicyServer.PolicyResponse">
+            <summary>
+            Gets the policy response.
+            </summary>
+        </member>
+        <member name="M:SuperSocket.Facility.PolicyServer.FlashPolicyServer.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.Facility.PolicyServer.FlashPolicyServer"/> class.
+            </summary>
+        </member>
+        <member name="M:SuperSocket.Facility.PolicyServer.FlashPolicyServer.SetupPolicyResponse(System.Byte[])">
+            <summary>
+            Setups the policy response.
+            </summary>
+            <param name="policyFileData">The policy file data.</param>
+            <returns></returns>
+        </member>
+        <member name="T:SuperSocket.Facility.PolicyServer.PolicyRequestFilter">
+            <summary>
+            PolicyRequestFilter
+            </summary>
+        </member>
+        <member name="M:SuperSocket.Facility.PolicyServer.PolicyRequestFilter.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.Facility.PolicyServer.PolicyRequestFilter"/> class.
+            </summary>
+            <param name="size">The size.</param>
+        </member>
+        <member name="M:SuperSocket.Facility.PolicyServer.PolicyRequestFilter.ProcessFixSizeRequest(SuperSocket.SocketBase.IAppSession{SuperSocket.SocketBase.Protocol.BinaryRequestInfo},System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
+            <summary>
+            Filters the buffer after the server receive the enough size of data.
+            </summary>
+            <param name="session">The session.</param>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="length">The length.</param>
+            <param name="toBeCopied">if set to <c>true</c> [to be copied].</param>
+            <param name="left">The left.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.Facility.PolicyServer.PolicyRequestFilterFactory.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.Facility.PolicyServer.PolicyRequestFilterFactory"/> class.
+            </summary>
+            <param name="fixRequestSize">Size of the fix request.</param>
+        </member>
+        <member name="M:SuperSocket.Facility.PolicyServer.PolicyRequestFilterFactory.CreateFilter(SuperSocket.SocketBase.IAppServer,SuperSocket.SocketBase.ISocketSession)">
+            <summary>
+            Creates the filter.
+            </summary>
+            <param name="appServer">The app server.</param>
+            <param name="socketSession">The socket session.</param>
+            <returns></returns>
+        </member>
+        <member name="P:SuperSocket.Facility.PolicyServer.PolicyRequestFilterFactory.FixRequestSize">
+            <summary>
+            Gets the size of the fix request.
+            </summary>
+            <value>
+            The size of the fix request.
+            </value>
+        </member>
+        <member name="T:SuperSocket.Facility.PolicyServer.PolicySession">
+            <summary>
+            PolicySession
+            </summary>
+        </member>
+        <member name="T:SuperSocket.Facility.PolicyServer.SilverlightPolicyServer">
+            <summary>
+            Silverlight policy AppServer
+            </summary>
+        </member>
+        <member name="M:SuperSocket.Facility.PolicyServer.SilverlightPolicyServer.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.Facility.PolicyServer.SilverlightPolicyServer"/> class.
+            </summary>
+        </member>
+        <member name="M:SuperSocket.Facility.PolicyServer.SilverlightPolicyServer.ProcessRequest(SuperSocket.Facility.PolicyServer.PolicySession,System.Byte[])">
+            <summary>
+            Processes the request.
+            </summary>
+            <param name="session">The session.</param>
+            <param name="data">The data.</param>
+        </member>
+    </members>
+</doc>

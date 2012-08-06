@@ -10,10 +10,10 @@ using SuperSocket.Common;
 using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Command;
 using SuperSocket.SocketBase.Config;
+using SuperSocket.SocketBase.Logging;
 using SuperSocket.SocketEngine;
 using SuperSocket.SocketEngine.Configuration;
 using SuperWebSocket;
-using SuperSocket.Common.Logging;
 
 namespace SuperWebSocketWeb
 {
@@ -28,7 +28,6 @@ namespace SuperWebSocketWeb
 
         void Application_Start(object sender, EventArgs e)
         {
-            LogFactoryProvider.Initialize();
             StartSuperWebSocketByConfig();
             //StartSuperWebSocketByProgramming();
             var ts = new TimeSpan(0, 0, 5);
@@ -39,16 +38,15 @@ namespace SuperWebSocketWeb
         {
             lock (m_SecureSessionSyncRoot)
             {
-                m_SecureSessions.ForEach(s => s.SendResponseAsync("Push data from SecureWebSocket. Current Time: " + DateTime.Now));
+                m_SecureSessions.ForEach(s => s.Send("Push data from SecureWebSocket. Current Time: " + DateTime.Now));
             }
         }
 
         void StartSuperWebSocketByConfig()
         {
-            m_Bootstrap = new DefaultBootstrap();
+            m_Bootstrap = BootstrapFactory.CreateBootstrap();
 
-            var serverConfig = ConfigurationManager.GetSection("socketServer") as SocketServiceConfig;
-            if (!m_Bootstrap.Initialize(serverConfig))
+            if (!m_Bootstrap.Initialize())
                 return;
 
             var socketServer = m_Bootstrap.AppServers.FirstOrDefault(s => s.Name.Equals("SuperWebSocket")) as WebSocketServer;
@@ -90,7 +88,7 @@ namespace SuperWebSocketWeb
 
         void StartSuperWebSocketByProgramming()
         {
-            m_Bootstrap = new DefaultBootstrap();
+            var rootConfig = new RootConfig();
 
             var socketServer = new WebSocketServer();
 
@@ -98,36 +96,34 @@ namespace SuperWebSocketWeb
             socketServer.NewSessionConnected += socketServer_NewSessionConnected;
             socketServer.SessionClosed += socketServer_SessionClosed;
 
-            var secureSocketServer = new WebSocketServer();
-
-            m_Bootstrap.Initialize(new RootConfig(), new IAppServer[] { socketServer, secureSocketServer },
-                new IServerConfig[]
+            socketServer.Setup(rootConfig,
+                new ServerConfig
                 {
-                    new ServerConfig
-                    {
-                        Name = "SuperWebSocket",
-                        Ip = "Any",
-                        Port = 2011,
-                        Mode = SocketMode.Tcp
-                    },
-                    new ServerConfig
-                    {
-                        Name = "SecureSuperWebSocket",
-                        Ip = "Any",
-                        Port = 2012,
-                        Mode = SocketMode.Tcp,
-                        Security = "tls",
-                        Certificate = new SuperSocket.SocketBase.Config.CertificateConfig
-                        {
-                            FilePath = Server.MapPath("~/localhost.pfx"),
-                            Password = "supersocket",
-                            IsEnabled = true
-                        }
-                    }
-                });
+                    Name = "SuperWebSocket",
+                    Ip = "Any",
+                    Port = 2011,
+                    Mode = SocketMode.Tcp
+                }, SocketServerFactory.Instance);
 
+            var secureSocketServer = new WebSocketServer();
             secureSocketServer.NewSessionConnected += secureSocketServer_NewSessionConnected;
             secureSocketServer.SessionClosed += secureSocketServer_SessionClosed;
+
+            secureSocketServer.Setup(rootConfig, new ServerConfig
+            {
+                Name = "SecureSuperWebSocket",
+                Ip = "Any",
+                Port = 2012,
+                Mode = SocketMode.Tcp,
+                Security = "tls",
+                Certificate = new SuperSocket.SocketBase.Config.CertificateConfig
+                {
+                    FilePath = Server.MapPath("~/localhost.pfx"),
+                    Password = "supersocket"
+                }
+            }, SocketServerFactory.Instance);
+
+            m_Bootstrap = new DefaultBootstrap(new RootConfig(), new IWorkItem[] { socketServer, secureSocketServer });
 
             Application["WebSocketPort"] = socketServer.Config.Port;
             Application["SecureWebSocketPort"] = secureSocketServer.Config.Port;
@@ -160,8 +156,7 @@ namespace SuperWebSocketWeb
             {
                 foreach (var s in m_Sessions)
                 {
-                    //s.SendResponse(message);
-                    s.SendResponseAsync(message);
+                    s.Send(message);
                 }
             }
         }

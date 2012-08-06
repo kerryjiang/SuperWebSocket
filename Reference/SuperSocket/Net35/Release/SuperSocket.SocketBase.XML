@@ -252,7 +252,6 @@
             <summary>
             Setups the command into command dictionary
             </summary>
-            <param name="commandDict">The target command dict.</param>
             <returns></returns>
         </member>
         <member name="M:SuperSocket.SocketBase.AppServerBase`2.Setup(SuperSocket.SocketBase.Config.IRootConfig,SuperSocket.SocketBase.Config.IServerConfig)">
@@ -1629,14 +1628,6 @@
             Certificate configuration interface
             </summary>
         </member>
-        <member name="P:SuperSocket.SocketBase.Config.ICertificateConfig.IsEnabled">
-            <summary>
-            Gets a value indicating whether this instance is enabled.
-            </summary>
-            <value>
-            	<c>true</c> if this instance is enabled; otherwise, <c>false</c>.
-            </value>
-        </member>
         <member name="P:SuperSocket.SocketBase.Config.ICertificateConfig.FilePath">
             <summary>
             Gets the file path.
@@ -1659,14 +1650,6 @@
             <summary>
             Gets the thumbprint.
             </summary>
-        </member>
-        <member name="P:SuperSocket.SocketBase.Config.CertificateConfig.IsEnabled">
-            <summary>
-            Gets/sets a value indicating whether this instance is enabled.
-            </summary>
-            <value>
-            	<c>true</c> if this instance is enabled; otherwise, <c>false</c>.
-            </value>
         </member>
         <member name="P:SuperSocket.SocketBase.Config.CertificateConfig.FilePath">
             <summary>
@@ -1813,9 +1796,9 @@
             Gets the servers definitions.
             </summary>
         </member>
-        <member name="P:SuperSocket.SocketBase.Config.IConfigurationSource.Services">
+        <member name="P:SuperSocket.SocketBase.Config.IConfigurationSource.ServerTypes">
             <summary>
-            Gets the services definition.
+            Gets the appServer types definition.
             </summary>
         </member>
         <member name="P:SuperSocket.SocketBase.Config.IConfigurationSource.ConnectionFilters">
@@ -1854,24 +1837,24 @@
             Gets the servers definitions.
             </summary>
         </member>
-        <member name="P:SuperSocket.SocketBase.Config.ConfigurationSource.Services">
+        <member name="P:SuperSocket.SocketBase.Config.ConfigurationSource.ServerTypes">
             <summary>
-            Gets the services definition.
+            Gets/sets the server types definition.
             </summary>
         </member>
         <member name="P:SuperSocket.SocketBase.Config.ConfigurationSource.ConnectionFilters">
             <summary>
-            Gets the connection filters definition.
+            Gets/sets the connection filters definition.
             </summary>
         </member>
         <member name="P:SuperSocket.SocketBase.Config.ConfigurationSource.LogFactories">
             <summary>
-            Gets the log factories definition.
+            Gets/sets the log factories definition.
             </summary>
         </member>
         <member name="P:SuperSocket.SocketBase.Config.ConfigurationSource.RequestFilterFactories">
             <summary>
-            Gets the request filter factories definition.
+            Gets/sets the request filter factories definition.
             </summary>
         </member>
         <member name="P:SuperSocket.SocketBase.Config.ConfigurationSource.CommandLoaders">
@@ -1917,12 +1900,20 @@
             <param name="childConfigName">Name of the child config.</param>
             <returns></returns>
         </member>
-        <member name="P:SuperSocket.SocketBase.Config.IServerConfig.ServiceName">
+        <member name="P:SuperSocket.SocketBase.Config.IServerConfig.ServerTypeName">
             <summary>
-            Gets the name of the service.
+            Gets the name of the server type this appServer want to use.
             </summary>
             <value>
-            The name of the service.
+            The name of the server type.
+            </value>
+        </member>
+        <member name="P:SuperSocket.SocketBase.Config.IServerConfig.ServerType">
+            <summary>
+            Gets the type definition of the appserver.
+            </summary>
+            <value>
+            The type of the server.
             </value>
         </member>
         <member name="P:SuperSocket.SocketBase.Config.IServerConfig.RequestFilterFactory">
@@ -2178,12 +2169,20 @@
             <param name="childConfigName">Name of the child config.</param>
             <returns></returns>
         </member>
-        <member name="P:SuperSocket.SocketBase.Config.ServerConfig.ServiceName">
+        <member name="P:SuperSocket.SocketBase.Config.ServerConfig.ServerTypeName">
             <summary>
-            Gets/sets the name of the service.
+            Gets/sets the name of the server type of this appServer want to use.
             </summary>
             <value>
-            The name of the service.
+            The name of the server type.
+            </value>
+        </member>
+        <member name="P:SuperSocket.SocketBase.Config.ServerConfig.ServerType">
+            <summary>
+            Gets/sets the type definition of the appserver.
+            </summary>
+            <value>
+            The type of the server.
             </value>
         </member>
         <member name="P:SuperSocket.SocketBase.Config.ServerConfig.RequestFilterFactory">
@@ -4536,7 +4535,7 @@
             The type.
             </value>
         </member>
-        <member name="P:SuperSocket.SocketBase.Provider.ProviderKey.Service">
+        <member name="P:SuperSocket.SocketBase.Provider.ProviderKey.ServerType">
             <summary>
             Gets the service.
             </summary>

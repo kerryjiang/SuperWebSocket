@@ -120,8 +120,7 @@ namespace SuperWebSocketWeb
                         Certificate = new SuperSocket.SocketBase.Config.CertificateConfig
                         {
                             FilePath = Server.MapPath("~/localhost.pfx"),
-                            Password = "supersocket",
-                            IsEnabled = true
+                            Password = "supersocket"
                         }
                     }, SocketServerFactory.Instance);
 

@@ -10,11 +10,10 @@ using Microsoft.WindowsAzure.Diagnostics;
 using Microsoft.WindowsAzure.ServiceRuntime;
 using Microsoft.WindowsAzure.StorageClient;
 using SuperSocket.Common;
-using SuperSocket.Common.Logging;
+using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Config;
 using SuperSocket.SocketEngine;
 using SuperSocket.SocketEngine.Configuration;
-using SuperSocket.SocketBase;
 
 namespace SuperWebSocketWorkerRole
 {
@@ -36,16 +35,16 @@ namespace SuperWebSocketWorkerRole
 
         public override bool OnStart()
         {
-            m_Bootstrap = new DefaultBootstrap();
+            m_Bootstrap = BootstrapFactory.CreateBootstrap();
 
             // Set the maximum number of concurrent connections 
             ServicePointManager.DefaultConnectionLimit = 12;
 
             var serverConfig = ConfigurationManager.GetSection("socketServer") as SocketServiceConfig;
 
-            if (!m_Bootstrap.Initialize(serverConfig, ResolveServerConfig))
+            if (!m_Bootstrap.Initialize(ResolveServerConfig))
             {
-                Trace.WriteLine("Failed to initialize SuperSocket!", "Error");
+                Trace.WriteLine("Failed to initialize SuperWebSocket!", "Error");
                 return false;
             }
 

@@ -317,51 +317,6 @@
             <param name="configFile">The configuration file.</param>
             <returns></returns>
         </member>
-        <member name="T:SuperSocket.SocketEngine.Configuration.TypeProvider">
-            <summary>
-            Type provider configuration
-            </summary>
-        </member>
-        <member name="P:SuperSocket.SocketEngine.Configuration.TypeProvider.Name">
-            <summary>
-            Gets the name.
-            </summary>
-        </member>
-        <member name="P:SuperSocket.SocketEngine.Configuration.TypeProvider.Type">
-            <summary>
-            Gets the type.
-            </summary>
-        </member>
-        <member name="T:SuperSocket.SocketEngine.Configuration.TypeProviderCollection">
-            <summary>
-            Type provider colletion configuration
-            </summary>
-        </member>
-        <member name="M:SuperSocket.SocketEngine.Configuration.TypeProviderCollection.CreateNewElement">
-            <summary>
-            When overridden in a derived class, creates a new <see cref="T:System.Configuration.ConfigurationElement"/>.
-            </summary>
-            <returns>
-            A new <see cref="T:System.Configuration.ConfigurationElement"/>.
-            </returns>
-        </member>
-        <member name="M:SuperSocket.SocketEngine.Configuration.TypeProviderCollection.GetElementKey(System.Configuration.ConfigurationElement)">
-            <summary>
-            Gets the element key for a specified configuration element when overridden in a derived class.
-            </summary>
-            <param name="element">The <see cref="T:System.Configuration.ConfigurationElement"/> to return the key for.</param>
-            <returns>
-            An <see cref="T:System.Object"/> that acts as the key for the specified <see cref="T:System.Configuration.ConfigurationElement"/>.
-            </returns>
-        </member>
-        <member name="M:SuperSocket.SocketEngine.Configuration.TypeProviderCollection.GetEnumerator">
-            <summary>
-            Returns an enumerator that iterates through the collection.
-            </summary>
-            <returns>
-            A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
-            </returns>
-        </member>
         <member name="M:SuperSocket.SocketEngine.MarshalAppServer.#ctor(System.String)">
             <summary>
             Initializes a new instance of the <see cref="T:SuperSocket.SocketEngine.AppDomainAppServer"/> class.
@@ -851,6 +806,14 @@
             </returns>
             <exception cref="T:System.Configuration.ConfigurationErrorsException">The element identified by <paramref name="elementName"/> is locked.- or -One or more of the element's attributes is locked.- or -<paramref name="elementName"/> is unrecognized, or the element has an unrecognized attribute.- or -The element has a Boolean attribute with an invalid value.- or -An attempt was made to deserialize a property more than once.- or -An attempt was made to deserialize a property that is not a valid member of the element.- or -The element cannot contain a CDATA or text element.</exception>
         </member>
+        <member name="M:SuperSocket.SocketEngine.Configuration.SocketServiceConfig.GetChildConfig``1(System.String)">
+            <summary>
+            Gets the child config.
+            </summary>
+            <typeparam name="TConfig">The type of the config.</typeparam>
+            <param name="childConfigName">Name of the child config.</param>
+            <returns></returns>
+        </member>
         <member name="P:SuperSocket.SocketEngine.Configuration.SocketServiceConfig.Servers">
             <summary>
             Gets all the server configurations
@@ -922,6 +885,11 @@
         <member name="P:SuperSocket.SocketEngine.Configuration.SocketServiceConfig.LogFactory">
             <summary>
             Gets the logfactory name of the bootstrap.
+            </summary>
+        </member>
+        <member name="P:SuperSocket.SocketEngine.Configuration.SocketServiceConfig.OptionElements">
+            <summary>
+            Gets the option elements.
             </summary>
         </member>
         <member name="T:SuperSocket.SocketEngine.SocketServerFactory">

@@ -211,6 +211,14 @@
             The root configuration interface
             </summary>
         </member>
+        <member name="M:SuperSocket.SocketBase.Config.IRootConfig.GetChildConfig``1(System.String)">
+            <summary>
+            Gets the child config.
+            </summary>
+            <typeparam name="TConfig">The type of the config.</typeparam>
+            <param name="childConfigName">Name of the child config.</param>
+            <returns></returns>
+        </member>
         <member name="P:SuperSocket.SocketBase.Config.IRootConfig.MaxWorkingThreads">
             <summary>
             Gets the max working threads.
@@ -255,6 +263,11 @@
         <member name="P:SuperSocket.SocketBase.Config.IRootConfig.Isolation">
             <summary>
             Gets the isolation mode.
+            </summary>
+        </member>
+        <member name="P:SuperSocket.SocketBase.Config.IRootConfig.OptionElements">
+            <summary>
+            Gets the option elements.
             </summary>
         </member>
         <member name="P:SuperSocket.SocketBase.Config.IConfigurationSource.Servers">
@@ -312,10 +325,24 @@
             Root configuration model
             </summary>
         </member>
+        <member name="M:SuperSocket.SocketBase.Config.RootConfig.#ctor(SuperSocket.SocketBase.Config.IRootConfig)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.Config.RootConfig"/> class.
+            </summary>
+            <param name="rootConfig">The root config.</param>
+        </member>
         <member name="M:SuperSocket.SocketBase.Config.RootConfig.#ctor">
             <summary>
             Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.Config.RootConfig"/> class.
             </summary>
+        </member>
+        <member name="M:SuperSocket.SocketBase.Config.RootConfig.GetChildConfig``1(System.String)">
+            <summary>
+            Gets the child config.
+            </summary>
+            <typeparam name="TConfig">The type of the config.</typeparam>
+            <param name="childConfigName">Name of the child config.</param>
+            <returns></returns>
         </member>
         <member name="P:SuperSocket.SocketBase.Config.RootConfig.MaxWorkingThreads">
             <summary>
@@ -363,6 +390,11 @@
             The log factory.
             </value>
         </member>
+        <member name="P:SuperSocket.SocketBase.Config.RootConfig.OptionElements">
+            <summary>
+            Gets/sets the option elements.
+            </summary>
+        </member>
         <member name="M:SuperSocket.SocketBase.Config.ConfigurationSource.#ctor">
             <summary>
             Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.Config.ConfigurationSource"/> class.
@@ -403,6 +435,51 @@
             <summary>
             Gets/sets the command loaders definition.
             </summary>
+        </member>
+        <member name="T:SuperSocket.SocketBase.Config.TypeProvider">
+            <summary>
+            Type provider configuration
+            </summary>
+        </member>
+        <member name="P:SuperSocket.SocketBase.Config.TypeProvider.Name">
+            <summary>
+            Gets the name.
+            </summary>
+        </member>
+        <member name="P:SuperSocket.SocketBase.Config.TypeProvider.Type">
+            <summary>
+            Gets the type.
+            </summary>
+        </member>
+        <member name="T:SuperSocket.SocketBase.Config.TypeProviderCollection">
+            <summary>
+            Type provider colletion configuration
+            </summary>
+        </member>
+        <member name="M:SuperSocket.SocketBase.Config.TypeProviderCollection.CreateNewElement">
+            <summary>
+            When overridden in a derived class, creates a new <see cref="T:System.Configuration.ConfigurationElement"/>.
+            </summary>
+            <returns>
+            A new <see cref="T:System.Configuration.ConfigurationElement"/>.
+            </returns>
+        </member>
+        <member name="M:SuperSocket.SocketBase.Config.TypeProviderCollection.GetElementKey(System.Configuration.ConfigurationElement)">
+            <summary>
+            Gets the element key for a specified configuration element when overridden in a derived class.
+            </summary>
+            <param name="element">The <see cref="T:System.Configuration.ConfigurationElement"/> to return the key for.</param>
+            <returns>
+            An <see cref="T:System.Object"/> that acts as the key for the specified <see cref="T:System.Configuration.ConfigurationElement"/>.
+            </returns>
+        </member>
+        <member name="M:SuperSocket.SocketBase.Config.TypeProviderCollection.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the collection.
+            </summary>
+            <returns>
+            A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
+            </returns>
         </member>
         <member name="T:SuperSocket.SocketBase.Config.TypeProviderConfig">
             <summary>
@@ -1630,21 +1707,21 @@
             Gets the offset delta.
             </summary>
         </member>
-        <member name="T:SuperSocket.SocketBase.Protocol.FixHeaderRequestFilter`1">
+        <member name="T:SuperSocket.SocketBase.Protocol.FixedHeaderRequestFilter`1">
             <summary>
-            FixHeaderRequestFilter,
+            FixedHeaderRequestFilter,
             it is the request filter base for the protocol which define fixed length header and the header contains the request body length,
             you can implement your own request filter for this kind protocol easily by inheriting this class 
             </summary>
             <typeparam name="TRequestInfo">The type of the request info.</typeparam>
         </member>
-        <member name="M:SuperSocket.SocketBase.Protocol.FixHeaderRequestFilter`1.#ctor(System.Int32)">
+        <member name="M:SuperSocket.SocketBase.Protocol.FixedHeaderRequestFilter`1.#ctor(System.Int32)">
             <summary>
-            Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.Protocol.FixHeaderRequestFilter`1"/> class.
+            Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.Protocol.FixedHeaderRequestFilter`1"/> class.
             </summary>
             <param name="headerSize">Size of the header.</param>
         </member>
-        <member name="M:SuperSocket.SocketBase.Protocol.FixHeaderRequestFilter`1.Filter(SuperSocket.SocketBase.IAppSession{`0},System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
+        <member name="M:SuperSocket.SocketBase.Protocol.FixedHeaderRequestFilter`1.Filter(SuperSocket.SocketBase.IAppSession{`0},System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
             <summary>
             Filters the specified session.
             </summary>
@@ -1656,7 +1733,7 @@
             <param name="left">The left.</param>
             <returns></returns>
         </member>
-        <member name="M:SuperSocket.SocketBase.Protocol.FixHeaderRequestFilter`1.ProcessFixSizeRequest(SuperSocket.SocketBase.IAppSession{`0},System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
+        <member name="M:SuperSocket.SocketBase.Protocol.FixedHeaderRequestFilter`1.ProcessFixSizeRequest(SuperSocket.SocketBase.IAppSession{`0},System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
             <summary>
             Processes the fix size request.
             </summary>
@@ -1668,7 +1745,7 @@
             <param name="left">The left.</param>
             <returns></returns>
         </member>
-        <member name="M:SuperSocket.SocketBase.Protocol.FixHeaderRequestFilter`1.GetBodyLengthFromHeader(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:SuperSocket.SocketBase.Protocol.FixedHeaderRequestFilter`1.GetBodyLengthFromHeader(System.Byte[],System.Int32,System.Int32)">
             <summary>
             Gets the body length from header.
             </summary>
@@ -1677,7 +1754,7 @@
             <param name="length">The length.</param>
             <returns></returns>
         </member>
-        <member name="M:SuperSocket.SocketBase.Protocol.FixHeaderRequestFilter`1.ResolveRequestData(System.ArraySegment{System.Byte},System.Byte[],System.Int32,System.Int32)">
+        <member name="M:SuperSocket.SocketBase.Protocol.FixedHeaderRequestFilter`1.ResolveRequestData(System.ArraySegment{System.Byte},System.Byte[],System.Int32,System.Int32)">
             <summary>
             Resolves the request data.
             </summary>
@@ -2689,6 +2766,21 @@
             Server configruation model
             </summary>
         </member>
+        <member name="F:SuperSocket.SocketBase.Config.ServerConfig.DefaultReceiveBufferSize">
+            <summary>
+            Default ReceiveBufferSize
+            </summary>
+        </member>
+        <member name="F:SuperSocket.SocketBase.Config.ServerConfig.DefaultMaxConnectionNumber">
+            <summary>
+            Default MaxConnectionNumber
+            </summary>
+        </member>
+        <member name="F:SuperSocket.SocketBase.Config.ServerConfig.DefaultMaxRequestLength">
+            <summary>
+            Default MaxRequestLength
+            </summary>
+        </member>
         <member name="M:SuperSocket.SocketBase.Config.ServerConfig.#ctor(SuperSocket.SocketBase.Config.IServerConfig)">
             <summary>
             Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.Config.ServerConfig"/> class.
@@ -3271,13 +3363,6 @@
             <param name="socketSession">The socket session.</param>
             <param name="requestFilter">The request filter.</param>
         </member>
-        <member name="M:SuperSocket.SocketBase.IAppSession`2.ExecuteCommand(`0,`1)">
-            <summary>
-            Executes the command.
-            </summary>
-            <param name="session">The session.</param>
-            <param name="cmdInfo">The request info.</param>
-        </member>
         <member name="T:SuperSocket.SocketBase.ICommandSource`1">
             <summary>
             The interface for class who provides commands source
@@ -3708,12 +3793,12 @@
         </member>
         <member name="T:SuperSocket.SocketBase.AppServer">
             <summary>
-            AppServer basic class
+            AppServer class
             </summary>
         </member>
         <member name="T:SuperSocket.SocketBase.AppServer`1">
             <summary>
-            AppServer basic class
+            AppServer class
             </summary>
             <typeparam name="TAppSession">The type of the app session.</typeparam>
         </member>
@@ -3761,12 +3846,24 @@
             <param name="config">The config.</param>
             <returns></returns>
         </member>
+        <member name="M:SuperSocket.SocketBase.AppServerBase`2.Setup(SuperSocket.SocketBase.Config.IServerConfig,SuperSocket.SocketBase.ISocketServerFactory,SuperSocket.SocketBase.Protocol.IRequestFilterFactory{`1},SuperSocket.SocketBase.Logging.ILogFactory,System.Collections.Generic.IEnumerable{SuperSocket.SocketBase.IConnectionFilter},System.Collections.Generic.IEnumerable{SuperSocket.SocketBase.Command.ICommandLoader})">
+            <summary>
+            Setups with the specified config.
+            </summary>
+            <param name="config">The server config.</param>
+            <param name="socketServerFactory">The socket server factory.</param>
+            <param name="requestFilterFactory">The request filter factory.</param>
+            <param name="logFactory">The log factory.</param>
+            <param name="connectionFilters">The connection filters.</param>
+            <param name="commandLoaders">The command loaders.</param>
+            <returns></returns>
+        </member>
         <member name="M:SuperSocket.SocketBase.AppServerBase`2.Setup(SuperSocket.SocketBase.Config.IRootConfig,SuperSocket.SocketBase.Config.IServerConfig,SuperSocket.SocketBase.ISocketServerFactory,SuperSocket.SocketBase.Protocol.IRequestFilterFactory{`1},SuperSocket.SocketBase.Logging.ILogFactory,System.Collections.Generic.IEnumerable{SuperSocket.SocketBase.IConnectionFilter},System.Collections.Generic.IEnumerable{SuperSocket.SocketBase.Command.ICommandLoader})">
             <summary>
             Setups the specified root config, this method used for programming setup
             </summary>
             <param name="rootConfig">The root config.</param>
-            <param name="config">The config.</param>
+            <param name="config">The server config.</param>
             <param name="socketServerFactory">The socket server factory.</param>
             <param name="requestFilterFactory">The request filter factory.</param>
             <param name="logFactory">The log factory.</param>
@@ -4242,16 +4339,9 @@
         </member>
         <member name="M:SuperSocket.SocketBase.AppSession`2.HandleException(System.Exception)">
             <summary>
-            Handles the exceptional error.
+            Handles the exceptional error, it only handles application error.
             </summary>
             <param name="e">The exception.</param>
-        </member>
-        <member name="M:SuperSocket.SocketBase.AppSession`2.ExecuteCommand(`0,`1)">
-            <summary>
-            Executes the command.
-            </summary>
-            <param name="session">The session.</param>
-            <param name="cmdInfo">The CMD info.</param>
         </member>
         <member name="M:SuperSocket.SocketBase.AppSession`2.HandleUnknownRequest(`1)">
             <summary>
@@ -4531,6 +4621,12 @@
             Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.AppSession`1"/> class.
             </summary>
             <param name="appendNewLineForResponse">if set to <c>true</c> [append new line for response].</param>
+        </member>
+        <member name="M:SuperSocket.SocketBase.AppSession`1.HandleUnknownRequest(SuperSocket.SocketBase.Protocol.StringRequestInfo)">
+            <summary>
+            Handles the unknown request.
+            </summary>
+            <param name="requestInfo">The request info.</param>
         </member>
         <member name="M:SuperSocket.SocketBase.AppSession`1.ProcessSendingMessage(System.String)">
             <summary>

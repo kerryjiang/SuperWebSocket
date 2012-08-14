@@ -14,7 +14,7 @@ namespace SuperWebSocketTest.Command
     {
         public override void ExecuteCommand(WebSocketSession session, SubRequestInfo requestInfo)
         {
-            var paramsArray = requestInfo.Data.Split(' ');
+            var paramsArray = requestInfo.Body.Split(' ');
             for (var i = 0; i < paramsArray.Length; i++)
             {
                 session.Send(paramsArray[i]);

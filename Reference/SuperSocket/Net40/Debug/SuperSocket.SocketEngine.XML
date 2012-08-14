@@ -908,11 +908,6 @@
             <param name="requestFilterFactory">The request filter factory.</param>
             <returns></returns>
         </member>
-        <member name="P:SuperSocket.SocketEngine.SocketServerFactory.Instance">
-            <summary>
-            Gets the instance.
-            </summary>
-        </member>
         <member name="M:SuperSocket.SocketEngine.UdpSocketListener.Start(SuperSocket.SocketBase.Config.IServerConfig)">
             <summary>
             Starts to listen

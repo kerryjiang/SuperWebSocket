@@ -23,7 +23,7 @@ namespace SuperWebSocket.Protocol
 
         }
 
-        public override IWebSocketFragment Filter(IAppSession<IWebSocketFragment> session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
+        public override IWebSocketFragment Filter(IAppSession session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
         {
             left = 0;
 
@@ -127,13 +127,16 @@ namespace SuperWebSocket.Protocol
             }
         }
 
-        void Reset()
+        /// <summary>
+        /// Resets this instance.
+        /// </summary>
+        public override void Reset()
         {
+            base.Reset();
+
             m_Type = null;
             m_Length = null;
             m_TempLength = 0;
-
-            ClearBufferSegments();
         }
     }
 }

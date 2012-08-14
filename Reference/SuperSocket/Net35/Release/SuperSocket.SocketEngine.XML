@@ -931,11 +931,6 @@
             <param name="requestFilterFactory">The request filter factory.</param>
             <returns></returns>
         </member>
-        <member name="P:SuperSocket.SocketEngine.SocketServerFactory.Instance">
-            <summary>
-            Gets the instance.
-            </summary>
-        </member>
         <member name="T:SuperSocket.SocketEngine.TcpAsyncSocketListener">
             <summary>
             Tcp socket listener in async mode

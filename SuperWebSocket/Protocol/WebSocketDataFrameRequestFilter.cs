@@ -31,17 +31,17 @@ namespace SuperWebSocket.Protocol
             m_PartReader = DataFramePartReader.NewReader;
         }
 
-        protected void AddArraySegment(ArraySegmentList segments, byte[] buffer, int offset, int length, bool isReusableBuffer)
+        protected void AddArraySegment(ArraySegmentList segments, byte[] buffer, int offset, int length, bool toBeCopied)
         {
-            segments.AddSegment(buffer, offset, length, isReusableBuffer);
+            segments.AddSegment(buffer, offset, length, toBeCopied);
         }
 
-        public IWebSocketFragment Filter(IAppSession<IWebSocketFragment> session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
+        public IWebSocketFragment Filter(IAppSession session, byte[] readBuffer, int offset, int length, bool toBeCopied, out int left)
         {
             if (m_Frame == null)
                 m_Frame = new WebSocketDataFrame(new ArraySegmentList());
 
-            this.AddArraySegment(m_Frame.InnerData, readBuffer, offset, length, isReusableBuffer);
+            this.AddArraySegment(m_Frame.InnerData, readBuffer, offset, length, toBeCopied);
 
             IDataFramePartReader nextPartReader;
 
@@ -77,6 +77,11 @@ namespace SuperWebSocket.Protocol
                     return null;
                 }
             }
+        }
+
+        public void Reset()
+        {
+            m_Frame = null;
         }
     }
 }

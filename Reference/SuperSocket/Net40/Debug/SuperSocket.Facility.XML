@@ -76,7 +76,7 @@
             </summary>
             <param name="size">The size.</param>
         </member>
-        <member name="M:SuperSocket.Facility.PolicyServer.PolicyRequestFilter.ProcessFixSizeRequest(SuperSocket.SocketBase.IAppSession{SuperSocket.SocketBase.Protocol.BinaryRequestInfo},System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
+        <member name="M:SuperSocket.Facility.PolicyServer.PolicyRequestFilter.ProcessMatchedRequest(SuperSocket.SocketBase.IAppSession,System.Byte[],System.Int32,System.Int32,System.Boolean)">
             <summary>
             Filters the buffer after the server receive the enough size of data.
             </summary>
@@ -85,7 +85,6 @@
             <param name="offset">The offset.</param>
             <param name="length">The length.</param>
             <param name="toBeCopied">if set to <c>true</c> [to be copied].</param>
-            <param name="left">The left.</param>
             <returns></returns>
         </member>
         <member name="M:SuperSocket.Facility.PolicyServer.PolicyRequestFilterFactory.#ctor(System.Int32)">

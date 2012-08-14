@@ -262,22 +262,36 @@
             <param name="config">The config.</param>
             <returns></returns>
         </member>
-        <member name="M:SuperSocket.SocketBase.AppServerBase`2.Setup(SuperSocket.SocketBase.Config.IServerConfig,SuperSocket.SocketBase.ISocketServerFactory,System.Object[])">
+        <member name="M:SuperSocket.SocketBase.AppServerBase`2.Setup(System.Int32)">
+            <summary>
+            Setups with the specified port.
+            </summary>
+            <param name="port">The port.</param>
+            <returns>return setup result</returns>
+        </member>
+        <member name="M:SuperSocket.SocketBase.AppServerBase`2.Setup(System.String,System.Int32,System.Object[])">
+            <summary>
+            Setups with the specified ip and port.
+            </summary>
+            <param name="ip">The ip.</param>
+            <param name="port">The port.</param>
+            <param name="providers">The providers.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.SocketBase.AppServerBase`2.Setup(SuperSocket.SocketBase.Config.IServerConfig,System.Object[])">
             <summary>
             Setups with the specified config, used for programming setup
             </summary>
             <param name="config">The server config.</param>
-            <param name="socketServerFactory">The socket server factory.</param>
             <param name="providers">The providers.</param>
             <returns></returns>
         </member>
-        <member name="M:SuperSocket.SocketBase.AppServerBase`2.Setup(SuperSocket.SocketBase.Config.IRootConfig,SuperSocket.SocketBase.Config.IServerConfig,SuperSocket.SocketBase.ISocketServerFactory,System.Object[])">
+        <member name="M:SuperSocket.SocketBase.AppServerBase`2.Setup(SuperSocket.SocketBase.Config.IRootConfig,SuperSocket.SocketBase.Config.IServerConfig,System.Object[])">
             <summary>
             Setups with the specified root config, used for programming setup
             </summary>
             <param name="rootConfig">The root config.</param>
             <param name="config">The server config.</param>
-            <param name="socketServerFactory">The socket server factory.</param>
             <param name="providers">The providers.</param>
             <returns></returns>
         </member>
@@ -379,7 +393,7 @@
             <param name="session">The session.</param>
             <param name="requestInfo">The request info.</param>
         </member>
-        <member name="M:SuperSocket.SocketBase.AppServerBase`2.ExecuteCommand(SuperSocket.SocketBase.IAppSession{`1},`1)">
+        <member name="M:SuperSocket.SocketBase.AppServerBase`2.ExecuteCommand(SuperSocket.SocketBase.IAppSession,`1)">
             <summary>
             Executes the command for the session.
             </summary>
@@ -756,12 +770,6 @@
             </summary>
             <param name="reason">The close reason.</param>
         </member>
-        <member name="M:SuperSocket.SocketBase.IAppSession.HandleException(System.Exception)">
-            <summary>
-            Handles the exceptional error.
-            </summary>
-            <param name="e">The e.</param>
-        </member>
         <member name="M:SuperSocket.SocketBase.IAppSession.ProcessRequest(System.Byte[],System.Int32,System.Int32,System.Boolean)">
             <summary>
             Processes the request.
@@ -865,18 +873,6 @@
             </summary>
             <typeparam name="TAppSession">The type of the app session.</typeparam>
             <typeparam name="TRequestInfo">The type of the request info.</typeparam>
-        </member>
-        <member name="T:SuperSocket.SocketBase.IAppSession`1">
-            <summary>
-            The interface for appSession
-            </summary>
-            <typeparam name="TRequestInfo">The type of the request info.</typeparam>
-        </member>
-        <member name="M:SuperSocket.SocketBase.IAppSession`1.HandleUnknownRequest(`0)">
-            <summary>
-            Handles the unknown request.
-            </summary>
-            <param name="requestInfo">The request info.</param>
         </member>
         <member name="M:SuperSocket.SocketBase.IAppSession`2.Initialize(SuperSocket.SocketBase.IAppServer{`0,`1},SuperSocket.SocketBase.ISocketSession,SuperSocket.SocketBase.Protocol.IRequestFilter{`1})">
             <summary>
@@ -1217,13 +1213,6 @@
             </summary>
             <param name="rawMessage">The raw message.</param>
             <returns></returns>
-        </member>
-        <member name="M:SuperSocket.SocketBase.AppSession`1.TrySend(System.String)">
-            <summary>
-            Try to send the specified message.
-            </summary>
-            <param name="message">The message.</param>
-            <returns>Indicate whether the message was pushed into the sending queue</returns>
         </member>
         <member name="M:SuperSocket.SocketBase.AppSession`1.Send(System.String)">
             <summary>
@@ -4041,6 +4030,11 @@
             <param name="source">The source.</param>
             <returns></returns>
         </member>
+        <member name="F:SuperSocket.SocketBase.Protocol.BasicRequestInfoParser.DefaultInstance">
+            <summary>
+            The default singlegton instance
+            </summary>
+        </member>
         <member name="M:SuperSocket.SocketBase.Protocol.BasicRequestInfoParser.#ctor">
             <summary>
             Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.Protocol.BasicRequestInfoParser"/> class.
@@ -4069,13 +4063,13 @@
             <summary>
             RequestInfo basic class
             </summary>
-            <typeparam name="TRequestData">The type of the request data.</typeparam>
+            <typeparam name="TRequestBody">The type of the request body.</typeparam>
         </member>
         <member name="T:SuperSocket.SocketBase.Protocol.IRequestInfo`1">
             <summary>
             Request information interface
             </summary>
-            <typeparam name="TRequestData">The type of the request data.</typeparam>
+            <typeparam name="TRequestBody">The type of the request body.</typeparam>
         </member>
         <member name="T:SuperSocket.SocketBase.Protocol.IRequestInfo">
             <summary>
@@ -4087,9 +4081,14 @@
             Gets the key of this request.
             </summary>
         </member>
-        <member name="P:SuperSocket.SocketBase.Protocol.IRequestInfo`1.Data">
+        <member name="P:SuperSocket.SocketBase.Protocol.IRequestInfo`1.Body">
             <summary>
-            Gets the data of this request.
+            Gets the body of this request.
+            </summary>
+        </member>
+        <member name="M:SuperSocket.SocketBase.Protocol.RequestInfo`1.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.Protocol.RequestInfo`1"/> class.
             </summary>
         </member>
         <member name="M:SuperSocket.SocketBase.Protocol.RequestInfo`1.#ctor(System.String,`0)">
@@ -4097,16 +4096,23 @@
             Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.Protocol.RequestInfo`1"/> class.
             </summary>
             <param name="key">The key.</param>
-            <param name="data">The data.</param>
+            <param name="body">The body.</param>
+        </member>
+        <member name="M:SuperSocket.SocketBase.Protocol.RequestInfo`1.Initialize(System.String,`0)">
+            <summary>
+            Initializes the specified key.
+            </summary>
+            <param name="key">The key.</param>
+            <param name="body">The body.</param>
         </member>
         <member name="P:SuperSocket.SocketBase.Protocol.RequestInfo`1.Key">
             <summary>
             Gets the key of this request.
             </summary>
         </member>
-        <member name="P:SuperSocket.SocketBase.Protocol.RequestInfo`1.Data">
+        <member name="P:SuperSocket.SocketBase.Protocol.RequestInfo`1.Body">
             <summary>
-            Gets the data.
+            Gets the body.
             </summary>
         </member>
         <member name="M:SuperSocket.SocketBase.Protocol.BinaryRequestInfo.#ctor(System.String,System.Byte[])">
@@ -4118,7 +4124,12 @@
         </member>
         <member name="T:SuperSocket.SocketBase.Protocol.CommandLineRequestFilterFactory">
             <summary>
-            CommandLineRequestFilterFactory
+            CommandLine RequestFilter Factory
+            </summary>
+        </member>
+        <member name="T:SuperSocket.SocketBase.Protocol.TerminatorRequestFilterFactory">
+            <summary>
+            Terminator RequestFilter Factory
             </summary>
         </member>
         <member name="T:SuperSocket.SocketBase.Protocol.IRequestFilterFactory`1">
@@ -4140,25 +4151,54 @@
             <param name="socketSession">The socket session.</param>
             <returns>the new created request filer assosiated with this socketSession</returns>
         </member>
+        <member name="M:SuperSocket.SocketBase.Protocol.TerminatorRequestFilterFactory.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.Protocol.CommandLineRequestFilterFactory"/> class.
+            </summary>
+            <param name="terminator">The terminator.</param>
+        </member>
+        <member name="M:SuperSocket.SocketBase.Protocol.TerminatorRequestFilterFactory.#ctor(System.String,System.Text.Encoding)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.Protocol.TerminatorRequestFilterFactory"/> class.
+            </summary>
+            <param name="terminator">The terminator.</param>
+            <param name="encoding">The encoding.</param>
+        </member>
+        <member name="M:SuperSocket.SocketBase.Protocol.TerminatorRequestFilterFactory.#ctor(System.String,System.Text.Encoding,SuperSocket.SocketBase.Protocol.IRequestInfoParser{SuperSocket.SocketBase.Protocol.StringRequestInfo})">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.Protocol.CommandLineRequestFilterFactory"/> class.
+            </summary>
+            <param name="terminator">The terminator.</param>
+            <param name="encoding">The encoding.</param>
+            <param name="requestInfoParser">The line parser.</param>
+        </member>
+        <member name="M:SuperSocket.SocketBase.Protocol.TerminatorRequestFilterFactory.CreateFilter(SuperSocket.SocketBase.IAppServer,SuperSocket.SocketBase.ISocketSession)">
+            <summary>
+            Creates the request filter.
+            </summary>
+            <param name="appServer">The app server.</param>
+            <param name="socketSession">The socket session.</param>
+            <returns>
+            the new created request filer assosiated with this socketSession
+            </returns>
+        </member>
         <member name="M:SuperSocket.SocketBase.Protocol.CommandLineRequestFilterFactory.#ctor">
             <summary>
             Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.Protocol.CommandLineRequestFilterFactory"/> class.
             </summary>
+        </member>
+        <member name="M:SuperSocket.SocketBase.Protocol.CommandLineRequestFilterFactory.#ctor(System.Text.Encoding)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.Protocol.CommandLineRequestFilterFactory"/> class.
+            </summary>
+            <param name="encoding">The encoding.</param>
         </member>
         <member name="M:SuperSocket.SocketBase.Protocol.CommandLineRequestFilterFactory.#ctor(System.Text.Encoding,SuperSocket.SocketBase.Protocol.IRequestInfoParser{SuperSocket.SocketBase.Protocol.StringRequestInfo})">
             <summary>
             Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.Protocol.CommandLineRequestFilterFactory"/> class.
             </summary>
             <param name="encoding">The encoding.</param>
-            <param name="lineParser">The line parser.</param>
-        </member>
-        <member name="M:SuperSocket.SocketBase.Protocol.CommandLineRequestFilterFactory.CreateFilter(SuperSocket.SocketBase.IAppServer,SuperSocket.SocketBase.ISocketSession)">
-            <summary>
-            Creates the request filter.
-            </summary>
-            <param name="appServer">The app server.</param>
-            <param name="socketSession">The socket session.</param>
-            <returns>the new created request filer assosiated with this socketSession</returns>
+            <param name="requestInfoParser">The request info parser.</param>
         </member>
         <member name="T:SuperSocket.SocketBase.Protocol.DefaultRequestFilterFactory`2">
             <summary>
@@ -4195,7 +4235,7 @@
             </summary>
             <typeparam name="TRequestInfo">The type of the request info.</typeparam>
         </member>
-        <member name="M:SuperSocket.SocketBase.Protocol.IRequestFilter`1.Filter(SuperSocket.SocketBase.IAppSession{`0},System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
+        <member name="M:SuperSocket.SocketBase.Protocol.IRequestFilter`1.Filter(SuperSocket.SocketBase.IAppSession,System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
             <summary>
             Filters received data of the specific session into request info.
             </summary>
@@ -4206,6 +4246,11 @@
             <param name="toBeCopied">if set to <c>true</c> [to be copied].</param>
             <param name="left">The left, the length of the data which hasn't been parsed.</param>
             <returns></returns>
+        </member>
+        <member name="M:SuperSocket.SocketBase.Protocol.IRequestFilter`1.Reset">
+            <summary>
+            Resets this instance to initial state.
+            </summary>
         </member>
         <member name="P:SuperSocket.SocketBase.Protocol.IRequestFilter`1.LeftBufferSize">
             <summary>
@@ -4230,13 +4275,18 @@
             Gets the offset delta.
             </summary>
         </member>
+        <member name="F:SuperSocket.SocketBase.Protocol.FixedSizeRequestFilter`1.NullRequestInfo">
+            <summary>
+            Null RequestInfo
+            </summary>
+        </member>
         <member name="M:SuperSocket.SocketBase.Protocol.FixedSizeRequestFilter`1.#ctor(System.Int32)">
             <summary>
             Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.Protocol.FixedSizeRequestFilter`1"/> class.
             </summary>
             <param name="size">The size.</param>
         </member>
-        <member name="M:SuperSocket.SocketBase.Protocol.FixedSizeRequestFilter`1.Filter(SuperSocket.SocketBase.IAppSession{`0},System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
+        <member name="M:SuperSocket.SocketBase.Protocol.FixedSizeRequestFilter`1.Filter(SuperSocket.SocketBase.IAppSession,System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
             <summary>
             Filters the specified session.
             </summary>
@@ -4248,7 +4298,7 @@
             <param name="left">The left.</param>
             <returns></returns>
         </member>
-        <member name="M:SuperSocket.SocketBase.Protocol.FixedSizeRequestFilter`1.ProcessFixSizeRequest(SuperSocket.SocketBase.IAppSession{`0},System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
+        <member name="M:SuperSocket.SocketBase.Protocol.FixedSizeRequestFilter`1.ProcessMatchedRequest(SuperSocket.SocketBase.IAppSession,System.Byte[],System.Int32,System.Int32,System.Boolean)">
             <summary>
             Filters the buffer after the server receive the enough size of data.
             </summary>
@@ -4257,8 +4307,12 @@
             <param name="offset">The offset.</param>
             <param name="length">The length.</param>
             <param name="toBeCopied">if set to <c>true</c> [to be copied].</param>
-            <param name="left">The left.</param>
             <returns></returns>
+        </member>
+        <member name="M:SuperSocket.SocketBase.Protocol.FixedSizeRequestFilter`1.Reset">
+            <summary>
+            Resets this instance.
+            </summary>
         </member>
         <member name="P:SuperSocket.SocketBase.Protocol.FixedSizeRequestFilter`1.Size">
             <summary>
@@ -4289,7 +4343,7 @@
             </summary>
             <param name="headerSize">Size of the header.</param>
         </member>
-        <member name="M:SuperSocket.SocketBase.Protocol.FixedHeaderRequestFilter`1.Filter(SuperSocket.SocketBase.IAppSession{`0},System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
+        <member name="M:SuperSocket.SocketBase.Protocol.FixedHeaderRequestFilter`1.Filter(SuperSocket.SocketBase.IAppSession,System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
             <summary>
             Filters the specified session.
             </summary>
@@ -4301,7 +4355,7 @@
             <param name="left">The left.</param>
             <returns></returns>
         </member>
-        <member name="M:SuperSocket.SocketBase.Protocol.FixedHeaderRequestFilter`1.ProcessFixSizeRequest(SuperSocket.SocketBase.IAppSession{`0},System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
+        <member name="M:SuperSocket.SocketBase.Protocol.FixedHeaderRequestFilter`1.ProcessMatchedRequest(SuperSocket.SocketBase.IAppSession,System.Byte[],System.Int32,System.Int32,System.Boolean)">
             <summary>
             Processes the fix size request.
             </summary>
@@ -4310,7 +4364,6 @@
             <param name="offset">The offset.</param>
             <param name="length">The length.</param>
             <param name="toBeCopied">if set to <c>true</c> [to be copied].</param>
-            <param name="left">The left.</param>
             <returns></returns>
         </member>
         <member name="M:SuperSocket.SocketBase.Protocol.FixedHeaderRequestFilter`1.GetBodyLengthFromHeader(System.Byte[],System.Int32,System.Int32)">
@@ -4322,7 +4375,7 @@
             <param name="length">The length.</param>
             <returns></returns>
         </member>
-        <member name="M:SuperSocket.SocketBase.Protocol.FixedHeaderRequestFilter`1.ResolveRequestData(System.ArraySegment{System.Byte},System.Byte[],System.Int32,System.Int32)">
+        <member name="M:SuperSocket.SocketBase.Protocol.FixedHeaderRequestFilter`1.ResolveRequestInfo(System.ArraySegment{System.Byte},System.Byte[],System.Int32,System.Int32)">
             <summary>
             Resolves the request data.
             </summary>
@@ -4331,6 +4384,23 @@
             <param name="offset">The offset.</param>
             <param name="length">The length.</param>
             <returns></returns>
+        </member>
+        <member name="M:SuperSocket.SocketBase.Protocol.FixedHeaderRequestFilter`1.Reset">
+            <summary>
+            Resets this instance.
+            </summary>
+        </member>
+        <member name="T:SuperSocket.SocketBase.Protocol.IRequestInfo`2">
+            <summary>
+            Request information interface
+            </summary>
+            <typeparam name="TRequestHeader">The type of the request header.</typeparam>
+            <typeparam name="TRequestBody">The type of the request body.</typeparam>
+        </member>
+        <member name="P:SuperSocket.SocketBase.Protocol.IRequestInfo`2.Header">
+            <summary>
+            Gets the header of the request.
+            </summary>
         </member>
         <member name="T:SuperSocket.SocketBase.Protocol.RequestFilterBase`1">
             <summary>
@@ -4355,7 +4425,7 @@
             </summary>
             <param name="previousRequestFilter">The previous request filter.</param>
         </member>
-        <member name="M:SuperSocket.SocketBase.Protocol.RequestFilterBase`1.Filter(SuperSocket.SocketBase.IAppSession{`0},System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
+        <member name="M:SuperSocket.SocketBase.Protocol.RequestFilterBase`1.Filter(SuperSocket.SocketBase.IAppSession,System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
             <summary>
             Filters received data of the specific session into request info.
             </summary>
@@ -4387,6 +4457,11 @@
             Clears the buffer segments.
             </summary>
         </member>
+        <member name="M:SuperSocket.SocketBase.Protocol.RequestFilterBase`1.Reset">
+            <summary>
+            Resets this instance to initial state.
+            </summary>
+        </member>
         <member name="P:SuperSocket.SocketBase.Protocol.RequestFilterBase`1.BufferSegments">
             <summary>
             Gets the buffer segments which can help you parse your request info conviniently.
@@ -4407,6 +4482,39 @@
             <value>
             The next request filter.
             </value>
+        </member>
+        <member name="T:SuperSocket.SocketBase.Protocol.RequestInfo`2">
+            <summary>
+            RequestInfo with header
+            </summary>
+            <typeparam name="TRequestHeader">The type of the request header.</typeparam>
+            <typeparam name="TRequestBody">The type of the request body.</typeparam>
+        </member>
+        <member name="M:SuperSocket.SocketBase.Protocol.RequestInfo`2.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.Protocol.RequestInfo`2"/> class.
+            </summary>
+        </member>
+        <member name="M:SuperSocket.SocketBase.Protocol.RequestInfo`2.#ctor(System.String,`0,`1)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.Protocol.RequestInfo`2"/> class.
+            </summary>
+            <param name="key">The key.</param>
+            <param name="header">The header.</param>
+            <param name="body">The body.</param>
+        </member>
+        <member name="M:SuperSocket.SocketBase.Protocol.RequestInfo`2.Initialize(System.String,`0,`1)">
+            <summary>
+            Initializes the specified key.
+            </summary>
+            <param name="key">The key.</param>
+            <param name="header">The header.</param>
+            <param name="body">The body.</param>
+        </member>
+        <member name="P:SuperSocket.SocketBase.Protocol.RequestInfo`2.Header">
+            <summary>
+            Gets the header.
+            </summary>
         </member>
         <member name="T:SuperSocket.SocketBase.Protocol.StringRequestInfo">
             <summary>
@@ -4449,7 +4557,7 @@
             </summary>
             <param name="terminator">The terminator.</param>
         </member>
-        <member name="M:SuperSocket.SocketBase.Protocol.TerminatorRequestFilter`1.Filter(SuperSocket.SocketBase.IAppSession{`0},System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
+        <member name="M:SuperSocket.SocketBase.Protocol.TerminatorRequestFilter`1.Filter(SuperSocket.SocketBase.IAppSession,System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
             <summary>
             Filters received data of the specific session into request info.
             </summary>
@@ -4472,6 +4580,13 @@
             <summary>
             TerminatorRequestFilter
             </summary>
+        </member>
+        <member name="M:SuperSocket.SocketBase.Protocol.TerminatorRequestFilter.#ctor(System.Byte[],System.Text.Encoding)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.Protocol.TerminatorRequestFilter"/> class.
+            </summary>
+            <param name="terminator">The terminator.</param>
+            <param name="encoding">The encoding.</param>
         </member>
         <member name="M:SuperSocket.SocketBase.Protocol.TerminatorRequestFilter.#ctor(System.Byte[],System.Text.Encoding,SuperSocket.SocketBase.Protocol.IRequestInfoParser{SuperSocket.SocketBase.Protocol.StringRequestInfo})">
             <summary>

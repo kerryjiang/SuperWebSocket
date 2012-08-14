@@ -40,7 +40,7 @@ namespace SuperWebSocket.SubProtocol
         /// <param name="requestInfo">The request info.</param>
         public override void ExecuteCommand(TWebSocketSession session, SubRequestInfo requestInfo)
         {
-            if (string.IsNullOrEmpty(requestInfo.Data))
+            if (string.IsNullOrEmpty(requestInfo.Body))
             {
                 ExecuteJsonCommand(session, default(TJsonCommandInfo));
                 return;
@@ -52,9 +52,9 @@ namespace SuperWebSocket.SubProtocol
                 session.CurrentToken = requestInfo.Token;
 
             if (!m_IsPrimitiveType)
-                jsonCommandInfo = JsonConvert.DeserializeObject<TJsonCommandInfo>(requestInfo.Data);
+                jsonCommandInfo = JsonConvert.DeserializeObject<TJsonCommandInfo>(requestInfo.Body);
             else
-                jsonCommandInfo = (TJsonCommandInfo)Convert.ChangeType(requestInfo.Data, m_CommandInfoType);
+                jsonCommandInfo = (TJsonCommandInfo)Convert.ChangeType(requestInfo.Body, m_CommandInfoType);
 
             ExecuteJsonCommand(session, jsonCommandInfo);
         }

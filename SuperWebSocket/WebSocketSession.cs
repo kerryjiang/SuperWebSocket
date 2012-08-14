@@ -464,7 +464,7 @@ namespace SuperWebSocket
         /// Handles the unknown request.
         /// </summary>
         /// <param name="requestInfo">The request info.</param>
-        public override void HandleUnknownRequest(IWebSocketFragment requestInfo)
+        protected override void HandleUnknownRequest(IWebSocketFragment requestInfo)
         {
             base.Close();
         }

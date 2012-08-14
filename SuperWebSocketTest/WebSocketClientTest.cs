@@ -75,7 +75,7 @@ namespace SuperWebSocketTest
                     MaxConnectionNumber = 100,
                     Mode = SocketMode.Tcp,
                     Name = "SuperWebSocket Server"
-                }, SocketServerFactory.Instance);
+                });
 
             m_Bootstrap = new DefaultBootstrap(rootConfig, new IWorkItem[] { m_WebSocketServer }, new ConsoleLogFactory());
 

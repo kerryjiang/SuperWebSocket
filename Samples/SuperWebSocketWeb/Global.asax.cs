@@ -104,7 +104,7 @@ namespace SuperWebSocketWeb
                         Ip = "Any",
                         Port = 2011,
                         Mode = SocketMode.Tcp
-                    }, SocketServerFactory.Instance);
+                    });
 
             var secureSocketServer = new WebSocketServer();
             secureSocketServer.NewSessionConnected += secureSocketServer_NewSessionConnected;
@@ -122,7 +122,7 @@ namespace SuperWebSocketWeb
                             FilePath = Server.MapPath("~/localhost.pfx"),
                             Password = "supersocket"
                         }
-                    }, SocketServerFactory.Instance);
+                    });
 
             m_Bootstrap = new DefaultBootstrap(new RootConfig(), new IWorkItem[] { socketServer, secureSocketServer });
 

@@ -16,7 +16,7 @@ namespace SuperWebSocket.Samples.CommandAssembly
     {
         public override void ExecuteCommand(WebSocketSession session, SubRequestInfo requestInfo)
         {
-            session.SendResponse(requestInfo.Data);
+            session.Send(requestInfo.Body);
         }
     }
 }

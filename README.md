@@ -11,7 +11,7 @@ The WebSocket API is being standardized by the W3C and the WebSocket protocol is
 Please refer to http://en.wikipedia.org/wiki/WebSockets.
 
 Project homepage:	http://superwebsocket.codeplex.com/
-SVN address:		https://SuperWebSocket.svn.codeplex.com/svn
+Git address:		https://git01.codeplex.com/superwebsocket
 Author email address:	kerry-jiang@hotmail.com
 
 

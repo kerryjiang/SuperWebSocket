@@ -14,15 +14,15 @@ namespace SuperWebSocket.Protocol
     {
         private static readonly byte[] m_HeaderTerminator = Encoding.UTF8.GetBytes("\r\n\r\n");
 
-        private SearchMarkState<byte> m_SearchState;
+        private readonly SearchMarkState<byte> m_SearchState;
 
-        public WebSocketHeaderRequestFilter()
-            : base()
+        public WebSocketHeaderRequestFilter(IWebSocketSession session)
+            : base(session)
         {
             m_SearchState = new SearchMarkState<byte>(m_HeaderTerminator);
         }
 
-        public override IWebSocketFragment Filter(IAppSession session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
+        public override IWebSocketFragment Filter(byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
         {
             left = 0;
 
@@ -56,7 +56,7 @@ namespace SuperWebSocket.Protocol
                 header = Encoding.UTF8.GetString(readBuffer, offset, findLen);
             }
 
-            var webSocketSession = session as IWebSocketSession;
+            var webSocketSession = Session;
 
             try
             {
@@ -64,8 +64,8 @@ namespace SuperWebSocket.Protocol
             }
             catch (Exception e)
             {
-                session.Logger.Error("Failed to parse handshake!" + Environment.NewLine + header, e);
-                session.Close(CloseReason.ProtocolError);
+                webSocketSession.Logger.Error("Failed to parse handshake!" + Environment.NewLine + header, e);
+                webSocketSession.Close(CloseReason.ProtocolError);
                 return null;
             }
 

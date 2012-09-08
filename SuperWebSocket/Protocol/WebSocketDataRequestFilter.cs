@@ -23,7 +23,7 @@ namespace SuperWebSocket.Protocol
 
         }
 
-        public override IWebSocketFragment Filter(IAppSession session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
+        public override IWebSocketFragment Filter(byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
         {
             left = 0;
 
@@ -82,7 +82,7 @@ namespace SuperWebSocket.Protocol
                     //Closing handshake
                     if (lengthByte == 0x00 && m_Type.Value == m_ClosingHandshakeType)
                     {
-                        session.Close(CloseReason.ClientClosing);
+                        Session.Close(CloseReason.ClientClosing);
                         return null;
                     }
 

@@ -390,7 +390,7 @@
             <param name="mark">The mark.</param>
             <returns></returns>
         </member>
-        <member name="M:SuperSocket.Common.BinaryUtil.CloneRange``1(``0[],System.Int32,System.Int32)">
+        <member name="M:SuperSocket.Common.BinaryUtil.CloneRange``1(System.Collections.Generic.IList{``0},System.Int32,System.Int32)">
             <summary>
             Clones the elements in the specific range.
             </summary>

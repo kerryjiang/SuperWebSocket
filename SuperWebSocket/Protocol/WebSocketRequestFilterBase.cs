@@ -19,6 +19,13 @@ namespace SuperWebSocket.Protocol
         /// </summary>
         protected const int SecKey3Len = 8;
 
+        private readonly IWebSocketSession m_Session;
+
+        internal IWebSocketSession Session
+        {
+            get { return m_Session; }
+        }
+
         static WebSocketRequestFilterBase()
         {
             HandshakeRequestInfo = new HandshakeRequest();
@@ -27,20 +34,19 @@ namespace SuperWebSocket.Protocol
         /// <summary>
         /// Initializes a new instance of the <see cref="WebSocketRequestFilterBase"/> class.
         /// </summary>
-        public WebSocketRequestFilterBase()
-            : base()
+        protected WebSocketRequestFilterBase(IWebSocketSession session)
         {
-
+            m_Session = session;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WebSocketRequestFilterBase"/> class.
         /// </summary>
         /// <param name="previousRequestFilter">The previous request filter.</param>
-        public WebSocketRequestFilterBase(WebSocketRequestFilterBase previousRequestFilter)
+        protected WebSocketRequestFilterBase(WebSocketRequestFilterBase previousRequestFilter)
             : base(previousRequestFilter)
         {
-
+            m_Session = previousRequestFilter.Session;
         }
 
         /// <summary>

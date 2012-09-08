@@ -673,6 +673,14 @@
             </summary>
             <value><c>true</c> if log command; otherwise, <c>false</c>.</value>
         </member>
+        <member name="P:SuperSocket.SocketEngine.Configuration.Server.LogBasicSessionActivity">
+            <summary>
+            Gets a value indicating whether [log basic session activity like connected and disconnected].
+            </summary>
+            <value>
+            	<c>true</c> if [log basic session activity]; otherwise, <c>false</c>.
+            </value>
+        </member>
         <member name="P:SuperSocket.SocketEngine.Configuration.Server.ClearIdleSession">
             <summary>
             Gets a value indicating whether clear idle session.
@@ -897,7 +905,7 @@
             Default socket server factory
             </summary>
         </member>
-        <member name="M:SuperSocket.SocketEngine.SocketServerFactory.CreateSocketServer``1(SuperSocket.SocketBase.IAppServer,SuperSocket.SocketBase.ListenerInfo[],SuperSocket.SocketBase.Config.IServerConfig,SuperSocket.SocketBase.Protocol.IRequestFilterFactory{``0})">
+        <member name="M:SuperSocket.SocketEngine.SocketServerFactory.CreateSocketServer``1(SuperSocket.SocketBase.IAppServer,SuperSocket.SocketBase.ListenerInfo[],SuperSocket.SocketBase.Config.IServerConfig)">
             <summary>
             Creates the socket server.
             </summary>
@@ -905,7 +913,6 @@
             <param name="appServer">The app server.</param>
             <param name="listeners">The listeners.</param>
             <param name="config">The config.</param>
-            <param name="requestFilterFactory">The request filter factory.</param>
             <returns></returns>
         </member>
         <member name="M:SuperSocket.SocketEngine.UdpSocketListener.Start(SuperSocket.SocketBase.Config.IServerConfig)">

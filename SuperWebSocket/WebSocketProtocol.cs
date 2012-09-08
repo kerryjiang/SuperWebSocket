@@ -27,11 +27,12 @@ namespace SuperWebSocket
         /// Creates the filter.
         /// </summary>
         /// <param name="appServer">The app server.</param>
-        /// <param name="socketSession">The socket session.</param>
+        /// <param name="appSession">The app session.</param>
+        /// <param name="remoteEndPoint">The remote end point.</param>
         /// <returns></returns>
-        public IRequestFilter<IWebSocketFragment> CreateFilter(IAppServer appServer, ISocketSession socketSession)
+        public IRequestFilter<IWebSocketFragment> CreateFilter(IAppServer appServer, IAppSession appSession, System.Net.IPEndPoint remoteEndPoint)
         {
-            return new WebSocketHeaderRequestFilter();
+            return new WebSocketHeaderRequestFilter((IWebSocketSession)appSession);
         }
     }
 }

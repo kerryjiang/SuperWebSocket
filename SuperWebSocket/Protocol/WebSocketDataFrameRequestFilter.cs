@@ -36,7 +36,7 @@ namespace SuperWebSocket.Protocol
             segments.AddSegment(buffer, offset, length, toBeCopied);
         }
 
-        public IWebSocketFragment Filter(IAppSession session, byte[] readBuffer, int offset, int length, bool toBeCopied, out int left)
+        public IWebSocketFragment Filter(byte[] readBuffer, int offset, int length, bool toBeCopied, out int left)
         {
             if (m_Frame == null)
                 m_Frame = new WebSocketDataFrame(new ArraySegmentList());

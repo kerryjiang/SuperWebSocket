@@ -16,9 +16,9 @@ namespace SuperWebSocket.Protocol
             
         }
 
-        public override IWebSocketFragment Filter(IAppSession session, byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
+        public override IWebSocketFragment Filter(byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
         {
-            var webSocketSession = session as IWebSocketSession;
+            var webSocketSession = Session;
 
             int total = BufferSegments.Count + length;
 

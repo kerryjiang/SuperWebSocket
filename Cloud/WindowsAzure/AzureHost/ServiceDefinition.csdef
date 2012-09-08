@@ -5,7 +5,7 @@
       <Import moduleName="Diagnostics" />
     </Imports>
     <Endpoints>
-      <InputEndpoint name="SampleServerEndpoint" protocol="tcp" port="911" />
+      <InputEndpoint name="SampleServerEndpoint" protocol="tcp" port="2012" />
     </Endpoints>
   </WorkerRole>
 </ServiceDefinition>

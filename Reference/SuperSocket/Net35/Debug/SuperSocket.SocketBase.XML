@@ -1062,7 +1062,7 @@
             <param name="offset">The offset.</param>
             <param name="length">The length.</param>
             <param name="toBeCopied">if set to <c>true</c> [to be copied].</param>
-            <param name="left">The left, the size of the data which has not been processed</param>
+            <param name="rest">The rest, the size of the data which has not been processed</param>
             <param name="offsetDelta">return offset delta of next receiving buffer.</param>
             <returns></returns>
         </member>
@@ -2526,6 +2526,13 @@
             <summary>
             Initializes the bootstrap with the configuration
             </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.SocketBase.IBootstrap.Initialize(System.Collections.Generic.IDictionary{System.String,System.Net.IPEndPoint})">
+            <summary>
+            Initializes the bootstrap with a listen endpoint replacement dictionary
+            </summary>
+            <param name="listenEndPointReplacement">The listen end point replacement.</param>
             <returns></returns>
         </member>
         <member name="M:SuperSocket.SocketBase.IBootstrap.Initialize(System.Func{SuperSocket.SocketBase.Config.IServerConfig,SuperSocket.SocketBase.Config.IServerConfig})">
@@ -4261,7 +4268,7 @@
             <param name="offset">The offset of the current received data in this read buffer.</param>
             <param name="length">The length of the current received data.</param>
             <param name="toBeCopied">if set to <c>true</c> [to be copied].</param>
-            <param name="left">The left, the length of the data which hasn't been parsed.</param>
+            <param name="rest">The rest, the length of the data which hasn't been parsed.</param>
             <returns></returns>
         </member>
         <member name="M:SuperSocket.SocketBase.Protocol.IRequestFilter`1.Reset">
@@ -4271,10 +4278,10 @@
         </member>
         <member name="P:SuperSocket.SocketBase.Protocol.IRequestFilter`1.LeftBufferSize">
             <summary>
-            Gets the size of the left buffer.
+            Gets the size of the rest buffer.
             </summary>
             <value>
-            The size of the left buffer.
+            The size of the rest buffer.
             </value>
         </member>
         <member name="P:SuperSocket.SocketBase.Protocol.IRequestFilter`1.NextRequestFilter">
@@ -4325,12 +4332,12 @@
             <param name="offset">The offset of the current received data in this read buffer.</param>
             <param name="length">The length of the current received data.</param>
             <param name="toBeCopied">if set to <c>true</c> [to be copied].</param>
-            <param name="left">The left, the length of the data which hasn't been parsed.</param>
+            <param name="rest">The rest, the length of the data which hasn't been parsed.</param>
             <returns></returns>
         </member>
         <member name="M:SuperSocket.SocketBase.Protocol.RequestFilterBase`1.GetLeftBuffer">
             <summary>
-            Gets the left buffer.
+            Gets the rest buffer.
             </summary>
             <returns></returns>
         </member>
@@ -4360,10 +4367,10 @@
         </member>
         <member name="P:SuperSocket.SocketBase.Protocol.RequestFilterBase`1.LeftBufferSize">
             <summary>
-            Gets the size of the left buffer.
+            Gets the size of the rest buffer.
             </summary>
             <value>
-            The size of the left buffer.
+            The size of the rest buffer.
             </value>
         </member>
         <member name="P:SuperSocket.SocketBase.Protocol.RequestFilterBase`1.NextRequestFilter">
@@ -4462,7 +4469,7 @@
             <param name="offset">The offset of the current received data in this read buffer.</param>
             <param name="length">The length of the current received data.</param>
             <param name="toBeCopied">if set to <c>true</c> [to be copied].</param>
-            <param name="left">The left, the length of the data which hasn't been parsed.</param>
+            <param name="rest">The rest, the length of the data which hasn't been parsed.</param>
             <returns>return the parsed TRequestInfo</returns>
         </member>
         <member name="M:SuperSocket.SocketBase.Protocol.TerminatorRequestFilter`1.Reset">

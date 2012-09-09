@@ -22,9 +22,9 @@ namespace SuperWebSocket.Protocol
             m_SearchState = new SearchMarkState<byte>(m_HeaderTerminator);
         }
 
-        public override IWebSocketFragment Filter(byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
+        public override IWebSocketFragment Filter(byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int rest)
         {
-            left = 0;
+            rest = 0;
 
             int prevMatched = m_SearchState.Matched;
 
@@ -73,7 +73,7 @@ namespace SuperWebSocket.Protocol
             var secWebSocketKey2 = webSocketSession.Items.GetValue<string>(WebSocketConstant.SecWebSocketKey2, string.Empty);
             var secWebSocketVersion = webSocketSession.SecWebSocketVersion;
 
-            left = length - findLen - (m_HeaderTerminator.Length - prevMatched);
+            rest = length - findLen - (m_HeaderTerminator.Length - prevMatched);
 
             this.ClearBufferSegments();
 
@@ -92,27 +92,27 @@ namespace SuperWebSocket.Protocol
             {
                 //draft-hixie-thewebsocketprotocol-76/draft-ietf-hybi-thewebsocketprotocol-00
                 //Read SecWebSocketKey3(8 bytes)
-                if (left == SecKey3Len)
+                if (rest == SecKey3Len)
                 {
-                    webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = readBuffer.CloneRange(offset + length - left, left);
-                    left = 0;
+                    webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = readBuffer.CloneRange(offset + length - rest, rest);
+                    rest = 0;
                     if(Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession))
                         return HandshakeRequestInfo;
                 }
-                else if (left > SecKey3Len)
+                else if (rest > SecKey3Len)
                 {
-                    webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = readBuffer.CloneRange(offset + length - left, 8);
-                    left -= 8;
+                    webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = readBuffer.CloneRange(offset + length - rest, 8);
+                    rest -= 8;
                     if(Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession))
                         return HandshakeRequestInfo;
                 }
                 else
                 {
-                    //left < 8
-                    if (left > 0)
+                    //rest < 8
+                    if (rest > 0)
                     {
-                        AddArraySegment(readBuffer, offset + length - left, left, isReusableBuffer);
-                        left = 0;
+                        AddArraySegment(readBuffer, offset + length - rest, rest, isReusableBuffer);
+                        rest = 0;
                     }
 
                     NextRequestFilter = new WebSocketSecKey3RequestFilter(this);

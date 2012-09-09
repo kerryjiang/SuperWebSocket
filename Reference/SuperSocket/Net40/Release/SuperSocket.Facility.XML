@@ -33,7 +33,7 @@
             <param name="offset">The offset.</param>
             <param name="length">The length.</param>
             <param name="toBeCopied">if set to <c>true</c> [to be copied].</param>
-            <param name="left">The left.</param>
+            <param name="rest">The rest.</param>
             <returns></returns>
         </member>
         <member name="M:SuperSocket.Facility.HttpBase.HttpRequestFilterBase`1.FilterRequestBody(System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
@@ -44,7 +44,7 @@
             <param name="offset">The offset.</param>
             <param name="length">The length.</param>
             <param name="toBeCopied">if set to <c>true</c> [to be copied].</param>
-            <param name="left">The left.</param>
+            <param name="rest">The rest data size.</param>
             <returns></returns>
         </member>
         <member name="M:SuperSocket.Facility.HttpBase.HttpRequestFilterBase`1.ProcessMatchedRequest(System.Byte[],System.Int32,System.Int32)">
@@ -226,7 +226,7 @@
             <param name="offset">The offset.</param>
             <param name="length">The length.</param>
             <param name="toBeCopied">if set to <c>true</c> [to be copied].</param>
-            <param name="left">The left.</param>
+            <param name="rest">The rest.</param>
             <returns></returns>
         </member>
         <member name="M:SuperSocket.SocketBase.Protocol.FixedSizeRequestFilter`1.ProcessMatchedRequest(System.Byte[],System.Int32,System.Int32,System.Boolean)">
@@ -251,10 +251,10 @@
         </member>
         <member name="P:SuperSocket.SocketBase.Protocol.FixedSizeRequestFilter`1.LeftBufferSize">
             <summary>
-            Gets the size of the left buffer.
+            Gets the size of the rest buffer.
             </summary>
             <value>
-            The size of the left buffer.
+            The size of the rest buffer.
             </value>
         </member>
         <member name="P:SuperSocket.SocketBase.Protocol.FixedSizeRequestFilter`1.NextRequestFilter">
@@ -354,7 +354,7 @@
             <param name="offset">The offset.</param>
             <param name="length">The length.</param>
             <param name="toBeCopied">if set to <c>true</c> [to be copied].</param>
-            <param name="left">The left.</param>
+            <param name="rest">The rest.</param>
             <returns></returns>
         </member>
         <member name="M:SuperSocket.Facility.Protocol.BeginEndMarkRequestFilter`1.ProcessMatchedRequest(System.Byte[],System.Int32,System.Int32)">
@@ -400,7 +400,7 @@
             <param name="offset">The offset.</param>
             <param name="length">The length.</param>
             <param name="toBeCopied">if set to <c>true</c> [to be copied].</param>
-            <param name="left">The left.</param>
+            <param name="rest">The rest.</param>
             <returns></returns>
         </member>
         <member name="M:SuperSocket.Facility.Protocol.CountSpliterRequestFilter`1.ProcessMatchedRequest(System.Byte[],System.Int32,System.Int32)">
@@ -419,10 +419,10 @@
         </member>
         <member name="P:SuperSocket.Facility.Protocol.CountSpliterRequestFilter`1.LeftBufferSize">
             <summary>
-            Gets the size of the left buffer.
+            Gets the size of the rest buffer.
             </summary>
             <value>
-            The size of the left buffer.
+            The size of the rest buffer.
             </value>
         </member>
         <member name="P:SuperSocket.Facility.Protocol.CountSpliterRequestFilter`1.NextRequestFilter">
@@ -541,7 +541,7 @@
             <param name="offset">The offset.</param>
             <param name="length">The length.</param>
             <param name="toBeCopied">if set to <c>true</c> [to be copied].</param>
-            <param name="left">The left.</param>
+            <param name="rest">The rest.</param>
             <returns></returns>
         </member>
         <member name="M:SuperSocket.Facility.Protocol.FixedHeaderRequestFilter`1.ProcessMatchedRequest(System.Byte[],System.Int32,System.Int32,System.Boolean)">

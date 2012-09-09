@@ -16,7 +16,7 @@ namespace SuperWebSocket.Protocol
             
         }
 
-        public override IWebSocketFragment Filter(byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
+        public override IWebSocketFragment Filter(byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int rest)
         {
             var webSocketSession = Session;
 
@@ -29,7 +29,7 @@ namespace SuperWebSocket.Protocol
                 Array.Copy(readBuffer, offset, key, BufferSegments.Count, length);
                 webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = key;
                 BufferSegments.ClearSegements();
-                left = 0;
+                rest = 0;
                 if(Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession))
                     return HandshakeRequestInfo;
             }
@@ -40,14 +40,14 @@ namespace SuperWebSocket.Protocol
                 Array.Copy(readBuffer, offset, key, BufferSegments.Count, SecKey3Len - BufferSegments.Count);
                 webSocketSession.Items[WebSocketConstant.SecWebSocketKey3] = key;
                 BufferSegments.ClearSegements();
-                left = total - SecKey3Len;
+                rest = total - SecKey3Len;
                 if(Handshake(webSocketSession.AppServer.WebSocketProtocolProcessor, webSocketSession))
                     return HandshakeRequestInfo;
             }
             else
             {
                 AddArraySegment(readBuffer, offset, length, isReusableBuffer);
-                left = 0;
+                rest = 0;
                 NextRequestFilter = this;
                 return null;
             }

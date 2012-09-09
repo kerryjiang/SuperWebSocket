@@ -91,6 +91,13 @@
             <param name="logFactory">The log factory.</param>
             <returns></returns>
         </member>
+        <member name="M:SuperSocket.SocketEngine.AppDomainBootstrap.Initialize(System.Collections.Generic.IDictionary{System.String,System.Net.IPEndPoint})">
+            <summary>
+            Initializes the bootstrap with a listen endpoint replacement dictionary
+            </summary>
+            <param name="listenEndPointReplacement">The listen end point replacement.</param>
+            <returns></returns>
+        </member>
         <member name="M:SuperSocket.SocketEngine.AppDomainBootstrap.Initialize(System.Func{SuperSocket.SocketBase.Config.IServerConfig,SuperSocket.SocketBase.Config.IServerConfig},SuperSocket.SocketBase.Logging.ILogFactory)">
             <summary>
             Initializes the bootstrap with the configuration
@@ -209,6 +216,13 @@
             </summary>
             <param name="config">The config.</param>
             <param name="logFactory">The log factory.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.SocketEngine.DefaultBootstrap.Initialize(System.Collections.Generic.IDictionary{System.String,System.Net.IPEndPoint})">
+            <summary>
+            Initializes the bootstrap with a listen endpoint replacement dictionary
+            </summary>
+            <param name="listenEndPointReplacement">The listen end point replacement.</param>
             <returns></returns>
         </member>
         <member name="M:SuperSocket.SocketEngine.DefaultBootstrap.Initialize(System.Func{SuperSocket.SocketBase.Config.IServerConfig,SuperSocket.SocketBase.Config.IServerConfig},SuperSocket.SocketBase.Logging.ILogFactory)">

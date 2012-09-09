@@ -23,9 +23,9 @@ namespace SuperWebSocket.Protocol
 
         }
 
-        public override IWebSocketFragment Filter(byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int left)
+        public override IWebSocketFragment Filter(byte[] readBuffer, int offset, int length, bool isReusableBuffer, out int rest)
         {
-            left = 0;
+            rest = 0;
 
             var skipByteCount = 0;
 
@@ -47,7 +47,7 @@ namespace SuperWebSocket.Protocol
                 {
                     if (readBuffer[i] == lookForByte)
                     {
-                        left = length - (i - offset + 1);
+                        rest = length - (i - offset + 1);
 
                         if (BufferSegments.Count <= 0)
                         {
@@ -108,7 +108,7 @@ namespace SuperWebSocket.Protocol
                 }
                 else
                 {
-                    left = leftSize - requiredSize;
+                    rest = leftSize - requiredSize;
 
                     if (BufferSegments.Count <= 0)
                     {

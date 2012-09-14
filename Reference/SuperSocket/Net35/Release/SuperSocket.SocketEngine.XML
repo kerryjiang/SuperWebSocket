@@ -132,11 +132,6 @@
             Gets the startup config file.
             </summary>
         </member>
-        <member name="E:SuperSocket.SocketEngine.AppDomainBootstrap.PerformanceDataCollected">
-            <summary>
-            Occurs when [performance data collected].
-            </summary>
-        </member>
         <member name="M:SuperSocket.SocketEngine.WorkItemFactoryInfoLoader.ValidateProviderType(System.String)">
             <summary>
             Validates the type of the provider, needn't validate in default mode, because it will be validate later when initializing.
@@ -282,11 +277,6 @@
         <member name="P:SuperSocket.SocketEngine.DefaultBootstrap.StartupConfigFile">
             <summary>
             Gets the startup config file.
-            </summary>
-        </member>
-        <member name="E:SuperSocket.SocketEngine.DefaultBootstrap.PerformanceDataCollected">
-            <summary>
-            Occurs when [performance data collected].
             </summary>
         </member>
         <member name="T:SuperSocket.SocketEngine.AssemblyImport">
@@ -918,11 +908,6 @@
         <member name="P:SuperSocket.SocketEngine.MarshalAppServer.SessionCount">
             <summary>
             Gets the total session count.
-            </summary>
-        </member>
-        <member name="E:SuperSocket.SocketEngine.PerformanceMonitor.Collected">
-            <summary>
-            Occurs when [performance data collected].
             </summary>
         </member>
         <member name="M:SuperSocket.SocketEngine.SocketListenerBase.Start(SuperSocket.SocketBase.Config.IServerConfig)">

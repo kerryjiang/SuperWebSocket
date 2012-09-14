@@ -185,7 +185,7 @@
             Gets/sets the session closed event handler.
             </summary>
         </member>
-        <member name="E:SuperSocket.SocketBase.IAppServer`2.RequestHandler">
+        <member name="E:SuperSocket.SocketBase.IAppServer`2.NewRequestReceived">
             <summary>
             Occurs when [request comming].
             </summary>
@@ -235,6 +235,11 @@
         <member name="F:SuperSocket.SocketBase.AppServerBase`2.NullAppSession">
             <summary>
             Null appSession instance
+            </summary>
+        </member>
+        <member name="F:SuperSocket.SocketBase.AppServerBase`2.m_Initialized">
+            <summary>
+            Indicate this server instance whether has been setup
             </summary>
         </member>
         <member name="M:SuperSocket.SocketBase.AppServerBase`2.#ctor">
@@ -587,7 +592,7 @@
             bool: whether process the received data further
             </summary>
         </member>
-        <member name="E:SuperSocket.SocketBase.AppServerBase`2.RequestHandler">
+        <member name="E:SuperSocket.SocketBase.AppServerBase`2.NewRequestReceived">
             <summary>
             Occurs when a full request item received.
             </summary>
@@ -615,14 +620,14 @@
             Gets the total session count.
             </summary>
         </member>
-        <member name="T:SuperSocket.SocketBase.IPerformanceDataSource">
+        <member name="T:SuperSocket.SocketBase.IServerStateSource">
             <summary>
-            The interface for who will react with performance collecting
+            The interface for who will react with server state collecting
             </summary>
         </member>
-        <member name="M:SuperSocket.SocketBase.IPerformanceDataSource.CollectPerformanceData(SuperSocket.SocketBase.GlobalPerformanceData)">
+        <member name="M:SuperSocket.SocketBase.IServerStateSource.CollectServerState(SuperSocket.SocketBase.GlobalPerformanceData)">
             <summary>
-            Collects the performance data.
+            Collects the state of the server.
             </summary>
             <param name="globalPerfData">The global perf data.</param>
             <returns></returns>
@@ -685,19 +690,18 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:SuperSocket.SocketBase.AppServer`2.CollectPerformanceData(SuperSocket.SocketBase.GlobalPerformanceData)">
+        <member name="M:SuperSocket.SocketBase.AppServer`2.CreateServerState">
             <summary>
-            Collects the performance data.
+            Creates the state of the server, you can override this method to return your own ServerState instance.
             </summary>
-            <param name="globalPerfData">The global perf data.</param>
             <returns></returns>
         </member>
-        <member name="M:SuperSocket.SocketBase.AppServer`2.OnPerformanceDataCollected(SuperSocket.SocketBase.GlobalPerformanceData,SuperSocket.SocketBase.PerformanceData)">
+        <member name="M:SuperSocket.SocketBase.AppServer`2.OnServerStateCollected(SuperSocket.SocketBase.GlobalPerformanceData,SuperSocket.SocketBase.ServerState)">
             <summary>
             Called when [performance data collected], you can override this method to get collected performance data
             </summary>
             <param name="globalPerfData">The global perf data.</param>
-            <param name="performanceData">The performance data.</param>
+            <param name="state">The state.</param>
         </member>
         <member name="M:SuperSocket.SocketBase.AppServer`2.Dispose(System.Boolean)">
             <summary>
@@ -709,6 +713,14 @@
             <summary>
             Gets the total session count.
             </summary>
+        </member>
+        <member name="P:SuperSocket.SocketBase.AppServer`2.ServerState">
+            <summary>
+            Gets the state of the server.
+            </summary>
+            <value>
+            The state of the server.
+            </value>
         </member>
         <member name="M:SuperSocket.SocketBase.AppServer`1.#ctor">
             <summary>
@@ -2492,6 +2504,99 @@
             Gets the type.
             </summary>
         </member>
+        <member name="T:SuperSocket.SocketBase.DisplayAttribute">
+            <summary>
+            Display attribute
+            </summary>
+        </member>
+        <member name="M:SuperSocket.SocketBase.DisplayAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.DisplayAttribute"/> class.
+            </summary>
+            <param name="name">The name.</param>
+        </member>
+        <member name="P:SuperSocket.SocketBase.DisplayAttribute.Name">
+            <summary>
+            Gets the name.
+            </summary>
+        </member>
+        <member name="P:SuperSocket.SocketBase.DisplayAttribute.Format">
+            <summary>
+            Gets or sets the format.
+            </summary>
+            <value>
+            The format.
+            </value>
+        </member>
+        <member name="P:SuperSocket.SocketBase.DisplayAttribute.Order">
+            <summary>
+            Gets or sets the order.
+            </summary>
+            <value>
+            The order.
+            </value>
+        </member>
+        <member name="T:SuperSocket.SocketBase.GlobalPerformanceData">
+            <summary>
+            GlobalPerformanceData class
+            </summary>
+        </member>
+        <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.AvailableWorkingThreads">
+            <summary>
+            Gets or sets the available working threads.
+            </summary>
+            <value>
+            The available working threads.
+            </value>
+        </member>
+        <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.AvailableCompletionPortThreads">
+            <summary>
+            Gets or sets the available completion port threads.
+            </summary>
+            <value>
+            The available completion port threads.
+            </value>
+        </member>
+        <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.MaxWorkingThreads">
+            <summary>
+            Gets or sets the max working threads.
+            </summary>
+            <value>
+            The max working threads.
+            </value>
+        </member>
+        <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.MaxCompletionPortThreads">
+            <summary>
+            Gets or sets the max completion port threads.
+            </summary>
+            <value>
+            The max completion port threads.
+            </value>
+        </member>
+        <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.TotalThreadCount">
+            <summary>
+            Gets or sets the total thread count.
+            </summary>
+            <value>
+            The total thread count.
+            </value>
+        </member>
+        <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.CpuUsage">
+            <summary>
+            Gets or sets the cpu usage.
+            </summary>
+            <value>
+            The cpu usage.
+            </value>
+        </member>
+        <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.WorkingSet">
+            <summary>
+            Gets or sets the working set.
+            </summary>
+            <value>
+            The working set.
+            </value>
+        </member>
         <member name="T:SuperSocket.SocketBase.StartResult">
             <summary>
             The bootstrap start result
@@ -2576,11 +2681,6 @@
         <member name="P:SuperSocket.SocketBase.IBootstrap.Config">
             <summary>
             Gets the config.
-            </summary>
-        </member>
-        <member name="E:SuperSocket.SocketBase.IBootstrap.PerformanceDataCollected">
-            <summary>
-            Occurs when [performance data collected].
             </summary>
         </member>
         <member name="P:SuperSocket.SocketBase.IBootstrap.StartupConfigFile">
@@ -3859,182 +3959,6 @@
             <param name="name">The name.</param>
             <returns></returns>
         </member>
-        <member name="T:SuperSocket.SocketBase.PerformanceData">
-            <summary>
-            PerformanceData class
-            </summary>
-        </member>
-        <member name="M:SuperSocket.SocketBase.PerformanceData.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.PerformanceData"/> class.
-            </summary>
-        </member>
-        <member name="M:SuperSocket.SocketBase.PerformanceData.PushRecord(SuperSocket.SocketBase.PerformanceRecord)">
-            <summary>
-            Pushes the latest record sample.
-            </summary>
-            <param name="record">The record.</param>
-            <returns></returns>
-        </member>
-        <member name="P:SuperSocket.SocketBase.PerformanceData.CurrentRecord">
-            <summary>
-            Gets or sets the current record sample.
-            </summary>
-            <value>
-            The current record.
-            </value>
-        </member>
-        <member name="P:SuperSocket.SocketBase.PerformanceData.PreviousRecord">
-            <summary>
-            Gets or sets the previous record sample.
-            </summary>
-            <value>
-            The previous record.
-            </value>
-        </member>
-        <member name="T:SuperSocket.SocketBase.PerformanceRecord">
-            <summary>
-            Performance record sample
-            </summary>
-        </member>
-        <member name="M:SuperSocket.SocketBase.PerformanceRecord.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.PerformanceRecord"/> class.
-            </summary>
-        </member>
-        <member name="P:SuperSocket.SocketBase.PerformanceRecord.TotalConnections">
-            <summary>
-            Gets or sets the total connections.
-            </summary>
-            <value>
-            The total connections.
-            </value>
-        </member>
-        <member name="P:SuperSocket.SocketBase.PerformanceRecord.TotalHandledRequests">
-            <summary>
-            Gets or sets the total handled requests.
-            </summary>
-            <value>
-            The total handled requests.
-            </value>
-        </member>
-        <member name="P:SuperSocket.SocketBase.PerformanceRecord.RecordTime">
-            <summary>
-            Gets the record time.
-            </summary>
-        </member>
-        <member name="P:SuperSocket.SocketBase.PerformanceRecord.RecordSpan">
-            <summary>
-            Gets or sets the record span.
-            </summary>
-            <value>
-            The record span.
-            </value>
-        </member>
-        <member name="T:SuperSocket.SocketBase.GlobalPerformanceData">
-            <summary>
-            GlobalPerformanceData class
-            </summary>
-        </member>
-        <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.AvailableWorkingThreads">
-            <summary>
-            Gets or sets the available working threads.
-            </summary>
-            <value>
-            The available working threads.
-            </value>
-        </member>
-        <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.AvailableCompletionPortThreads">
-            <summary>
-            Gets or sets the available completion port threads.
-            </summary>
-            <value>
-            The available completion port threads.
-            </value>
-        </member>
-        <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.MaxWorkingThreads">
-            <summary>
-            Gets or sets the max working threads.
-            </summary>
-            <value>
-            The max working threads.
-            </value>
-        </member>
-        <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.MaxCompletionPortThreads">
-            <summary>
-            Gets or sets the max completion port threads.
-            </summary>
-            <value>
-            The max completion port threads.
-            </value>
-        </member>
-        <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.TotalThreadCount">
-            <summary>
-            Gets or sets the total thread count.
-            </summary>
-            <value>
-            The total thread count.
-            </value>
-        </member>
-        <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.CpuUsage">
-            <summary>
-            Gets or sets the cpu usage.
-            </summary>
-            <value>
-            The cpu usage.
-            </value>
-        </member>
-        <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.WorkingSet">
-            <summary>
-            Gets or sets the working set.
-            </summary>
-            <value>
-            The working set.
-            </value>
-        </member>
-        <member name="T:SuperSocket.SocketBase.PerformanceDataInfo">
-            <summary>
-            PerformanceDataInfo class, which assosiates server with performance data
-            </summary>
-        </member>
-        <member name="P:SuperSocket.SocketBase.PerformanceDataInfo.ServerName">
-            <summary>
-            Gets or sets the name of the server instance.
-            </summary>
-            <value>
-            The name of the server.
-            </value>
-        </member>
-        <member name="P:SuperSocket.SocketBase.PerformanceDataInfo.Data">
-            <summary>
-            Gets or sets the performance data.
-            </summary>
-            <value>
-            The data.
-            </value>
-        </member>
-        <member name="T:SuperSocket.SocketBase.PermformanceDataEventArgs">
-            <summary>
-            PermformanceData event argument
-            </summary>
-        </member>
-        <member name="M:SuperSocket.SocketBase.PermformanceDataEventArgs.#ctor(SuperSocket.SocketBase.GlobalPerformanceData,SuperSocket.SocketBase.PerformanceDataInfo[])">
-            <summary>
-            Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.PermformanceDataEventArgs"/> class.
-            </summary>
-            <param name="globalData">The global data.</param>
-            <param name="instancesData">The instances data.</param>
-        </member>
-        <member name="P:SuperSocket.SocketBase.PermformanceDataEventArgs.GlobalData">
-            <summary>
-            Gets the global data.
-            </summary>
-        </member>
-        <member name="P:SuperSocket.SocketBase.PermformanceDataEventArgs.InstancesData">
-            <summary>
-            Gets all the instances performance data.
-            </summary>
-        </member>
         <member name="T:SuperSocket.SocketBase.Protocol.BasicRequestInfoParser">
             <summary>
             Basic request info parser, which parse request info by separating
@@ -4700,6 +4624,59 @@
             <typeparam name="TRequestInfo">The type of the request info.</typeparam>
             <param name="session">The session.</param>
             <param name="requestInfo">The request info.</param>
+        </member>
+        <member name="T:SuperSocket.SocketBase.ServerState">
+            <summary>
+            Server State
+            </summary>
+        </member>
+        <member name="P:SuperSocket.SocketBase.ServerState.CollectedTime">
+            <summary>
+            Gets or sets the collected time.
+            </summary>
+            <value>
+            The collected time.
+            </value>
+        </member>
+        <member name="P:SuperSocket.SocketBase.ServerState.StartedTime">
+            <summary>
+            Gets or sets the started time.
+            </summary>
+            <value>
+            The started time.
+            </value>
+        </member>
+        <member name="P:SuperSocket.SocketBase.ServerState.IsRunning">
+            <summary>
+            Gets or sets a value indicating whether this instance is running.
+            </summary>
+            <value>
+            	<c>true</c> if this instance is running; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:SuperSocket.SocketBase.ServerState.TotalConnections">
+            <summary>
+            Gets or sets the total count of the connections.
+            </summary>
+            <value>
+            The total count of the connections.
+            </value>
+        </member>
+        <member name="P:SuperSocket.SocketBase.ServerState.TotalHandledRequests">
+            <summary>
+            Gets or sets the total handled requests count.
+            </summary>
+            <value>
+            The total handled requests count.
+            </value>
+        </member>
+        <member name="P:SuperSocket.SocketBase.ServerState.RequestHandlingSpeed">
+            <summary>
+            Gets or sets the request handling speed, per second.
+            </summary>
+            <value>
+            The request handling speed.
+            </value>
         </member>
         <member name="T:SuperSocket.SocketBase.SocketMode">
             <summary>

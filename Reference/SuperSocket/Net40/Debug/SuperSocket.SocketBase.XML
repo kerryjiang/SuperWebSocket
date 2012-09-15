@@ -3151,6 +3151,14 @@
             Gets the total session count.
             </summary>
         </member>
+        <member name="P:SuperSocket.SocketBase.IWorkItem.State">
+            <summary>
+            Gets the state of the server.
+            </summary>
+            <value>
+            The state of the server.
+            </value>
+        </member>
         <member name="T:SuperSocket.SocketBase.IAppServer">
             <summary>
             The interface for AppServer
@@ -3752,6 +3760,14 @@
             The total count of the connections.
             </value>
         </member>
+        <member name="P:SuperSocket.SocketBase.ServerState.MaxConnectionNumber">
+            <summary>
+            Gets or sets the maximum allowed connection number.
+            </summary>
+            <value>
+            The max connection number.
+            </value>
+        </member>
         <member name="P:SuperSocket.SocketBase.ServerState.TotalHandledRequests">
             <summary>
             Gets or sets the total handled requests count.
@@ -3766,6 +3782,14 @@
             </summary>
             <value>
             The request handling speed.
+            </value>
+        </member>
+        <member name="P:SuperSocket.SocketBase.ServerState.Listeners">
+            <summary>
+            Gets or sets the listeners.
+            </summary>
+            <value>
+            The listeners.
             </value>
         </member>
         <member name="T:SuperSocket.SocketBase.SocketMode">
@@ -4208,6 +4232,14 @@
             Gets the total session count.
             </summary>
         </member>
+        <member name="P:SuperSocket.SocketBase.AppServerBase`2.State">
+            <summary>
+            Gets the state data of the server.
+            </summary>
+            <value>
+            The state of the server.
+            </value>
+        </member>
         <member name="M:SuperSocket.SocketBase.AppServer`2.#ctor">
             <summary>
             Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.AppServer`2"/> class.
@@ -4290,12 +4322,12 @@
             Gets the total session count.
             </summary>
         </member>
-        <member name="P:SuperSocket.SocketBase.AppServer`2.ServerState">
+        <member name="P:SuperSocket.SocketBase.AppServer`2.State">
             <summary>
             Gets the state of the server.
             </summary>
             <value>
-            The state of the server.
+            The state data of the server.
             </value>
         </member>
         <member name="M:SuperSocket.SocketBase.AppServer`1.#ctor">

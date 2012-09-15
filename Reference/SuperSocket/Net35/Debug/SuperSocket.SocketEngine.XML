@@ -61,6 +61,14 @@
             Gets the total session count.
             </summary>
         </member>
+        <member name="P:SuperSocket.SocketEngine.AppDomainAppServer.State">
+            <summary>
+            Gets the state data of the server.
+            </summary>
+            <value>
+            The state of the server.
+            </value>
+        </member>
         <member name="T:SuperSocket.SocketEngine.AppDomainBootstrap">
             <summary>
             AppDomainBootstrap

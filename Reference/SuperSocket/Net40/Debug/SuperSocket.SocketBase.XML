@@ -85,24 +85,66 @@
             <param name="exceptionHandler">The exception handler.</param>
             <returns></returns>
         </member>
+        <member name="T:SuperSocket.SocketBase.CommandExecutingContext">
+            <summary>
+            Command Executing Context
+            </summary>
+        </member>
+        <member name="M:SuperSocket.SocketBase.CommandExecutingContext.#ctor(SuperSocket.SocketBase.IAppSession,SuperSocket.SocketBase.Protocol.IRequestInfo,SuperSocket.SocketBase.Command.ICommand)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.CommandExecutingContext"/> class.
+            </summary>
+            <param name="session">The session.</param>
+            <param name="requestInfo">The request info.</param>
+            <param name="command">The command.</param>
+        </member>
+        <member name="P:SuperSocket.SocketBase.CommandExecutingContext.Session">
+            <summary>
+            Gets the session.
+            </summary>
+        </member>
+        <member name="P:SuperSocket.SocketBase.CommandExecutingContext.RequestInfo">
+            <summary>
+            Gets the request info.
+            </summary>
+        </member>
+        <member name="P:SuperSocket.SocketBase.CommandExecutingContext.CurrentCommand">
+            <summary>
+            Gets the current command.
+            </summary>
+        </member>
+        <member name="P:SuperSocket.SocketBase.CommandExecutingContext.Cancel">
+            <summary>
+            Gets or sets a value indicating whether this command executing is cancelled.
+            </summary>
+            <value>
+              <c>true</c> if cancel; otherwise, <c>false</c>.
+            </value>
+        </member>
         <member name="T:SuperSocket.SocketBase.CommandFilterAttribute">
             <summary>
             Command filter attribute
             </summary>
         </member>
-        <member name="M:SuperSocket.SocketBase.CommandFilterAttribute.OnCommandExecuting(SuperSocket.SocketBase.IAppSession,SuperSocket.SocketBase.Command.ICommand)">
+        <member name="M:SuperSocket.SocketBase.CommandFilterAttribute.OnCommandExecuting(SuperSocket.SocketBase.CommandExecutingContext)">
             <summary>
             Called when [command executing].
             </summary>
-            <param name="session">The session.</param>
-            <param name="command">The command.</param>
+            <param name="commandContext">The command context.</param>
         </member>
-        <member name="M:SuperSocket.SocketBase.CommandFilterAttribute.OnCommandExecuted(SuperSocket.SocketBase.IAppSession,SuperSocket.SocketBase.Command.ICommand)">
+        <member name="M:SuperSocket.SocketBase.CommandFilterAttribute.OnCommandExecuted(SuperSocket.SocketBase.CommandExecutingContext)">
             <summary>
             Called when [command executed].
             </summary>
-            <param name="session">The session.</param>
-            <param name="command">The command.</param>
+            <param name="commandContext">The command context.</param>
+        </member>
+        <member name="P:SuperSocket.SocketBase.CommandFilterAttribute.Order">
+            <summary>
+            Gets or sets the execution order.
+            </summary>
+            <value>
+            The order.
+            </value>
         </member>
         <member name="T:SuperSocket.SocketBase.Command.CommandLoaderBase">
             <summary>
@@ -2542,26 +2584,6 @@
             Gets the session ID.
             </summary>
         </member>
-        <member name="T:SuperSocket.SocketBase.CommandFilterFactory">
-            <summary>
-            Command filter factory
-            </summary>
-        </member>
-        <member name="M:SuperSocket.SocketBase.CommandFilterFactory.GenerateCommandFilterLibrary(System.Type,System.Collections.Generic.IEnumerable{SuperSocket.SocketBase.Command.ICommand})">
-            <summary>
-            Generates the command filter library.
-            </summary>
-            <param name="serverType">Type of the server.</param>
-            <param name="commands">The commands.</param>
-            <returns></returns>
-        </member>
-        <member name="M:SuperSocket.SocketBase.CommandFilterFactory.GetFilterAttributes(System.Type)">
-            <summary>
-            Gets the filter attributes.
-            </summary>
-            <param name="type">The type.</param>
-            <returns></returns>
-        </member>
         <member name="T:SuperSocket.SocketBase.Config.CertificateConfig">
             <summary>
             Certificate config model class
@@ -3439,19 +3461,6 @@
             <param name="socketSession">The socket session.</param>
             <param name="requestFilter">The request filter.</param>
         </member>
-        <member name="T:SuperSocket.SocketBase.ICommandSource`1">
-            <summary>
-            The interface for class who provides commands source
-            </summary>
-            <typeparam name="TCommand">The type of the command.</typeparam>
-        </member>
-        <member name="M:SuperSocket.SocketBase.ICommandSource`1.GetCommandByName(System.String)">
-            <summary>
-            Gets the command by it's name.
-            </summary>
-            <param name="commandName">Name of the command.</param>
-            <returns></returns>
-        </member>
         <member name="T:SuperSocket.SocketBase.IConnectionFilter">
             <summary>
             The basic interface of connection filter
@@ -3853,10 +3862,18 @@
             </summary>
             <param name="requestFilterFactory">The request filter factory.</param>
         </member>
+        <member name="M:SuperSocket.SocketBase.AppServerBase`2.GetCommandFilterAttributes(System.Type)">
+            <summary>
+            Gets the filter attributes.
+            </summary>
+            <param name="type">The type.</param>
+            <returns></returns>
+        </member>
         <member name="M:SuperSocket.SocketBase.AppServerBase`2.SetupCommands(System.Collections.Generic.Dictionary{System.String,SuperSocket.SocketBase.Command.ICommand{`0,`1}})">
             <summary>
             Setups the command into command dictionary
             </summary>
+            <param name="discoveredCommands">The discovered commands.</param>
             <returns></returns>
         </member>
         <member name="M:SuperSocket.SocketBase.AppServerBase`2.Setup(SuperSocket.SocketBase.Config.IRootConfig,SuperSocket.SocketBase.Config.IServerConfig)">
@@ -3993,15 +4010,6 @@
             <param name="buffer">The buffer.</param>
             <param name="offset">The offset.</param>
             <param name="length">The length.</param>
-        </member>
-        <member name="M:SuperSocket.SocketBase.AppServerBase`2.ExecuteCommandFilters(System.Collections.Generic.List{SuperSocket.SocketBase.CommandFilterAttribute},`0,SuperSocket.SocketBase.Command.ICommand,System.Action{SuperSocket.SocketBase.CommandFilterAttribute,`0,SuperSocket.SocketBase.Command.ICommand})">
-            <summary>
-            Executes the command filters.
-            </summary>
-            <param name="filters">The filters.</param>
-            <param name="session">The session.</param>
-            <param name="command">The command.</param>
-            <param name="filterAction">The filter action.</param>
         </member>
         <member name="M:SuperSocket.SocketBase.AppServerBase`2.ExecuteCommand(`0,`1)">
             <summary>

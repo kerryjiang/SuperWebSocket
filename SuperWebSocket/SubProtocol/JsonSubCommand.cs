@@ -64,7 +64,7 @@ namespace SuperWebSocket.SubProtocol
         /// <param name="session">The session.</param>
         /// <param name="name">The name.</param>
         /// <param name="content">The content.</param>
-        protected void SendJsonMessageResponse(TWebSocketSession session, string name, object content)
+        protected void SendJsonMessage(TWebSocketSession session, string name, object content)
         {
             session.Send(GetJsonMessage(session, name, content));
         }

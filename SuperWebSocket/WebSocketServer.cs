@@ -591,9 +591,9 @@ namespace SuperWebSocket
         /// <summary>
         /// Setups the commands.
         /// </summary>
-        /// <param name="commandDict">The command dict.</param>
+        /// <param name="discoveredCommands">The discovered commands.</param>
         /// <returns></returns>
-        protected override bool SetupCommands(Dictionary<string, ICommand<TWebSocketSession, IWebSocketFragment>> commandDict)
+        protected override bool SetupCommands(Dictionary<string, ICommand<TWebSocketSession, IWebSocketFragment>> discoveredCommands)
         {
             var commands = new List<ICommand<TWebSocketSession, IWebSocketFragment>>
                 {
@@ -607,7 +607,7 @@ namespace SuperWebSocket
                     new Plain<TWebSocketSession>()
                 };
 
-            commands.ForEach(c => commandDict.Add(c.Name, c));
+            commands.ForEach(c => discoveredCommands.Add(c.Name, c));
 
             if (!SetupSubProtocols(Config))
                 return false;

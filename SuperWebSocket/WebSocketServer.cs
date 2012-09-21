@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -451,6 +452,18 @@ namespace SuperWebSocket
         internal void FireOnNewSessionConnected(IAppSession appSession)
         {
             base.OnNewSessionConnected((TWebSocketSession)appSession);
+        }
+
+        /// <summary>
+        /// Occurs when [new request received].
+        /// </summary>
+        /// <exception cref="System.NotSupportedException"></exception>
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override event RequestHandler<TWebSocketSession,IWebSocketFragment> NewRequestReceived
+        {
+            add { throw new NotSupportedException("Please use NewMessageReceived instead!"); }
+            remove { throw new NotSupportedException("Please use NewMessageReceived instead!"); }
         }
 
         private SessionEventHandler<TWebSocketSession, string> m_NewMessageReceived;

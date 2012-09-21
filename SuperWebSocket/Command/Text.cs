@@ -50,7 +50,6 @@ namespace SuperWebSocket.Command
 
                 var text = GetWebSocketText(frame);
                 session.AppServer.OnNewMessageReceived(session, text);
-                Console.WriteLine("Text.................");
             }
             else
             {

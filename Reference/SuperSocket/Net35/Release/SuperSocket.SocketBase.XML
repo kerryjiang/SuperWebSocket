@@ -2560,6 +2560,20 @@
             The order.
             </value>
         </member>
+        <member name="T:SuperSocket.SocketBase.Extensions">
+            <summary>
+            Extensions class for SocketBase project
+            </summary>
+        </member>
+        <member name="M:SuperSocket.SocketBase.Extensions.GetServerByName(SuperSocket.SocketBase.IBootstrap,System.String)">
+            <summary>
+            Gets the app server instance in the bootstrap by name, ignore case
+            </summary>
+            <param name="bootstrap">The bootstrap.</param>
+            <param name="name">The name of the appserver instance.</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
         <member name="T:SuperSocket.SocketBase.GlobalPerformanceData">
             <summary>
             GlobalPerformanceData class

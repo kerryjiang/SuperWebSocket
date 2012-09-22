@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Newtonsoft.Json;
 using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket.SubProtocol
@@ -52,7 +51,7 @@ namespace SuperWebSocket.SubProtocol
                 session.CurrentToken = requestInfo.Token;
 
             if (!m_IsPrimitiveType)
-                jsonCommandInfo = JsonConvert.DeserializeObject<TJsonCommandInfo>(requestInfo.Body);
+                jsonCommandInfo = (TJsonCommandInfo)session.AppServer.JsonDeserialize(requestInfo.Body, m_CommandInfoType);
             else
                 jsonCommandInfo = (TJsonCommandInfo)Convert.ChangeType(requestInfo.Body, m_CommandInfoType);
 
@@ -67,34 +66,14 @@ namespace SuperWebSocket.SubProtocol
         protected abstract void ExecuteJsonCommand(TWebSocketSession session, TJsonCommandInfo commandInfo);
 
         /// <summary>
-        /// Serializes the object.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns></returns>
-        protected string SerializeObject(object value)
-        {
-            return JsonConvert.SerializeObject(value);
-        }
-
-        /// <summary>
         /// Gets the json message.
         /// </summary>
-        /// <param name="token">The token.</param>
-        /// <param name="content">The content.</param>
-        /// <returns></returns>
-        protected string GetJsonMessage(string token, object content)
-        {
-            return GetJsonMessage(Name, token, content);
-        }
-
-        /// <summary>
-        /// Gets the json message.
-        /// </summary>
+        /// <param name="session">The session.</param>
         /// <param name="name">The name.</param>
         /// <param name="token">The token.</param>
         /// <param name="content">The content.</param>
         /// <returns></returns>
-        protected string GetJsonMessage(string name, string token, object content)
+        protected string GetJsonMessage(TWebSocketSession session, string name, string token, object content)
         {
             string strOutput;
 
@@ -102,7 +81,7 @@ namespace SuperWebSocket.SubProtocol
             if (content.GetType().IsPrimitive)
                 strOutput = content.ToString();
             else
-                strOutput = SerializeObject(content);
+                strOutput = session.AppServer.JsonSerialize(content);
 
             if (string.IsNullOrEmpty(token))
                 return string.Format(m_QueryTemplateB, name, strOutput);

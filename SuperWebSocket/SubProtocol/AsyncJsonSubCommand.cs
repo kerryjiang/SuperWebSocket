@@ -72,7 +72,7 @@ namespace SuperWebSocket.SubProtocol
         /// <param name="content">The content.</param>
         protected void SendJsonMessage(TWebSocketSession session, string token, object content)
         {
-            session.Send(GetJsonMessage(this.Name, token, content));
+            session.Send(GetJsonMessage(session, this.Name, token, content));
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace SuperWebSocket.SubProtocol
         /// <param name="content">The content.</param>
         protected void SendJsonMessage(TWebSocketSession session, string name, string token, object content)
         {
-            session.Send(GetJsonMessage(name, token, content));
+            session.Send(GetJsonMessage(session, name, token, content));
         }
     }
 }

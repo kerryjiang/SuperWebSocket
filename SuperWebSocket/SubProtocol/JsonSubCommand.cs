@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SuperSocket.SocketBase.Command;
-using Newtonsoft.Json;
 using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket.SubProtocol
@@ -45,7 +44,7 @@ namespace SuperWebSocket.SubProtocol
         /// <returns></returns>
         protected string GetJsonMessage(TWebSocketSession session, string name, object content)
         {
-            return GetJsonMessage(name, session.CurrentToken, content);
+            return GetJsonMessage(session, name, session.CurrentToken, content);
         }
 
         /// <summary>

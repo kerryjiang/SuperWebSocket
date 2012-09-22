@@ -10,6 +10,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using Newtonsoft.Json;
 using SuperSocket.Common;
 using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Command;
@@ -665,5 +666,30 @@ namespace SuperWebSocket
 
             session.LastActiveTime = DateTime.Now;
         }
+
+        #region JSON serialize/deserialize
+
+        /// <summary>
+        /// Serialize the target object by JSON
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <returns></returns>
+        public virtual string JsonSerialize(object target)
+        {
+            return JsonConvert.SerializeObject(target);
+        }
+
+        /// <summary>
+        /// Deserialize the JSON string to target type object.
+        /// </summary>
+        /// <param name="json">The json.</param>
+        /// <param name="type">The type.</param>
+        /// <returns></returns>
+        public virtual object JsonDeserialize(string json, Type type)
+        {
+            return JsonConvert.DeserializeObject(json, type);
+        }
+
+        #endregion
     }
 }

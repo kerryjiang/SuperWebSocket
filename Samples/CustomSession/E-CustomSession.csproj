@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{31511A5E-6A0E-4DA3-AD7A-8C239634AF8A}</ProjectGuid>
+    <ProjectGuid>{F922B5DE-5CCD-46D7-8F6A-F50EF45661F8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SuperWebSocket.Samples.JsonCommandAssembly</RootNamespace>
-    <AssemblyName>SuperWebSocket.Samples.JsonCommandAssembly</AssemblyName>
+    <RootNamespace>SuperWebSocket.Samples.CustomSession</RootNamespace>
+    <AssemblyName>SuperWebSocket.Samples.CustomSession</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net">
+      <HintPath>..\..\Reference\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="SuperSocket.Common, Version=1.5.0.0, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Reference\SuperSocket\Net40\$(Configuration)\SuperSocket.Common.dll</HintPath>
@@ -39,22 +42,19 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Reference\SuperSocket\Net40\$(Configuration)\SuperSocket.SocketBase.dll</HintPath>
     </Reference>
+    <Reference Include="SuperSocket.SocketService">
+      <HintPath>..\..\Reference\SuperSocket\Net40\Debug\SuperSocket.SocketService.exe</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Command\ADD.cs" />
-    <Compile Include="Command\ADDX.cs" />
-    <Compile Include="Command\CHAT.cs" />
-    <Compile Include="Command\ECHO.cs" />
-    <Compile Include="JsonObject\AddParameter.cs" />
-    <Compile Include="JsonObject\AddResult.cs" />
-    <Compile Include="JsonObject\ChatMessage.cs" />
+    <Compile Include="Command\MSG.cs" />
+    <Compile Include="CRMAppServer.cs" />
+    <Compile Include="CRMSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -64,10 +64,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="readme.txt" />
-    <Content Include="SuperWebSocket.Service.exe.config">
+    <Content Include="jquery.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="readme.txt" />
+    <Content Include="SuperSocket.SocketService.exe.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Test.htm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

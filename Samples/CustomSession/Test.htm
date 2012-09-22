@@ -1,0 +1,109 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+    <head>
+        <title>Test</title>
+        <style type="text/css">
+        #introduction
+        {
+            background-color: #e1e1e1;
+            font-size: 12px;
+            margin: 5px;
+            padding: 5px;
+            clear: both;
+        }
+        </style>
+        <script type="text/javascript" src="jquery.js"></script>
+        <script type="text/javascript">
+            var noSupportMessage = "Your browser cannot support WebSocket!";
+            var ws;
+            var name;
+
+            function appendMessage(message) {
+                $('body').append(message);
+            }
+
+            function connectSocketServer() {
+                var support = "MozWebSocket" in window ? 'MozWebSocket' : ("WebSocket" in window ? 'WebSocket' : null);
+
+                if (support == null) {
+                    appendMessage("* " + noSupportMessage + "<br/>");
+                    return;
+                }
+
+                appendMessage("* Connecting to server ..<br/>");
+                // create a new websocket and connect
+                // put name in path
+                ws = new window[support]('ws://localhost:2012/' + name);
+
+                // when data is comming from the server, this metod is called
+                ws.onmessage = function (evt) {
+                    appendMessage("# " + evt.data + "<br />");
+                };
+
+                // when the connection is established, this method is called
+                ws.onopen = function () {
+                    appendMessage('* Connection open<br/>');
+                    $('#messageInput').attr("disabled", "");
+                    $('#sendButton').attr("disabled", "");
+                    $('#connectButton').attr("disabled", "disabled");
+                    $('#disconnectButton').attr("disabled", "");
+                    $('#nameInput').attr("disabled", "disabled");
+                };
+
+                // when the connection is closed, this method is called
+                ws.onclose = function () {
+                    appendMessage('* Connection closed<br/>');
+                    $('#messageInput').attr("disabled", "disabled");
+                    $('#sendButton').attr("disabled", "disabled");
+                    $('#connectButton').attr("disabled", "");
+                    $('#disconnectButton').attr("disabled", "disabled");
+                    $('#nameInput').attr("disabled", "");
+                }
+            }
+
+            function sendMessage() {
+                if (ws) {
+                    var messageBox = document.getElementById('messageInput');
+                    ws.send(messageBox.value);
+                    messageBox.value = "";
+                }
+            }
+
+            function disconnectWebSocket() {
+                if (ws) {
+                    ws.close();
+                }
+            }
+
+            function setCookie(name, value, expiredays) {
+                var exdate = new Date();
+                exdate.setDate(exdate.getDate() + expiredays);
+                document.cookie = name + "=" + escape(value) + ((expiredays == null) ? "" : ";expires=" + exdate.toGMTString());
+            }
+
+            function connectWebSocket() {
+                name = $('#nameInput').val();
+                if (name.length == 0) {
+                    alert("Name is required!");
+                    return;
+                }
+                connectSocketServer();
+            }
+
+            window.onload = function () {
+                $('#messageInput').attr("disabled", "disabled");
+                $('#sendButton').attr("disabled", "disabled");
+                $('#disconnectButton').attr("disabled", "disabled");
+            }
+    
+    </script>
+    </head>
+    <body>
+        Name: <input type="text" id="nameInput" /><input type="button" id="connectButton" value="Connect" onclick="connectWebSocket()"/> <input type="button" id="disconnectButton" value="Disconnect" onclick="disconnectWebSocket()"/> <input type="text" id="messageInput" /> <input type="button" id="sendButton" value="Send" onclick="sendMessage()"/> <br />
+        <div id="introduction">Send the following message and then see the messages received:
+            <ul>
+                <li>MSG [ANY TEXT] - "MSG I love you!"</li>
+            </ul>
+        </div>
+    </body>
+</html>

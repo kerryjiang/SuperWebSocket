@@ -7,15 +7,19 @@ namespace SuperWebSocket.Samples.CustomSession
 {
     public class CRMSession : WebSocketSession<CRMSession>
     {
-        public int CompanyId { get; private set; }
+        public string Name { get; private set; }
 
         protected override void OnHandShaked()
         {
-            int companyId;
+            //Read name from path
+            var name = Path;
 
-            //read companyId from cookie
-            if (int.TryParse(Cookies["companyId"], out companyId))
-                CompanyId = companyId;
+            if (string.IsNullOrEmpty(name))
+                name = "Anoy";
+            else
+                name = Path.TrimStart('/');
+
+            Name = name;
         }
     }
 }

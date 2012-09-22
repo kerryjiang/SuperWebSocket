@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F922B5DE-5CCD-46D7-8F6A-F50EF45661F8}</ProjectGuid>
+    <ProjectGuid>{31511A5E-6A0E-4DA3-AD7A-8C239634AF8A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SuperWebSocket.Samples.CustomSession</RootNamespace>
-    <AssemblyName>SuperWebSocket.Samples.CustomSession</AssemblyName>
+    <RootNamespace>SuperWebSocket.Samples.JsonCommandAssembly</RootNamespace>
+    <AssemblyName>SuperWebSocket.Samples.JsonCommandAssembly</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -39,19 +39,23 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Reference\SuperSocket\Net40\$(Configuration)\SuperSocket.SocketBase.dll</HintPath>
     </Reference>
+    <Reference Include="SuperSocket.SocketService">
+      <HintPath>..\..\Reference\SuperSocket\Net40\Debug\SuperSocket.SocketService.exe</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Command\BRCT.cs" />
-    <Compile Include="CRMAppServer.cs" />
-    <Compile Include="CRMSession.cs" />
-    <Compile Include="JsonObject\BroadcastMessage.cs" />
+    <Compile Include="Command\ADD.cs" />
+    <Compile Include="Command\ADDX.cs" />
+    <Compile Include="Command\CHAT.cs" />
+    <Compile Include="Command\ECHO.cs" />
+    <Compile Include="JsonObject\AddParameter.cs" />
+    <Compile Include="JsonObject\AddResult.cs" />
+    <Compile Include="JsonObject\ChatMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -61,9 +65,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="readme.txt" />
-    <Content Include="SuperWebSocket.Service.exe.config">
+    <Content Include="SuperSocket.SocketService.exe.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

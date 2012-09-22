@@ -2,20 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SuperSocket.SocketBase.Command;
-using SuperSocket.SocketBase.Protocol;
 using SuperWebSocket.SubProtocol;
 
 namespace SuperWebSocket.Samples.CommandAssembly
 {
-    /// <summary>
-    /// If the client send "QUIT" to server, the websocket connection will be closed
-    /// </summary>
-    public class QUIT : SubCommandBase
+    public class ADD : SubCommandBase
     {
         public override void ExecuteCommand(WebSocketSession session, SubRequestInfo requestInfo)
         {
-            session.Close();
+            var paramArray = requestInfo.Body.Split(' ');
+
+            session.Send((int.Parse(paramArray[0]) + int.Parse(paramArray[1])).ToString());
         }
     }
 }

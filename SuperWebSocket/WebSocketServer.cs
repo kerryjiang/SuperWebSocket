@@ -272,7 +272,7 @@ namespace SuperWebSocket
 
             if (m_SubProtocols.Count <= 0 || (subProtocolConfigDict.ContainsKey(BasicSubProtocol<TWebSocketSession>.DefaultName) && !m_SubProtocols.ContainsKey(BasicSubProtocol<TWebSocketSession>.DefaultName)))
             {
-                if (!RegisterSubProtocol(BasicSubProtocol<TWebSocketSession>.DefaultInstance))
+                if (!RegisterSubProtocol(BasicSubProtocol<TWebSocketSession>.CreateDefaultSubProtocol()))
                     return false;
             }
 

@@ -107,16 +107,16 @@ namespace SuperWebSocket.SubProtocol
 
         private Dictionary<string, ISubCommand<TWebSocketSession>> m_CommandDict;
 
-        /// <summary>
-        /// Gets the default basic protocol instance.
-        /// </summary>
-        public static BasicSubProtocol<TWebSocketSession> DefaultInstance { get; private set; }
-
         private ILog m_Logger;
 
-        static BasicSubProtocol()
+        internal static BasicSubProtocol<TWebSocketSession> CreateDefaultSubProtocol()
         {
-            DefaultInstance = new BasicSubProtocol<TWebSocketSession>(DefaultName, new List<Assembly>());
+            var commandAssembly = typeof(TWebSocketSession).Assembly;
+
+            if (commandAssembly == Assembly.GetExecutingAssembly())
+                 commandAssembly = Assembly.GetEntryAssembly();
+
+            return new BasicSubProtocol<TWebSocketSession>(DefaultName, commandAssembly);
         }
 
         /// <summary>

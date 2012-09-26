@@ -55,7 +55,7 @@ namespace SuperWebSocket.Samples.BasicConsole
         static void appServer_NewMessageReceived(WebSocketSession session, string message)
         {
             //Send the received message back
-            session.Send("Server: " + message);
+            //session.Send("Server: " + message);
         }
     }
 }

@@ -2875,6 +2875,14 @@
             	<c>true</c> if [log basic session activity]; otherwise, <c>false</c>.
             </value>
         </member>
+        <member name="P:SuperSocket.SocketBase.Config.IServerConfig.LogAllSocketException">
+            <summary>
+            Gets a value indicating whether [log all socket exception].
+            </summary>
+            <value>
+            <c>true</c> if [log all socket exception]; otherwise, <c>false</c>.
+            </value>
+        </member>
         <member name="T:SuperSocket.SocketBase.Config.ServerConfig">
             <summary>
             Server configruation model
@@ -3130,6 +3138,14 @@
             </summary>
             <value>
             	<c>true</c> if [log basic session activity]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:SuperSocket.SocketBase.Config.ServerConfig.LogAllSocketException">
+            <summary>
+            Gets/sets a value indicating whether [log all socket exception].
+            </summary>
+            <value>
+            <c>true</c> if [log all socket exception]; otherwise, <c>false</c>.
             </value>
         </member>
         <member name="T:SuperSocket.SocketBase.IServerStateSource">

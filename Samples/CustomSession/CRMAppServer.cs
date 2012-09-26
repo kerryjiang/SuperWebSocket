@@ -10,7 +10,6 @@ namespace SuperWebSocket.Samples.CustomSession
     public class CRMAppServer : WebSocketServer<CRMSession>
     {
         public CRMAppServer()
-            : base(new BasicSubProtocol<CRMSession>())
         {
 
         }

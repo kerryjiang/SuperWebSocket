@@ -17,7 +17,7 @@ namespace SuperWebSocket.Samples.SubProtocol
             Console.WriteLine();
 
             //use BasicSubProtocol with current assembly as command assembly
-            var appServer = new WebSocketServer(new BasicSubProtocol(Assembly.GetExecutingAssembly()));
+            var appServer = new WebSocketServer();
 
             //Setup the appServer
             if (!appServer.Setup(2012)) //Setup with listening port

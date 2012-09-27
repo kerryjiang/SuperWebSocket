@@ -909,7 +909,7 @@
             <param name="socketSession">The socket session.</param>
             <param name="requestFilter">The request filter.</param>
         </member>
-        <member name="M:SuperSocket.SocketBase.AppSession`2.StartSession">
+        <member name="M:SuperSocket.SocketBase.AppSession`2.SuperSocket#SocketBase#IAppSession#StartSession">
             <summary>
             Starts the session.
             </summary>

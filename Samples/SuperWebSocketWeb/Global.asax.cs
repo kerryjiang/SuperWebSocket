@@ -39,7 +39,7 @@ namespace SuperWebSocketWeb
         {
             lock (m_SecureSessionSyncRoot)
             {
-                m_SecureSessions.ForEach(s => s.SendResponse("Push data from WebSocket. [" + (m_Index++) + "] Current Time: " + DateTime.Now));
+                m_SecureSessions.ForEach(s => s.Send("Push data from WebSocket. [" + (m_Index++) + "] Current Time: " + DateTime.Now));
             }
         }
 
@@ -157,7 +157,7 @@ namespace SuperWebSocketWeb
             {
                 foreach (var s in m_Sessions)
                 {
-                    s.SendResponse(message);
+                    s.Send(message);
                 }
             }
         }

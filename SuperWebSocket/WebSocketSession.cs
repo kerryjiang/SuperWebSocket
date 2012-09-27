@@ -62,6 +62,13 @@ namespace SuperWebSocket
         /// </summary>
         string UriScheme { get; }
 
+        /// <summary>
+        /// Gets a value indicating whether this <see cref="IWebSocketSession" /> is handshaked.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if handshaked; otherwise, <c>false</c>.
+        /// </value>
+        bool Handshaked { get; }
 
         /// <summary>
         /// Sends the raw binary response.
@@ -110,7 +117,7 @@ namespace SuperWebSocket
     /// WebSocket AppSession class
     /// </summary>
     /// <typeparam name="TWebSocketSession">The type of the web socket session.</typeparam>
-    public class WebSocketSession<TWebSocketSession> : AppSession<TWebSocketSession, IWebSocketFragment>, IWebSocketSession
+    public class WebSocketSession<TWebSocketSession> : AppSession<TWebSocketSession, IWebSocketFragment>, IWebSocketSession, IAppSession
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
         /// <summary>
@@ -228,18 +235,23 @@ namespace SuperWebSocket
 
         private bool m_Handshaked = false;
 
-        internal bool Handshaked
+        /// <summary>
+        /// Gets a value indicating whether this <see cref="IWebSocketSession" /> is handshaked.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if handshaked; otherwise, <c>false</c>.
+        /// </value>
+        public bool Handshaked
         {
             get { return m_Handshaked; }
-            set
-            {
-                m_Handshaked = value;
-                if (m_Handshaked)
-                {
-                    SetCookie();
-                    OnHandShaked();
-                }
-            }
+        }
+
+        internal void OnHandshakeSuccess()
+        {
+            m_Handshaked = true;
+            SetCookie();
+            OnSessionStarted();
+            AppServer.FireOnNewSessionConnected(this);
         }
 
         /// <summary>
@@ -257,6 +269,11 @@ namespace SuperWebSocket
         {
             Frames = new List<WebSocketDataFrame>();
             base.OnInit();
+        }
+
+        void IAppSession.StartSession()
+        {
+            //Do nothing. Avoid firing thhe OnSessionStarted() method of base class
         }
 
         /// <summary>
@@ -295,13 +312,6 @@ namespace SuperWebSocket
             this.Cookies = cookies;
         }
 
-        /// <summary>
-        /// Called when [hand shaked].
-        /// </summary>
-        protected virtual void OnHandShaked()
-        {
-
-        }
 
         /// <summary>
         /// Gets the cookies.

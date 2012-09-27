@@ -32,8 +32,7 @@ namespace SuperWebSocket.Command
         /// <param name="requestInfo">The request info.</param>
         public override void ExecuteCommand(TWebSocketSession session, IWebSocketFragment requestInfo)
         {
-            session.Handshaked = true;
-            session.AppServer.FireOnNewSessionConnected(session);
+            session.OnHandshakeSuccess();
         }
     }
 }

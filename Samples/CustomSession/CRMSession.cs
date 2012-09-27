@@ -9,7 +9,7 @@ namespace SuperWebSocket.Samples.CustomSession
     {
         public string Name { get; private set; }
 
-        protected override void OnHandShaked()
+        protected override void OnSessionStarted()
         {
             //Read name from path
             var name = Path;

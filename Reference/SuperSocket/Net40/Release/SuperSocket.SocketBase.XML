@@ -554,6 +554,14 @@
             Gets the name.
             </summary>
         </member>
+        <member name="P:SuperSocket.SocketBase.DisplayAttribute.ShortName">
+            <summary>
+            Gets or sets the short name.
+            </summary>
+            <value>
+            The short name.
+            </value>
+        </member>
         <member name="P:SuperSocket.SocketBase.DisplayAttribute.Format">
             <summary>
             Gets or sets the format.
@@ -568,6 +576,14 @@
             </summary>
             <value>
             The order.
+            </value>
+        </member>
+        <member name="P:SuperSocket.SocketBase.DisplayAttribute.OutputInPerfLog">
+            <summary>
+            Gets or sets a value indicating whether [output in perf log].
+            </summary>
+            <value>
+              <c>true</c> if [output in perf log]; otherwise, <c>false</c>.
             </value>
         </member>
         <member name="T:SuperSocket.SocketBase.Extensions">
@@ -3766,6 +3782,14 @@
             <summary>
             Server State
             </summary>
+        </member>
+        <member name="P:SuperSocket.SocketBase.ServerState.Name">
+            <summary>
+            Gets or sets the name.
+            </summary>
+            <value>
+            The name.
+            </value>
         </member>
         <member name="P:SuperSocket.SocketBase.ServerState.CollectedTime">
             <summary>

@@ -35,16 +35,6 @@ namespace SuperWebSocket
     }
 
     /// <summary>
-    /// Session related event handler
-    /// </summary>
-    /// <typeparam name="TWebSocketSession">The type of the web socket session.</typeparam>
-    /// <typeparam name="TEventArgs">The type of the event args.</typeparam>
-    /// <param name="session">The session.</param>
-    /// <param name="e">The instance containing the event data.</param>
-    public delegate void SessionEventHandler<TWebSocketSession, TEventArgs>(TWebSocketSession session, TEventArgs e)
-        where TWebSocketSession : WebSocketSession<TWebSocketSession>, new();
-
-    /// <summary>
     /// WebSocket AppServer
     /// </summary>
     public class WebSocketServer : WebSocketServer<WebSocketSession>
@@ -467,12 +457,12 @@ namespace SuperWebSocket
             remove { throw new NotSupportedException("Please use NewMessageReceived instead!"); }
         }
 
-        private SessionEventHandler<TWebSocketSession, string> m_NewMessageReceived;
+        private SessionHandler<TWebSocketSession, string> m_NewMessageReceived;
 
         /// <summary>
         /// Occurs when [new message received].
         /// </summary>
-        public event SessionEventHandler<TWebSocketSession, string> NewMessageReceived
+        public event SessionHandler<TWebSocketSession, string> NewMessageReceived
         {
             add
             {
@@ -507,12 +497,12 @@ namespace SuperWebSocket
             }
         }
 
-        private SessionEventHandler<TWebSocketSession, byte[]> m_NewDataReceived;
+        private SessionHandler<TWebSocketSession, byte[]> m_NewDataReceived;
 
         /// <summary>
         /// Occurs when [new data received].
         /// </summary>
-        public event SessionEventHandler<TWebSocketSession, byte[]> NewDataReceived
+        public event SessionHandler<TWebSocketSession, byte[]> NewDataReceived
         {
             add
             {

@@ -4772,6 +4772,22 @@
             The listeners.
             </value>
         </member>
+        <member name="T:SuperSocket.SocketBase.SessionHandler`1">
+            <summary>
+            Used for session level event handler
+            </summary>
+            <typeparam name="TAppSession">the type of the target session</typeparam>
+            <param name="session">the target session</param>
+        </member>
+        <member name="T:SuperSocket.SocketBase.SessionHandler`2">
+            <summary>
+            Used for session level event handler
+            </summary>
+            <typeparam name="TAppSession">the type of the target session</typeparam>
+            <typeparam name="TParam">the target session</typeparam>
+            <param name="session">the target session</param>
+            <param name="value">the event parameter</param>
+        </member>
         <member name="T:SuperSocket.SocketBase.SocketMode">
             <summary>
             Socket server running mode

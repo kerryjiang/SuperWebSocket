@@ -71,8 +71,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SubProtocolWebSocketTest.cs" />
     <Compile Include="WebSocketClientTest.cs" />
+    <Compile Include="WebSocketFramingTest.cs" />
     <Compile Include="WebSocketHybi10Test.cs" />
-    <Compile Include="WebSocketTest.cs" />
+    <Compile Include="WebSocketRawTest.cs" />
+    <Compile Include="WebSocketTestBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SuperWebSocket\SuperWebSocket.NET35.csproj">

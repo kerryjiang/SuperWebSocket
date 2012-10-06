@@ -9,49 +9,53 @@ using NUnit.Framework;
 using SuperSocket.Common;
 using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Config;
-using SuperSocket.SocketBase.Logging;
 using SuperSocket.SocketEngine;
 using SuperWebSocket;
-using System.Threading;
+using SuperSocket.SocketBase.Logging;
 
 namespace SuperWebSocketTest
 {
     [TestFixture]
-    public class WebSocketTest
+    public class WebSocketRawTest
     {
         protected WebSocketServer m_WebSocketServer;
         private Encoding m_Encoding;
         protected string NewLine { get; private set; }
 
-        protected IBootstrap m_Bootstrap;
-
-        public WebSocketTest()
+        public WebSocketRawTest()
         {
             m_Encoding = new UTF8Encoding();
             NewLine = "\r\n";
         }
 
+        protected void Setup(WebSocketServer websocketServer, Action<ServerConfig> configurator)
+        {
+            var rootConfig = new RootConfig { DisablePerformanceDataCollector = true };
+            websocketServer.NewSessionConnected += new SessionHandler<WebSocketSession>(m_WebSocketServer_NewSessionConnected);
+            websocketServer.SessionClosed += new SessionHandler<WebSocketSession, CloseReason>(m_WebSocketServer_SessionClosed);
+
+            var config = new ServerConfig();
+            configurator(config);
+
+            var ret = websocketServer.Setup(rootConfig, config, null, null, new ConsoleLogFactory(), null, null);
+
+            Assert.IsTrue(ret);
+
+            m_WebSocketServer = websocketServer;
+        }
+
         [TestFixtureSetUp]
         public virtual void Setup()
         {
-            var rootConfig = new RootConfig { DisablePerformanceDataCollector = true };
+            Setup(new WebSocketServer(), c =>
+            {
+                c.Name = "SuperWebSocket Server";
+                c.Port = 2012;
+                c.Ip = "Any";
+                c.MaxConnectionNumber = 100;
+            });
 
-            m_WebSocketServer = new WebSocketServer();
-
-            m_WebSocketServer.NewMessageReceived += new SessionEventHandler<WebSocketSession, string>(m_WebSocketServer_NewMessageReceived);
-            m_WebSocketServer.NewSessionConnected += m_WebSocketServer_NewSessionConnected;
-            m_WebSocketServer.SessionClosed += m_WebSocketServer_SessionClosed;
-
-            m_WebSocketServer.Setup(rootConfig, new ServerConfig
-                {
-                    Port = 2012,
-                    Ip = "Any",
-                    MaxConnectionNumber = 100,
-                    Mode = SocketMode.Tcp,
-                    Name = "SuperWebSocket Server"
-                });
-
-            m_Bootstrap = new DefaultBootstrap(rootConfig, new IWorkItem[] { m_WebSocketServer }, new ConsoleLogFactory());
+            m_WebSocketServer.NewMessageReceived += new SessionHandler<WebSocketSession, string>(m_WebSocketServer_NewMessageReceived);
         }
         
         protected WebSocketServer Server
@@ -83,13 +87,13 @@ namespace SuperWebSocketTest
         [SetUp]
         public void StartServer()
         {
-            m_Bootstrap.Start();
+            m_WebSocketServer.Start();
         }
 
         [TearDown]
         public void StopServer()
         {
-            m_Bootstrap.Stop();
+            m_WebSocketServer.Stop();
         }
 
         protected void Handshake(out Socket socket, out Stream stream)
@@ -294,6 +298,7 @@ namespace SuperWebSocketTest
 
             while ((thisRead = stream.Read(buffer, 0, Math.Min(left, buffer.Length))) > 0)
             {
+                Console.WriteLine("Current read: {0}", thisRead);
                 commandBuffer.AddSegment(buffer, 0, thisRead, true);
                 left -= thisRead;
 

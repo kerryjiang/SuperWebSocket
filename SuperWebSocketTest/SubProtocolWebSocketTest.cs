@@ -9,7 +9,6 @@ using NUnit.Framework;
 using SuperSocket.Common;
 using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Config;
-using SuperSocket.SocketBase.Logging;
 using SuperSocket.SocketEngine;
 using SuperWebSocket;
 using SuperWebSocket.SubProtocol;
@@ -17,7 +16,7 @@ using SuperWebSocket.SubProtocol;
 namespace SuperWebSocketTest
 {
     [TestFixture]
-    public class SubProtocolWebSocketTest : WebSocketTest
+    public class SubProtocolWebSocketTest : WebSocketRawTest
     {
         private Encoding m_Encoding;
         
@@ -30,21 +29,16 @@ namespace SuperWebSocketTest
         [TestFixtureSetUp]
         public override void Setup()
         {
-            var rootConfig = new RootConfig { DisablePerformanceDataCollector = true };
-
             m_Encoding = new UTF8Encoding();
 
-            m_WebSocketServer = new WebSocketServer(new BasicSubProtocol("Basic", new List<Assembly>{ this.GetType().Assembly } ));
-            m_WebSocketServer.Setup(rootConfig, new ServerConfig
-                {
-                    Port = 2012,
-                    Ip = "Any",
-                    MaxConnectionNumber = 100,
-                    Mode = SocketMode.Tcp,
-                    Name = "SuperWebSocket Server"
-                });
-
-            m_Bootstrap = new DefaultBootstrap(rootConfig, new IWorkItem[] { m_WebSocketServer }, new ConsoleLogFactory());
+            Setup(new WebSocketServer(new BasicSubProtocol()), c =>
+            {
+                c.Port = 2012;
+                c.Ip = "Any";
+                c.MaxConnectionNumber = 100;
+                c.Mode = SocketMode.Tcp;
+                c.Name = "SuperWebSocket Server";
+            });
         }
 
         protected override string SubProtocol

@@ -24,7 +24,10 @@ namespace SuperWebSocket
 
         private string GetJsonMessage(string name, object content)
         {
-            return string.Format(m_QueryTemplate, name, AppServer.JsonSerialize(content));
+            if(content.GetType().IsSimpleType())
+                return string.Format(m_QueryTemplate, name, content);
+            else
+                return string.Format(m_QueryTemplate, name, AppServer.JsonSerialize(content));
         }
 
         /// <summary>

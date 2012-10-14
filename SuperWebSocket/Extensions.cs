@@ -60,5 +60,23 @@ namespace SuperWebSocket
         {
             builder.Append(m_CrCf);
         }
+
+        private static Type[] m_SimpleTypes = new Type[] { 
+                typeof(String),
+                typeof(Decimal),
+                typeof(DateTime),
+                typeof(DateTimeOffset),
+                typeof(TimeSpan),
+                typeof(Guid)
+            };
+
+        internal static bool IsSimpleType(this Type type)
+        {
+            return
+                type.IsValueType ||
+                type.IsPrimitive ||
+                m_SimpleTypes.Contains(type) ||
+                Convert.GetTypeCode(type) != TypeCode.Object;
+        }
     }
 }

@@ -17,7 +17,7 @@ namespace SuperWebSocket.SubProtocol
         private const string m_QueryTemplateA = "{0}-{1} {2}";
         private const string m_QueryTemplateB = "{0} {1}";
 
-        private bool m_IsPrimitiveType = false;
+        private bool m_IsSimpleType = false;
 
         private Type m_CommandInfoType;
 
@@ -28,8 +28,8 @@ namespace SuperWebSocket.SubProtocol
         {
             m_CommandInfoType = typeof(TJsonCommandInfo);
 
-            if (m_CommandInfoType.IsPrimitive)
-                m_IsPrimitiveType = true;
+            if (m_CommandInfoType.IsSimpleType())
+                m_IsSimpleType = true;
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace SuperWebSocket.SubProtocol
             if (!string.IsNullOrEmpty(requestInfo.Token))
                 session.CurrentToken = requestInfo.Token;
 
-            if (!m_IsPrimitiveType)
+            if (!m_IsSimpleType)
                 jsonCommandInfo = (TJsonCommandInfo)session.AppServer.JsonDeserialize(requestInfo.Body, m_CommandInfoType);
             else
                 jsonCommandInfo = (TJsonCommandInfo)Convert.ChangeType(requestInfo.Body, m_CommandInfoType);
@@ -78,7 +78,7 @@ namespace SuperWebSocket.SubProtocol
             string strOutput;
 
             //Needn't serialize primitive type object
-            if (content.GetType().IsPrimitive)
+            if (content.GetType().IsSimpleType())
                 strOutput = content.ToString();
             else
                 strOutput = session.AppServer.JsonSerialize(content);

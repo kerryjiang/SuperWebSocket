@@ -2549,6 +2549,11 @@
             Display attribute
             </summary>
         </member>
+        <member name="M:SuperSocket.SocketBase.DisplayAttribute.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.DisplayAttribute"/> class.
+            </summary>
+        </member>
         <member name="M:SuperSocket.SocketBase.DisplayAttribute.#ctor(System.String)">
             <summary>
             Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.DisplayAttribute"/> class.

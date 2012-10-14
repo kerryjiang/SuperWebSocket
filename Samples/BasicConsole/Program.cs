@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SuperSocket.SocketBase;
 
 namespace SuperWebSocket.Samples.BasicConsole
 {
@@ -24,7 +25,7 @@ namespace SuperWebSocket.Samples.BasicConsole
                 return;
             }
 
-            appServer.NewMessageReceived += new SessionEventHandler<WebSocketSession, string>(appServer_NewMessageReceived);
+            appServer.NewMessageReceived += new SessionHandler<WebSocketSession, string>(appServer_NewMessageReceived);
 
             Console.WriteLine();
 

@@ -56,7 +56,7 @@ namespace SuperWebSocketWeb
             Application["WebSocketPort"] = socketServer.Config.Port;
             Application["SecureWebSocketPort"] = secureSocketServer.Config.Port;
 
-            socketServer.NewMessageReceived += new SessionEventHandler<WebSocketSession, string>(socketServer_NewMessageReceived);
+            socketServer.NewMessageReceived += new SessionHandler<WebSocketSession, string>(socketServer_NewMessageReceived);
             socketServer.NewSessionConnected += socketServer_NewSessionConnected;
             socketServer.SessionClosed += socketServer_SessionClosed;
 
@@ -93,7 +93,7 @@ namespace SuperWebSocketWeb
 
             var socketServer = new WebSocketServer();
 
-            socketServer.NewMessageReceived += new SessionEventHandler<WebSocketSession, string>(socketServer_NewMessageReceived);
+            socketServer.NewMessageReceived += new SessionHandler<WebSocketSession, string>(socketServer_NewMessageReceived);
             socketServer.NewSessionConnected += socketServer_NewSessionConnected;
             socketServer.SessionClosed += socketServer_SessionClosed;
 

@@ -1,0 +1,582 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SuperSocket.Facility</name>
+    </assembly>
+    <members>
+        <member name="T:SuperSocket.Facility.HttpBase.HttpRequestFilterBase`1">
+            <summary>
+            HttpRequestFilterBase
+            </summary>
+            <typeparam name="TRequestInfo">The type of the request info.</typeparam>
+        </member>
+        <member name="F:SuperSocket.Facility.HttpBase.HttpRequestFilterBase`1.NewLine">
+            <summary>
+            Http header terminator
+            </summary>
+        </member>
+        <member name="F:SuperSocket.Facility.HttpBase.HttpRequestFilterBase`1.m_HeaderParsed">
+            <summary>
+            indicate whether the header has been parsed
+            </summary>
+        </member>
+        <member name="M:SuperSocket.Facility.HttpBase.HttpRequestFilterBase`1.#ctor(SuperSocket.SocketBase.IAppSession)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.Facility.HttpBase.HttpRequestFilterBase`1"/> class.
+            </summary>
+        </member>
+        <member name="M:SuperSocket.Facility.HttpBase.HttpRequestFilterBase`1.Filter(System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
+            <summary>
+            Filters the specified session.
+            </summary>
+            <param name="readBuffer">The read buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="length">The length.</param>
+            <param name="toBeCopied">if set to <c>true</c> [to be copied].</param>
+            <param name="rest">The rest.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.Facility.HttpBase.HttpRequestFilterBase`1.FilterRequestBody(System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
+            <summary>
+            Filters the request body.
+            </summary>
+            <param name="readBuffer">The read buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="length">The length.</param>
+            <param name="toBeCopied">if set to <c>true</c> [to be copied].</param>
+            <param name="rest">The rest data size.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.Facility.HttpBase.HttpRequestFilterBase`1.ProcessMatchedRequest(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Resolves the specified data.
+            </summary>
+            <param name="data">The data.</param>
+            <param name="offset">The offset.</param>
+            <param name="length">The length.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.Facility.HttpBase.HttpRequestFilterBase`1.OnHeaderParsed(System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Called when [header parsed].
+            </summary>
+            <param name="header">The header.</param>
+        </member>
+        <member name="M:SuperSocket.Facility.HttpBase.HttpRequestFilterBase`1.Reset">
+            <summary>
+            Resets this instance to inital state.
+            </summary>
+        </member>
+        <member name="P:SuperSocket.Facility.HttpBase.HttpRequestFilterBase`1.HeaderItems">
+            <summary>
+            Gets the header items.
+            </summary>
+        </member>
+        <member name="T:SuperSocket.Facility.HttpBase.IHttpRequestInfo">
+            <summary>
+            IHttpRequestInfo
+            </summary>
+        </member>
+        <member name="P:SuperSocket.Facility.HttpBase.IHttpRequestInfo.Header">
+            <summary>
+            Gets the http header.
+            </summary>
+        </member>
+        <member name="T:SuperSocket.Facility.HttpBase.HttpRequestInfoBase">
+            <summary>
+            HttpRequestInfoBase
+            </summary>
+        </member>
+        <member name="M:SuperSocket.Facility.HttpBase.HttpRequestInfoBase.#ctor(System.String,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.Facility.HttpBase.HttpRequestInfoBase"/> class.
+            </summary>
+            <param name="key">The key.</param>
+            <param name="header">The header.</param>
+        </member>
+        <member name="P:SuperSocket.Facility.HttpBase.HttpRequestInfoBase.Key">
+            <summary>
+            Gets the key of this request.
+            </summary>
+        </member>
+        <member name="P:SuperSocket.Facility.HttpBase.HttpRequestInfoBase.Header">
+            <summary>
+            Gets the http header.
+            </summary>
+        </member>
+        <member name="T:SuperSocket.Facility.HttpBase.HttpRequestInfoBase`1">
+            <summary>
+            HttpRequestInfoBase
+            </summary>
+            <typeparam name="TRequestBody">The type of the request body.</typeparam>
+        </member>
+        <member name="M:SuperSocket.Facility.HttpBase.HttpRequestInfoBase`1.#ctor(System.String,System.Collections.Specialized.NameValueCollection,`0)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.Facility.HttpBase.HttpRequestInfoBase`1"/> class.
+            </summary>
+            <param name="key">The key.</param>
+            <param name="header">The header.</param>
+            <param name="body">The body.</param>
+        </member>
+        <member name="P:SuperSocket.Facility.HttpBase.HttpRequestInfoBase`1.Body">
+            <summary>
+            Gets the body.
+            </summary>
+        </member>
+        <member name="T:SuperSocket.Facility.HttpBase.MimeHeaderHelper">
+            <summary>
+            MimeHeader Helper class
+            </summary>
+        </member>
+        <member name="M:SuperSocket.Facility.HttpBase.MimeHeaderHelper.ParseHttpHeader(System.String,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Parses the HTTP header.
+            </summary>
+            <param name="headerData">The header data.</param>
+            <param name="header">The header.</param>
+        </member>
+        <member name="T:SuperSocket.Facility.PolicyServer.FlashPolicyServer">
+            <summary>
+            Flash policy AppServer
+            </summary>
+        </member>
+        <member name="T:SuperSocket.Facility.PolicyServer.PolicyServer">
+            <summary>
+            PolicyServer base class
+            </summary>
+        </member>
+        <member name="M:SuperSocket.Facility.PolicyServer.PolicyServer.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.Facility.PolicyServer.PolicyServer"/> class.
+            </summary>
+        </member>
+        <member name="M:SuperSocket.Facility.PolicyServer.PolicyServer.Setup(SuperSocket.SocketBase.Config.IRootConfig,SuperSocket.SocketBase.Config.IServerConfig)">
+            <summary>
+            Setups the specified root config.
+            </summary>
+            <param name="rootConfig">The root config.</param>
+            <param name="config">The config.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.Facility.PolicyServer.PolicyServer.SetupPolicyResponse(System.Byte[])">
+            <summary>
+            Setups the policy response.
+            </summary>
+            <param name="policyFileData">The policy file data.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.Facility.PolicyServer.PolicyServer.GetPolicyFileResponse(System.Net.IPEndPoint)">
+            <summary>
+            Gets the policy file response.
+            </summary>
+            <param name="clientEndPoint">The client end point.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.Facility.PolicyServer.PolicyServer.ProcessRequest(SuperSocket.Facility.PolicyServer.PolicySession,System.Byte[])">
+            <summary>
+            Processes the request.
+            </summary>
+            <param name="session">The session.</param>
+            <param name="data">The data.</param>
+        </member>
+        <member name="P:SuperSocket.Facility.PolicyServer.PolicyServer.PolicyResponse">
+            <summary>
+            Gets the policy response.
+            </summary>
+        </member>
+        <member name="M:SuperSocket.Facility.PolicyServer.FlashPolicyServer.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.Facility.PolicyServer.FlashPolicyServer"/> class.
+            </summary>
+        </member>
+        <member name="M:SuperSocket.Facility.PolicyServer.FlashPolicyServer.SetupPolicyResponse(System.Byte[])">
+            <summary>
+            Setups the policy response.
+            </summary>
+            <param name="policyFileData">The policy file data.</param>
+            <returns></returns>
+        </member>
+        <member name="T:SuperSocket.Facility.PolicyServer.PolicyRequestFilter">
+            <summary>
+            PolicyRequestFilter
+            </summary>
+        </member>
+        <member name="T:SuperSocket.SocketBase.Protocol.FixedSizeRequestFilter`1">
+            <summary>
+            FixedSizeRequestFilter
+            </summary>
+            <typeparam name="TRequestInfo">The type of the request info.</typeparam>
+        </member>
+        <member name="F:SuperSocket.SocketBase.Protocol.FixedSizeRequestFilter`1.NullRequestInfo">
+            <summary>
+            Null RequestInfo
+            </summary>
+        </member>
+        <member name="M:SuperSocket.SocketBase.Protocol.FixedSizeRequestFilter`1.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.Protocol.FixedSizeRequestFilter`1"/> class.
+            </summary>
+            <param name="size">The size.</param>
+        </member>
+        <member name="M:SuperSocket.SocketBase.Protocol.FixedSizeRequestFilter`1.Filter(System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
+            <summary>
+            Filters the specified session.
+            </summary>
+            <param name="readBuffer">The read buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="length">The length.</param>
+            <param name="toBeCopied">if set to <c>true</c> [to be copied].</param>
+            <param name="rest">The rest.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.SocketBase.Protocol.FixedSizeRequestFilter`1.ProcessMatchedRequest(System.Byte[],System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Filters the buffer after the server receive the enough size of data.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="length">The length.</param>
+            <param name="toBeCopied">if set to <c>true</c> [to be copied].</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.SocketBase.Protocol.FixedSizeRequestFilter`1.Reset">
+            <summary>
+            Resets this instance.
+            </summary>
+        </member>
+        <member name="P:SuperSocket.SocketBase.Protocol.FixedSizeRequestFilter`1.Size">
+            <summary>
+            Gets the size of the fixed size request filter.
+            </summary>
+        </member>
+        <member name="P:SuperSocket.SocketBase.Protocol.FixedSizeRequestFilter`1.LeftBufferSize">
+            <summary>
+            Gets the size of the rest buffer.
+            </summary>
+            <value>
+            The size of the rest buffer.
+            </value>
+        </member>
+        <member name="P:SuperSocket.SocketBase.Protocol.FixedSizeRequestFilter`1.NextRequestFilter">
+            <summary>
+            Gets the next request filter.
+            </summary>
+        </member>
+        <member name="P:SuperSocket.SocketBase.Protocol.FixedSizeRequestFilter`1.SuperSocket#SocketBase#Protocol#IOffsetAdapter#OffsetDelta">
+            <summary>
+            Gets the offset delta.
+            </summary>
+        </member>
+        <member name="M:SuperSocket.Facility.PolicyServer.PolicyRequestFilter.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.Facility.PolicyServer.PolicyRequestFilter"/> class.
+            </summary>
+            <param name="size">The size.</param>
+        </member>
+        <member name="M:SuperSocket.Facility.PolicyServer.PolicyRequestFilter.ProcessMatchedRequest(System.Byte[],System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Filters the buffer after the server receive the enough size of data.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="length">The length.</param>
+            <param name="toBeCopied">if set to <c>true</c> [to be copied].</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.Facility.PolicyServer.PolicyRequestFilterFactory.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.Facility.PolicyServer.PolicyRequestFilterFactory"/> class.
+            </summary>
+            <param name="fixRequestSize">Size of the fix request.</param>
+        </member>
+        <member name="M:SuperSocket.Facility.PolicyServer.PolicyRequestFilterFactory.CreateFilter(SuperSocket.SocketBase.IAppServer,SuperSocket.SocketBase.IAppSession,System.Net.IPEndPoint)">
+            <summary>
+            Creates the filter.
+            </summary>
+            <param name="appServer">The app server.</param>
+            <param name="appSession">The app session.</param>
+            <param name="remoteEndPoint">The remote end point.</param>
+            <returns></returns>
+        </member>
+        <member name="P:SuperSocket.Facility.PolicyServer.PolicyRequestFilterFactory.FixRequestSize">
+            <summary>
+            Gets the size of the fix request.
+            </summary>
+            <value>
+            The size of the fix request.
+            </value>
+        </member>
+        <member name="T:SuperSocket.Facility.PolicyServer.PolicySession">
+            <summary>
+            PolicySession
+            </summary>
+        </member>
+        <member name="T:SuperSocket.Facility.PolicyServer.SilverlightPolicyServer">
+            <summary>
+            Silverlight policy AppServer
+            </summary>
+        </member>
+        <member name="M:SuperSocket.Facility.PolicyServer.SilverlightPolicyServer.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.Facility.PolicyServer.SilverlightPolicyServer"/> class.
+            </summary>
+        </member>
+        <member name="M:SuperSocket.Facility.PolicyServer.SilverlightPolicyServer.ProcessRequest(SuperSocket.Facility.PolicyServer.PolicySession,System.Byte[])">
+            <summary>
+            Processes the request.
+            </summary>
+            <param name="session">The session.</param>
+            <param name="data">The data.</param>
+        </member>
+        <member name="T:SuperSocket.Facility.Protocol.BeginEndMarkRequestFilter`1">
+            <summary>
+            RequestFilter for the protocol that each request has bengin and end mark
+            </summary>
+            <typeparam name="TRequestInfo">The type of the request info.</typeparam>
+        </member>
+        <member name="F:SuperSocket.Facility.Protocol.BeginEndMarkRequestFilter`1.NullRequestInfo">
+            <summary>
+            Null request info
+            </summary>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.BeginEndMarkRequestFilter`1.#ctor(System.Byte[],System.Byte[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.Facility.Protocol.BeginEndMarkRequestFilter`1"/> class.
+            </summary>
+            <param name="beginMark">The begin mark.</param>
+            <param name="endMark">The end mark.</param>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.BeginEndMarkRequestFilter`1.Filter(System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
+            <summary>
+            Filters the specified session.
+            </summary>
+            <param name="readBuffer">The read buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="length">The length.</param>
+            <param name="toBeCopied">if set to <c>true</c> [to be copied].</param>
+            <param name="rest">The rest.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.BeginEndMarkRequestFilter`1.ProcessMatchedRequest(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Processes the matched request.
+            </summary>
+            <param name="readBuffer">The read buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="length">The length.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.BeginEndMarkRequestFilter`1.Reset">
+            <summary>
+            Resets this instance.
+            </summary>
+        </member>
+        <member name="T:SuperSocket.Facility.Protocol.CountSpliterRequestFilter`1">
+            <summary>
+            This request filter is designed for this kind protocol:
+            each request has fixed count part which splited by a char(byte)
+            for instance, request is defined like this "#12122#23343#4545456565#343435446#",
+            because this request is splited into many parts by 5 '#', we can create a request filter by CountSpliterRequestFilter((byte)'#', 5)
+            </summary>
+            <typeparam name="TRequestInfo">The type of the request info.</typeparam>
+        </member>
+        <member name="F:SuperSocket.Facility.Protocol.CountSpliterRequestFilter`1.NullRequestInfo">
+            <summary>
+            Null request info instance
+            </summary>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.CountSpliterRequestFilter`1.#ctor(System.Byte,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.Facility.Protocol.CountSpliterRequestFilter`1"/> class.
+            </summary>
+            <param name="spliter">The spliter.</param>
+            <param name="spliterCount">The spliter count.</param>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.CountSpliterRequestFilter`1.Filter(System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
+            <summary>
+            Filters the specified session.
+            </summary>
+            <param name="readBuffer">The read buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="length">The length.</param>
+            <param name="toBeCopied">if set to <c>true</c> [to be copied].</param>
+            <param name="rest">The rest.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.CountSpliterRequestFilter`1.ProcessMatchedRequest(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Processes the matched request.
+            </summary>
+            <param name="readBuffer">The read buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="length">The length.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.CountSpliterRequestFilter`1.Reset">
+            <summary>
+            Resets this instance.
+            </summary>
+        </member>
+        <member name="P:SuperSocket.Facility.Protocol.CountSpliterRequestFilter`1.LeftBufferSize">
+            <summary>
+            Gets the size of the rest buffer.
+            </summary>
+            <value>
+            The size of the rest buffer.
+            </value>
+        </member>
+        <member name="P:SuperSocket.Facility.Protocol.CountSpliterRequestFilter`1.NextRequestFilter">
+            <summary>
+            Gets the next request filter.
+            </summary>
+        </member>
+        <member name="P:SuperSocket.Facility.Protocol.CountSpliterRequestFilter`1.OffsetDelta">
+            <summary>
+            Gets the offset delta relative original receiving offset which will be used for next round receiving.
+            </summary>
+        </member>
+        <member name="T:SuperSocket.Facility.Protocol.CountSpliterRequestFilter">
+            <summary>
+            This request filter is designed for this kind protocol:
+            each request has fixed count part which splited by a char(byte)
+            for instance, request is defined like this "#12122#23343#4545456565#343435446#",
+            because this request is splited into many parts by 5 '#', we can create a request filter by CountSpliterRequestFilter((byte)'#', 5)
+            </summary>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.CountSpliterRequestFilter.#ctor(System.Byte,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.Facility.Protocol.CountSpliterRequestFilter"/> class.
+            </summary>
+            <param name="spliter">The spliter.</param>
+            <param name="spliterCount">The spliter count.</param>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.CountSpliterRequestFilter.#ctor(System.Byte,System.Int32,System.Text.Encoding)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.Facility.Protocol.CountSpliterRequestFilter"/> class.
+            </summary>
+            <param name="spliter">The spliter.</param>
+            <param name="spliterCount">The spliter count.</param>
+            <param name="encoding">The encoding.</param>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.CountSpliterRequestFilter.#ctor(System.Byte,System.Int32,System.Text.Encoding,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.Facility.Protocol.CountSpliterRequestFilter"/> class.
+            </summary>
+            <param name="spliter">The spliter.</param>
+            <param name="spliterCount">The spliter count.</param>
+            <param name="encoding">The encoding.</param>
+            <param name="keyIndex">Index of the key.</param>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.CountSpliterRequestFilter.ProcessMatchedRequest(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Processes the matched request.
+            </summary>
+            <param name="readBuffer">The read buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="length">The length.</param>
+            <returns></returns>
+        </member>
+        <member name="T:SuperSocket.Facility.Protocol.CountSpliterRequestFilterFactory`2">
+            <summary>
+            RequestFilterFactory for CountSpliterRequestFilter
+            </summary>
+            <typeparam name="TRequestFilter">The type of the request filter.</typeparam>
+            <typeparam name="TRequestInfo">The type of the request info.</typeparam>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.CountSpliterRequestFilterFactory`2.CreateFilter(SuperSocket.SocketBase.IAppServer,SuperSocket.SocketBase.IAppSession,System.Net.IPEndPoint)">
+            <summary>
+            Creates the filter.
+            </summary>
+            <param name="appServer">The app server.</param>
+            <param name="appSession">The app session.</param>
+            <param name="remoteEndPoint">The remote end point.</param>
+            <returns></returns>
+        </member>
+        <member name="T:SuperSocket.Facility.Protocol.CountSpliterRequestFilterFactory`1">
+            <summary>
+            RequestFilterFactory for CountSpliterRequestFilter
+            </summary>
+            <typeparam name="TRequestFilter">The type of the request filter.</typeparam>
+        </member>
+        <member name="T:SuperSocket.Facility.Protocol.CountSpliterRequestFilterFactory">
+            <summary>
+            RequestFilterFactory for CountSpliterRequestFilter
+            </summary>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.CountSpliterRequestFilterFactory.#ctor(System.Byte,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.Facility.Protocol.CountSpliterRequestFilterFactory"/> class.
+            </summary>
+            <param name="spliter">The spliter.</param>
+            <param name="count">The count.</param>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.CountSpliterRequestFilterFactory.CreateFilter(SuperSocket.SocketBase.IAppServer,SuperSocket.SocketBase.IAppSession,System.Net.IPEndPoint)">
+            <summary>
+            Creates the filter.
+            </summary>
+            <param name="appServer">The app server.</param>
+            <param name="appSession">The app session.</param>
+            <param name="remoteEndPoint">The remote end point.</param>
+            <returns></returns>
+        </member>
+        <member name="T:SuperSocket.Facility.Protocol.FixedHeaderRequestFilter`1">
+            <summary>
+            FixedHeaderRequestFilter,
+            it is the request filter base for the protocol which define fixed length header and the header contains the request body length,
+            you can implement your own request filter for this kind protocol easily by inheriting this class 
+            </summary>
+            <typeparam name="TRequestInfo">The type of the request info.</typeparam>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.FixedHeaderRequestFilter`1.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.Facility.Protocol.FixedHeaderRequestFilter`1"/> class.
+            </summary>
+            <param name="headerSize">Size of the header.</param>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.FixedHeaderRequestFilter`1.Filter(System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
+            <summary>
+            Filters the specified session.
+            </summary>
+            <param name="readBuffer">The read buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="length">The length.</param>
+            <param name="toBeCopied">if set to <c>true</c> [to be copied].</param>
+            <param name="rest">The rest.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.FixedHeaderRequestFilter`1.ProcessMatchedRequest(System.Byte[],System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Processes the fix size request.
+            </summary>
+            <param name="buffer">The buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="length">The length.</param>
+            <param name="toBeCopied">if set to <c>true</c> [to be copied].</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.FixedHeaderRequestFilter`1.GetBodyLengthFromHeader(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Gets the body length from header.
+            </summary>
+            <param name="header">The header.</param>
+            <param name="offset">The offset.</param>
+            <param name="length">The length.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.FixedHeaderRequestFilter`1.ResolveRequestInfo(System.ArraySegment{System.Byte},System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Resolves the request data.
+            </summary>
+            <param name="header">The header.</param>
+            <param name="bodyBuffer">The body buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="length">The length.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.FixedHeaderRequestFilter`1.Reset">
+            <summary>
+            Resets this instance.
+            </summary>
+        </member>
+    </members>
+</doc>

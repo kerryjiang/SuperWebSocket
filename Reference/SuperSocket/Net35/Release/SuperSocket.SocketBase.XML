@@ -2616,6 +2616,30 @@
             GlobalPerformanceData class
             </summary>
         </member>
+        <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.CpuUsage">
+            <summary>
+            Gets or sets the cpu usage.
+            </summary>
+            <value>
+            The cpu usage.
+            </value>
+        </member>
+        <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.WorkingSet">
+            <summary>
+            Gets or sets the working set.
+            </summary>
+            <value>
+            The working set.
+            </value>
+        </member>
+        <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.TotalThreadCount">
+            <summary>
+            Gets or sets the total thread count.
+            </summary>
+            <value>
+            The total thread count.
+            </value>
+        </member>
         <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.AvailableWorkingThreads">
             <summary>
             Gets or sets the available working threads.
@@ -2646,30 +2670,6 @@
             </summary>
             <value>
             The max completion port threads.
-            </value>
-        </member>
-        <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.TotalThreadCount">
-            <summary>
-            Gets or sets the total thread count.
-            </summary>
-            <value>
-            The total thread count.
-            </value>
-        </member>
-        <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.CpuUsage">
-            <summary>
-            Gets or sets the cpu usage.
-            </summary>
-            <value>
-            The cpu usage.
-            </value>
-        </member>
-        <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.WorkingSet">
-            <summary>
-            Gets or sets the working set.
-            </summary>
-            <value>
-            The working set.
             </value>
         </member>
         <member name="T:SuperSocket.SocketBase.StartResult">

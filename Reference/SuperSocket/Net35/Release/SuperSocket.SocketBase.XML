@@ -52,6 +52,18 @@
             An item can be started and stopped
             </summary>
         </member>
+        <member name="T:SuperSocket.SocketBase.IServerStateSource">
+            <summary>
+            The interface for who will react with server state collecting
+            </summary>
+        </member>
+        <member name="M:SuperSocket.SocketBase.IServerStateSource.CollectServerState(SuperSocket.SocketBase.GlobalPerformanceData)">
+            <summary>
+            Collects the state of the server.
+            </summary>
+            <param name="globalPerfData">The global perf data.</param>
+            <returns></returns>
+        </member>
         <member name="M:SuperSocket.SocketBase.IWorkItem.Setup(SuperSocket.SocketBase.IBootstrap,SuperSocket.SocketBase.Config.IServerConfig,SuperSocket.SocketBase.Provider.ProviderFactoryInfo[])">
             <summary>
             Setups with the specified root config.
@@ -480,6 +492,19 @@
             Gets all sessions in sessions snapshot.
             </summary>
         </member>
+        <member name="M:SuperSocket.SocketBase.AppServerBase`2.CreateServerState">
+            <summary>
+            Creates the state of the server, you can override this method to return your own ServerState instance.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.SocketBase.AppServerBase`2.OnServerStateCollected(SuperSocket.SocketBase.GlobalPerformanceData,SuperSocket.SocketBase.ServerState)">
+            <summary>
+            Called when [performance data collected], you can override this method to get collected performance data
+            </summary>
+            <param name="globalPerfData">The global perf data.</param>
+            <param name="state">The state.</param>
+        </member>
         <member name="M:SuperSocket.SocketBase.AppServerBase`2.Dispose">
             <summary>
             Releases unmanaged and - optionally - managed resources
@@ -616,23 +641,11 @@
         </member>
         <member name="P:SuperSocket.SocketBase.AppServerBase`2.State">
             <summary>
-            Gets the state data of the server.
+            Gets the state of the server.
             </summary>
             <value>
-            The state of the server.
+            The state data of the server.
             </value>
-        </member>
-        <member name="T:SuperSocket.SocketBase.IServerStateSource">
-            <summary>
-            The interface for who will react with server state collecting
-            </summary>
-        </member>
-        <member name="M:SuperSocket.SocketBase.IServerStateSource.CollectServerState(SuperSocket.SocketBase.GlobalPerformanceData)">
-            <summary>
-            Collects the state of the server.
-            </summary>
-            <param name="globalPerfData">The global perf data.</param>
-            <returns></returns>
         </member>
         <member name="M:SuperSocket.SocketBase.AppServer`2.#ctor">
             <summary>
@@ -692,19 +705,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:SuperSocket.SocketBase.AppServer`2.CreateServerState">
-            <summary>
-            Creates the state of the server, you can override this method to return your own ServerState instance.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:SuperSocket.SocketBase.AppServer`2.OnServerStateCollected(SuperSocket.SocketBase.GlobalPerformanceData,SuperSocket.SocketBase.ServerState)">
-            <summary>
-            Called when [performance data collected], you can override this method to get collected performance data
-            </summary>
-            <param name="globalPerfData">The global perf data.</param>
-            <param name="state">The state.</param>
-        </member>
         <member name="M:SuperSocket.SocketBase.AppServer`2.Dispose(System.Boolean)">
             <summary>
             Releases unmanaged and - optionally - managed resources
@@ -715,14 +715,6 @@
             <summary>
             Gets the total session count.
             </summary>
-        </member>
-        <member name="P:SuperSocket.SocketBase.AppServer`2.State">
-            <summary>
-            Gets the state of the server.
-            </summary>
-            <value>
-            The state data of the server.
-            </value>
         </member>
         <member name="M:SuperSocket.SocketBase.AppServer`1.#ctor">
             <summary>

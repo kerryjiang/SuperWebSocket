@@ -605,12 +605,70 @@
             <returns></returns>
             <exception cref="T:System.ArgumentNullException"></exception>
         </member>
-        <member name="T:SuperSocket.SocketBase.GlobalPerformanceData">
+        <member name="T:SuperSocket.SocketBase.IWorkItem">
+            <summary>
+            An item can be started and stopped
+            </summary>
+        </member>
+        <member name="M:SuperSocket.SocketBase.IWorkItem.Setup(SuperSocket.SocketBase.IBootstrap,SuperSocket.SocketBase.Config.IServerConfig,SuperSocket.SocketBase.Provider.ProviderFactoryInfo[])">
+            <summary>
+            Setups with the specified root config.
+            </summary>
+            <param name="bootstrap">The bootstrap.</param>
+            <param name="config">The socket server instance config.</param>
+            <param name="factories">The factories.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.SocketBase.IWorkItem.Start">
+            <summary>
+            Starts this server instance.
+            </summary>
+            <returns>return true if start successfull, else false</returns>
+        </member>
+        <member name="M:SuperSocket.SocketBase.IWorkItem.Stop">
+            <summary>
+            Stops this server instance.
+            </summary>
+        </member>
+        <member name="M:SuperSocket.SocketBase.IWorkItem.CollectServerSummary(SuperSocket.SocketBase.NodeSummary)">
+            <summary>
+            Collects the server summary.
+            </summary>
+            <param name="nodeSummary">The node summary.</param>
+            <returns></returns>
+        </member>
+        <member name="P:SuperSocket.SocketBase.IWorkItem.Name">
+            <summary>
+            Gets the name.
+            </summary>
+        </member>
+        <member name="P:SuperSocket.SocketBase.IWorkItem.State">
+            <summary>
+            Gets the current state of the work item.
+            </summary>
+            <value>
+            The state.
+            </value>
+        </member>
+        <member name="P:SuperSocket.SocketBase.IWorkItem.SessionCount">
+            <summary>
+            Gets the total session count.
+            </summary>
+        </member>
+        <member name="P:SuperSocket.SocketBase.IWorkItem.Summary">
+            <summary>
+            Gets the state of the server.
+            </summary>
+            <value>
+            The state of the server.
+            </value>
+        </member>
+        <member name="T:SuperSocket.SocketBase.NodeSummary">
             <summary>
             GlobalPerformanceData class
             </summary>
         </member>
-        <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.CpuUsage">
+        <member name="P:SuperSocket.SocketBase.NodeSummary.CpuUsage">
             <summary>
             Gets or sets the cpu usage.
             </summary>
@@ -618,7 +676,7 @@
             The cpu usage.
             </value>
         </member>
-        <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.WorkingSet">
+        <member name="P:SuperSocket.SocketBase.NodeSummary.WorkingSet">
             <summary>
             Gets or sets the working set.
             </summary>
@@ -626,7 +684,7 @@
             The working set.
             </value>
         </member>
-        <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.TotalThreadCount">
+        <member name="P:SuperSocket.SocketBase.NodeSummary.TotalThreadCount">
             <summary>
             Gets or sets the total thread count.
             </summary>
@@ -634,7 +692,7 @@
             The total thread count.
             </value>
         </member>
-        <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.AvailableWorkingThreads">
+        <member name="P:SuperSocket.SocketBase.NodeSummary.AvailableWorkingThreads">
             <summary>
             Gets or sets the available working threads.
             </summary>
@@ -642,7 +700,7 @@
             The available working threads.
             </value>
         </member>
-        <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.AvailableCompletionPortThreads">
+        <member name="P:SuperSocket.SocketBase.NodeSummary.AvailableCompletionPortThreads">
             <summary>
             Gets or sets the available completion port threads.
             </summary>
@@ -650,7 +708,7 @@
             The available completion port threads.
             </value>
         </member>
-        <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.MaxWorkingThreads">
+        <member name="P:SuperSocket.SocketBase.NodeSummary.MaxWorkingThreads">
             <summary>
             Gets or sets the max working threads.
             </summary>
@@ -658,7 +716,7 @@
             The max working threads.
             </value>
         </member>
-        <member name="P:SuperSocket.SocketBase.GlobalPerformanceData.MaxCompletionPortThreads">
+        <member name="P:SuperSocket.SocketBase.NodeSummary.MaxCompletionPortThreads">
             <summary>
             Gets or sets the max completion port threads.
             </summary>
@@ -1761,6 +1819,14 @@
             Gets the config file file path.
             </summary>
         </member>
+        <member name="P:SuperSocket.SocketBase.Logging.LogFactoryBase.IsSharedConfig">
+            <summary>
+            Gets a value indicating whether this instance is isolated.
+            </summary>
+            <value>
+            <c>true</c> if this instance is isolated; otherwise, <c>false</c>.
+            </value>
+        </member>
         <member name="M:SuperSocket.SocketBase.Logging.Log4NetLogFactory.#ctor">
             <summary>
             Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.Logging.Log4NetLogFactory"/> class.
@@ -2194,6 +2260,14 @@
             </summary>
             <param name="session">The session.</param>
             <param name="requestInfo">The request info.</param>
+        </member>
+        <member name="M:SuperSocket.SocketBase.Command.CommandBase`2.ToString">
+            <summary>
+            Returns a <see cref="T:System.String"/> that represents this instance.
+            </summary>
+            <returns>
+            A <see cref="T:System.String"/> that represents this instance.
+            </returns>
         </member>
         <member name="P:SuperSocket.SocketBase.Command.CommandBase`2.Name">
             <summary>
@@ -3169,69 +3243,6 @@
             <c>true</c> if [log all socket exception]; otherwise, <c>false</c>.
             </value>
         </member>
-        <member name="T:SuperSocket.SocketBase.IServerStateSource">
-            <summary>
-            The interface for who will react with server state collecting
-            </summary>
-        </member>
-        <member name="M:SuperSocket.SocketBase.IServerStateSource.CollectServerState(SuperSocket.SocketBase.GlobalPerformanceData)">
-            <summary>
-            Collects the state of the server.
-            </summary>
-            <param name="globalPerfData">The global perf data.</param>
-            <returns></returns>
-        </member>
-        <member name="T:SuperSocket.SocketBase.IWorkItem">
-            <summary>
-            An item can be started and stopped
-            </summary>
-        </member>
-        <member name="M:SuperSocket.SocketBase.IWorkItem.Setup(SuperSocket.SocketBase.IBootstrap,SuperSocket.SocketBase.Config.IServerConfig,SuperSocket.SocketBase.Provider.ProviderFactoryInfo[])">
-            <summary>
-            Setups with the specified root config.
-            </summary>
-            <param name="bootstrap">The bootstrap.</param>
-            <param name="config">The socket server instance config.</param>
-            <param name="factories">The factories.</param>
-            <returns></returns>
-        </member>
-        <member name="M:SuperSocket.SocketBase.IWorkItem.Start">
-            <summary>
-            Starts this server instance.
-            </summary>
-            <returns>return true if start successfull, else false</returns>
-        </member>
-        <member name="M:SuperSocket.SocketBase.IWorkItem.Stop">
-            <summary>
-            Stops this server instance.
-            </summary>
-        </member>
-        <member name="P:SuperSocket.SocketBase.IWorkItem.Name">
-            <summary>
-            Gets the name.
-            </summary>
-        </member>
-        <member name="P:SuperSocket.SocketBase.IWorkItem.IsRunning">
-            <summary>
-            Gets a value indicating whether this instance is running.
-            </summary>
-            <value>
-            	<c>true</c> if this instance is running; otherwise, <c>false</c>.
-            </value>
-        </member>
-        <member name="P:SuperSocket.SocketBase.IWorkItem.SessionCount">
-            <summary>
-            Gets the total session count.
-            </summary>
-        </member>
-        <member name="P:SuperSocket.SocketBase.IWorkItem.State">
-            <summary>
-            Gets the state of the server.
-            </summary>
-            <value>
-            The state of the server.
-            </value>
-        </member>
         <member name="T:SuperSocket.SocketBase.IAppServer">
             <summary>
             The interface for AppServer
@@ -3785,10 +3796,45 @@
         </member>
         <member name="T:SuperSocket.SocketBase.ServerState">
             <summary>
+            Server's state enum class
+            </summary>
+        </member>
+        <member name="F:SuperSocket.SocketBase.ServerState.NotInitialized">
+            <summary>
+            Not initialized
+            </summary>
+        </member>
+        <member name="F:SuperSocket.SocketBase.ServerState.Initializing">
+            <summary>
+            In initializing
+            </summary>
+        </member>
+        <member name="F:SuperSocket.SocketBase.ServerState.NotStarted">
+            <summary>
+            Has been initialized, but not started
+            </summary>
+        </member>
+        <member name="F:SuperSocket.SocketBase.ServerState.Starting">
+            <summary>
+            In starting
+            </summary>
+        </member>
+        <member name="F:SuperSocket.SocketBase.ServerState.Running">
+            <summary>
+            In running
+            </summary>
+        </member>
+        <member name="F:SuperSocket.SocketBase.ServerState.Stopping">
+            <summary>
+            In stopping
+            </summary>
+        </member>
+        <member name="T:SuperSocket.SocketBase.ServerSummary">
+            <summary>
             Server State
             </summary>
         </member>
-        <member name="P:SuperSocket.SocketBase.ServerState.Name">
+        <member name="P:SuperSocket.SocketBase.ServerSummary.Name">
             <summary>
             Gets or sets the name.
             </summary>
@@ -3796,7 +3842,7 @@
             The name.
             </value>
         </member>
-        <member name="P:SuperSocket.SocketBase.ServerState.CollectedTime">
+        <member name="P:SuperSocket.SocketBase.ServerSummary.CollectedTime">
             <summary>
             Gets or sets the collected time.
             </summary>
@@ -3804,7 +3850,7 @@
             The collected time.
             </value>
         </member>
-        <member name="P:SuperSocket.SocketBase.ServerState.StartedTime">
+        <member name="P:SuperSocket.SocketBase.ServerSummary.StartedTime">
             <summary>
             Gets or sets the started time.
             </summary>
@@ -3812,7 +3858,7 @@
             The started time.
             </value>
         </member>
-        <member name="P:SuperSocket.SocketBase.ServerState.IsRunning">
+        <member name="P:SuperSocket.SocketBase.ServerSummary.IsRunning">
             <summary>
             Gets or sets a value indicating whether this instance is running.
             </summary>
@@ -3820,7 +3866,7 @@
             	<c>true</c> if this instance is running; otherwise, <c>false</c>.
             </value>
         </member>
-        <member name="P:SuperSocket.SocketBase.ServerState.TotalConnections">
+        <member name="P:SuperSocket.SocketBase.ServerSummary.TotalConnections">
             <summary>
             Gets or sets the total count of the connections.
             </summary>
@@ -3828,7 +3874,7 @@
             The total count of the connections.
             </value>
         </member>
-        <member name="P:SuperSocket.SocketBase.ServerState.MaxConnectionNumber">
+        <member name="P:SuperSocket.SocketBase.ServerSummary.MaxConnectionNumber">
             <summary>
             Gets or sets the maximum allowed connection number.
             </summary>
@@ -3836,7 +3882,7 @@
             The max connection number.
             </value>
         </member>
-        <member name="P:SuperSocket.SocketBase.ServerState.TotalHandledRequests">
+        <member name="P:SuperSocket.SocketBase.ServerSummary.TotalHandledRequests">
             <summary>
             Gets or sets the total handled requests count.
             </summary>
@@ -3844,7 +3890,7 @@
             The total handled requests count.
             </value>
         </member>
-        <member name="P:SuperSocket.SocketBase.ServerState.RequestHandlingSpeed">
+        <member name="P:SuperSocket.SocketBase.ServerSummary.RequestHandlingSpeed">
             <summary>
             Gets or sets the request handling speed, per second.
             </summary>
@@ -3852,7 +3898,7 @@
             The request handling speed.
             </value>
         </member>
-        <member name="P:SuperSocket.SocketBase.ServerState.Listeners">
+        <member name="P:SuperSocket.SocketBase.ServerSummary.Listeners">
             <summary>
             Gets or sets the listeners.
             </summary>
@@ -3921,9 +3967,9 @@
             Null appSession instance
             </summary>
         </member>
-        <member name="F:SuperSocket.SocketBase.AppServerBase`2.m_Initialized">
+        <member name="F:SuperSocket.SocketBase.AppServerBase`2.m_StateCode">
             <summary>
-            Indicate this server instance whether has been setup
+            the current state's code
             </summary>
         </member>
         <member name="M:SuperSocket.SocketBase.AppServerBase`2.#ctor">
@@ -4181,34 +4227,36 @@
             Gets all sessions in sessions snapshot.
             </summary>
         </member>
-        <member name="M:SuperSocket.SocketBase.AppServerBase`2.CreateServerState">
+        <member name="M:SuperSocket.SocketBase.AppServerBase`2.UpdateServerSummary(SuperSocket.SocketBase.ServerSummary)">
             <summary>
-            Creates the state of the server, you can override this method to return your own ServerState instance.
+            Updates the summary of the server.
             </summary>
-            <returns></returns>
+            <param name="serverSummary">The server summary.</param>
         </member>
-        <member name="M:SuperSocket.SocketBase.AppServerBase`2.OnServerStateCollected(SuperSocket.SocketBase.GlobalPerformanceData,SuperSocket.SocketBase.ServerState)">
+        <member name="M:SuperSocket.SocketBase.AppServerBase`2.OnServerSummaryCollected(SuperSocket.SocketBase.NodeSummary,SuperSocket.SocketBase.ServerSummary)">
             <summary>
-            Called when [performance data collected], you can override this method to get collected performance data
+            Called when [summary data collected], you can override this method to get collected performance data
             </summary>
-            <param name="globalPerfData">The global perf data.</param>
-            <param name="state">The state.</param>
+            <param name="nodeSummary">The node summary.</param>
+            <param name="serverSummary">The server summary.</param>
         </member>
         <member name="M:SuperSocket.SocketBase.AppServerBase`2.Dispose">
             <summary>
             Releases unmanaged and - optionally - managed resources
             </summary>
         </member>
-        <member name="M:SuperSocket.SocketBase.AppServerBase`2.Dispose(System.Boolean)">
-            <summary>
-            Releases unmanaged and - optionally - managed resources
-            </summary>
-            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        </member>
         <member name="P:SuperSocket.SocketBase.AppServerBase`2.Config">
             <summary>
             Gets the server's config.
             </summary>
+        </member>
+        <member name="P:SuperSocket.SocketBase.AppServerBase`2.State">
+            <summary>
+            Gets the current state of the work item.
+            </summary>
+            <value>
+            The state.
+            </value>
         </member>
         <member name="P:SuperSocket.SocketBase.AppServerBase`2.Certificate">
             <summary>
@@ -4282,14 +4330,6 @@
             Gets the name of the server instance.
             </summary>
         </member>
-        <member name="P:SuperSocket.SocketBase.AppServerBase`2.IsRunning">
-            <summary>
-            Gets a value indicating whether this instance is running.
-            </summary>
-            <value>
-            	<c>true</c> if this instance is running; otherwise, <c>false</c>.
-            </value>
-        </member>
         <member name="E:SuperSocket.SocketBase.AppServerBase`2.SuperSocket#SocketBase#IRawDataProcessor{TAppSession}#RawDataReceived">
             <summary>
             Gets or sets the raw binary data received event handler.
@@ -4328,7 +4368,15 @@
             Gets the total session count.
             </summary>
         </member>
-        <member name="P:SuperSocket.SocketBase.AppServerBase`2.State">
+        <member name="P:SuperSocket.SocketBase.AppServerBase`2.ServerSummaryType">
+            <summary>
+            Gets the type of the server state. The type must inherit from ServerState
+            </summary>
+            <value>
+            The type of the server state.
+            </value>
+        </member>
+        <member name="P:SuperSocket.SocketBase.AppServerBase`2.Summary">
             <summary>
             Gets the state of the server.
             </summary>
@@ -4394,11 +4442,10 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:SuperSocket.SocketBase.AppServer`2.Dispose(System.Boolean)">
+        <member name="M:SuperSocket.SocketBase.AppServer`2.Stop">
             <summary>
-            Releases unmanaged and - optionally - managed resources
+            Stops this instance.
             </summary>
-            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         </member>
         <member name="P:SuperSocket.SocketBase.AppServer`2.SessionCount">
             <summary>

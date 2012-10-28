@@ -48,12 +48,12 @@
             Gets the name of the server instance.
             </summary>
         </member>
-        <member name="P:SuperSocket.SocketEngine.AppDomainAppServer.IsRunning">
+        <member name="P:SuperSocket.SocketEngine.AppDomainAppServer.State">
             <summary>
-            Gets a value indicating whether this instance is running.
+            Gets the current state of the work item.
             </summary>
             <value>
-            	<c>true</c> if this instance is running; otherwise, <c>false</c>.
+            The state.
             </value>
         </member>
         <member name="P:SuperSocket.SocketEngine.AppDomainAppServer.SessionCount">
@@ -61,7 +61,7 @@
             Gets the total session count.
             </summary>
         </member>
-        <member name="P:SuperSocket.SocketEngine.AppDomainAppServer.State">
+        <member name="P:SuperSocket.SocketEngine.AppDomainAppServer.Summary">
             <summary>
             Gets the state data of the server.
             </summary>
@@ -913,12 +913,12 @@
             Gets the name of the server instance.
             </summary>
         </member>
-        <member name="P:SuperSocket.SocketEngine.MarshalAppServer.IsRunning">
+        <member name="P:SuperSocket.SocketEngine.MarshalAppServer.State">
             <summary>
-            Gets a value indicating whether this instance is running.
+            Gets the current state of the work item.
             </summary>
             <value>
-            	<c>true</c> if this instance is running; otherwise, <c>false</c>.
+            The state.
             </value>
         </member>
         <member name="P:SuperSocket.SocketEngine.MarshalAppServer.SessionCount">

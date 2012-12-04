@@ -40,7 +40,7 @@ namespace SuperWebSocket.Protocol
 
             dataFrameReader = null;
 
-            session.ProtocolProcessor = this;
+            session.SetProtocolProcessor(this);
 
             var secWebSocketKey = session.Items.GetValue<string>(WebSocketConstant.SecWebSocketKey, string.Empty);
 

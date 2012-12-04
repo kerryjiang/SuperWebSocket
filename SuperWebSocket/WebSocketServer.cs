@@ -381,6 +381,18 @@ namespace SuperWebSocket
             return session;
         }
 
+        public override IEnumerable<TWebSocketSession> GetAllSessions()
+        {
+            //Only return the sessions passed the handshake
+            return base.GetAllSessions().Where(s => s.Handshaked);
+        }
+
+        public override IEnumerable<TWebSocketSession> GetSessions(Func<TWebSocketSession, bool> critera)
+        {
+            //Only return the sessions passed the handshake
+            return base.GetSessions(critera).Where(s => s.Handshaked);
+        }
+
         private SessionEventHandler<TWebSocketSession> m_NewSessionConnected;
 
         public event SessionEventHandler<TWebSocketSession> NewSessionConnected
@@ -588,6 +600,10 @@ namespace SuperWebSocket
 
         protected override void OnAppSessionClosed(object sender, AppSessionClosedEventArgs<TWebSocketSession> e)
         {
+            //Ignore session has not passed handshake
+            if (!e.Session.Handshaked)
+                return;
+
             if (m_SessionClosed != null)
                 m_SessionClosed(e.Session, e.Reason);
         }

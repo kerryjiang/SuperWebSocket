@@ -24,7 +24,7 @@ namespace SuperWebSocket
         void SendResponse(string message);
         void SendResponse(byte[] data);
         IWebSocketServer AppServer { get; }
-        IProtocolProcessor ProtocolProcessor { get; set; }
+        void SetProtocolProcessor(IProtocolProcessor protocolProcessor);
         string GetAvailableSubProtocol(string protocol);
         void EnqueueSend(IList<ArraySegment<byte>> data);
         void EnqueueSend(ArraySegment<byte> data);
@@ -116,18 +116,21 @@ namespace SuperWebSocket
 
         private bool m_Handshaked = false;
 
-        internal bool Handshaked
+        internal protected bool Handshaked
         {
             get { return m_Handshaked; }
-            set
-            {
-                m_Handshaked = value;
-                if (m_Handshaked)
-                {
-                    SetCookie();
-                    OnHandShaked();
-                }
-            }
+        }
+
+        void IWebSocketSession.SetProtocolProcessor(IProtocolProcessor protocolProcessor)
+        {
+            ProtocolProcessor = protocolProcessor;
+        }
+
+        internal void FireHandshaked()
+        {
+            SetCookie();
+            m_Handshaked = true;
+            OnHandShaked();
         }
 
         public bool InClosing { get; private set; }
@@ -289,7 +292,7 @@ namespace SuperWebSocket
             base.Close(reason);
         }
 
-        public IProtocolProcessor ProtocolProcessor { get; set; }
+        public IProtocolProcessor ProtocolProcessor { get; private set; }
 
         internal protected virtual void HandleUnknownCommand(SubRequestInfo requestInfo)
         {

@@ -20,7 +20,7 @@ namespace SuperWebSocket.Command
 
         public override void ExecuteCommand(TWebSocketSession session, IWebSocketFragment commandInfo)
         {
-            session.Handshaked = true;
+            session.FireHandshaked();
             session.AppServer.OnNewSessionConnected(session);
         }
     }

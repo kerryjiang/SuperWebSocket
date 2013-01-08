@@ -31,7 +31,7 @@ namespace SuperWebSocket.Protocol
 
         }
 
-        public override bool Handshake(IWebSocketSession session, WebSocketRequestFilterBase previousFilter, out IRequestFilter<IWebSocketFragment> dataFrameReader)
+        public override bool Handshake(IWebSocketSession session, WebSocketReceiveFilterBase previousFilter, out IReceiveFilter<IWebSocketFragment> dataFrameReader)
         {
             if (!VersionTag.Equals(session.SecWebSocketVersion) && NextProcessor != null)
             {
@@ -76,7 +76,7 @@ namespace SuperWebSocket.Protocol
             byte[] data = Encoding.UTF8.GetBytes(responseBuilder.ToString());
             session.SendRawData(data, 0, data.Length);
 
-            dataFrameReader = new WebSocketDataFrameRequestFilter();
+            dataFrameReader = new WebSocketDataFrameReceiveFilter();
 
             return true;
         }

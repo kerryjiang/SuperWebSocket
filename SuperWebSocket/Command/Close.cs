@@ -51,13 +51,14 @@ namespace SuperWebSocket.Command
 
             var data = GetWebSocketData(frame);
 
-            int closeStatusCode = session.ProtocolProcessor.CloseStatusClode.NormalClosure;
+            var closeStatusCode = session.ProtocolProcessor.CloseStatusClode.NormalClosure;
+            //var reasonText = string.Empty;
 
             if (data != null && data.Length > 0)
             {
                 if (data.Length == 1)
                 {
-                    session.Close();
+                    session.Close(CloseReason.ProtocolError);
                     return;
                 }
                 else
@@ -66,21 +67,23 @@ namespace SuperWebSocket.Command
 
                     if (!session.ProtocolProcessor.IsValidCloseCode(code))
                     {
-                        session.Close();
+                        session.Close(CloseReason.ProtocolError);
                         return;
                     }
 
                     closeStatusCode = code;
 
-                    if (data.Length > 2)
-                    {
-                        this.Utf8Encoding.GetString(data, 2, data.Length - 2);
-                    }
+                    //if (data.Length > 2)
+                    //{
+                    //    reasonText = this.Utf8Encoding.GetString(data, 2, data.Length - 2);
+                    //}
                 }
             }
 
             //Send handshake response
             session.SendCloseHandshakeResponse(closeStatusCode);
+            //Don't include close reason the close handshake response for now
+            //session.SendCloseHandshakeResponse(closeStatusCode, reasonText);
             //After both sending and receiving a Close message, the server MUST close the underlying TCP connection immediately
             session.Close(CloseReason.ClientClosing);
         }

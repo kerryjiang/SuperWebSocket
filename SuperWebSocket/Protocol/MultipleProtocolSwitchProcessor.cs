@@ -32,7 +32,7 @@ namespace SuperWebSocket.Protocol
 
         public IProtocolProcessor NextProcessor { get; set; }
 
-        public bool Handshake(IWebSocketSession session, WebSocketRequestFilterBase previousReader, out IRequestFilter<IWebSocketFragment> dataFrameReader)
+        public bool Handshake(IWebSocketSession session, WebSocketReceiveFilterBase previousReader, out IReceiveFilter<IWebSocketFragment> dataFrameReader)
         {
             dataFrameReader = null;
             session.SendRawData(m_SwitchResponse, 0, m_SwitchResponse.Length);

@@ -9,7 +9,7 @@ using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket.Protocol
 {
-    class WebSocketDataRequestFilter : WebSocketRequestFilterBase
+    class WebSocketDataReceiveFilter : WebSocketReceiveFilterBase
     {
         private byte? m_Type;
         private int m_TempLength;
@@ -17,7 +17,7 @@ namespace SuperWebSocket.Protocol
 
         private const byte m_ClosingHandshakeType = 0xFF;
 
-        public WebSocketDataRequestFilter(WebSocketRequestFilterBase prevFilter)
+        public WebSocketDataReceiveFilter(WebSocketReceiveFilterBase prevFilter)
             : base(prevFilter)
         {
 

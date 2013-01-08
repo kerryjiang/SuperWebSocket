@@ -13,7 +13,7 @@ namespace SuperWebSocket
     /// <summary>
     /// WebSocket protocol
     /// </summary>
-    public class WebSocketProtocol : IRequestFilterFactory<IWebSocketFragment>
+    public class WebSocketProtocol : IReceiveFilterFactory<IWebSocketFragment>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="WebSocketProtocol"/> class.
@@ -30,9 +30,9 @@ namespace SuperWebSocket
         /// <param name="appSession">The app session.</param>
         /// <param name="remoteEndPoint">The remote end point.</param>
         /// <returns></returns>
-        public IRequestFilter<IWebSocketFragment> CreateFilter(IAppServer appServer, IAppSession appSession, System.Net.IPEndPoint remoteEndPoint)
+        public IReceiveFilter<IWebSocketFragment> CreateFilter(IAppServer appServer, IAppSession appSession, System.Net.IPEndPoint remoteEndPoint)
         {
-            return new WebSocketHeaderRequestFilter((IWebSocketSession)appSession);
+            return new WebSocketHeaderReceiveFilter((IWebSocketSession)appSession);
         }
     }
 }

@@ -22,7 +22,7 @@ namespace SuperWebSocket.Protocol
 
         }
 
-        public override bool Handshake(IWebSocketSession session, WebSocketRequestFilterBase previousFilter, out IRequestFilter<IWebSocketFragment> dataFrameReader)
+        public override bool Handshake(IWebSocketSession session, WebSocketReceiveFilterBase previousFilter, out IReceiveFilter<IWebSocketFragment> dataFrameReader)
         {
             var secKey1 = session.Items.GetValue<string>(WebSocketConstant.SecWebSocketKey1, string.Empty);
             var secKey2 = session.Items.GetValue<string>(WebSocketConstant.SecWebSocketKey2, string.Empty);
@@ -59,7 +59,7 @@ namespace SuperWebSocket.Protocol
             byte[] secret = GetResponseSecurityKey(secKey1, secKey2, secKey3);
             session.SendRawData(secret, 0, secret.Length);
 
-            dataFrameReader = new WebSocketDataRequestFilter(previousFilter);
+            dataFrameReader = new WebSocketDataReceiveFilter(previousFilter);
 
             return true;
         }

@@ -9,7 +9,7 @@ using SuperWebSocket.Protocol.FramePartReader;
 
 namespace SuperWebSocket.Protocol
 {
-    class WebSocketDataFrameRequestFilter : IRequestFilter<IWebSocketFragment>
+    class WebSocketDataFrameReceiveFilter : IReceiveFilter<IWebSocketFragment>
     {
         private WebSocketDataFrame m_Frame;
         private IDataFramePartReader m_PartReader;
@@ -20,12 +20,12 @@ namespace SuperWebSocket.Protocol
             get { return m_Frame.InnerData.Count; }
         }
 
-        public IRequestFilter<IWebSocketFragment> NextRequestFilter
+        public IReceiveFilter<IWebSocketFragment> NextReceiveFilter
         {
             get { return this; }
         }
 
-        public WebSocketDataFrameRequestFilter()
+        public WebSocketDataFrameReceiveFilter()
         {
             m_Frame = new WebSocketDataFrame(new ArraySegmentList());
             m_PartReader = DataFramePartReader.NewReader;
@@ -83,5 +83,8 @@ namespace SuperWebSocket.Protocol
         {
             m_Frame = null;
         }
+
+
+        public FilterState State { get; private set; }
     }
 }

@@ -10,9 +10,9 @@ using SuperSocket.SocketBase.Protocol;
 namespace SuperWebSocket.Protocol
 {
     /// <summary>
-    /// WebSocketRequestFilter basis
+    /// WebSocketReceiveFilter basis
     /// </summary>
-    public abstract class WebSocketRequestFilterBase : RequestFilterBase<IWebSocketFragment>
+    public abstract class WebSocketReceiveFilterBase : ReceiveFilterBase<IWebSocketFragment>
     {
         /// <summary>
         /// The length of Sec3Key
@@ -26,27 +26,30 @@ namespace SuperWebSocket.Protocol
             get { return m_Session; }
         }
 
-        static WebSocketRequestFilterBase()
+        static WebSocketReceiveFilterBase()
         {
             HandshakeRequestInfo = new HandshakeRequest();
         }
 
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="WebSocketRequestFilterBase"/> class.
+        /// Initializes a new instance of the <see cref="WebSocketReceiveFilterBase" /> class.
         /// </summary>
-        protected WebSocketRequestFilterBase(IWebSocketSession session)
+        /// <param name="session">The session.</param>
+        protected WebSocketReceiveFilterBase(IWebSocketSession session)
         {
             m_Session = session;
         }
 
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="WebSocketRequestFilterBase"/> class.
+        /// Initializes a new instance of the <see cref="WebSocketReceiveFilterBase" /> class.
         /// </summary>
-        /// <param name="previousRequestFilter">The previous request filter.</param>
-        protected WebSocketRequestFilterBase(WebSocketRequestFilterBase previousRequestFilter)
-            : base(previousRequestFilter)
+        /// <param name="previousReceiveFilter">The previous receive filter.</param>
+        protected WebSocketReceiveFilterBase(WebSocketReceiveFilterBase previousReceiveFilter)
+            : base(previousReceiveFilter)
         {
-            m_Session = previousRequestFilter.Session;
+            m_Session = previousReceiveFilter.Session;
         }
 
         /// <summary>
@@ -57,7 +60,7 @@ namespace SuperWebSocket.Protocol
         /// <returns></returns>
         protected bool Handshake(IProtocolProcessor protocolProcessor, IWebSocketSession session)
         {
-            IRequestFilter<IWebSocketFragment> dataFrameReader;
+            IReceiveFilter<IWebSocketFragment> dataFrameReader;
 
             if (!protocolProcessor.Handshake(session, this, out dataFrameReader))
             {
@@ -69,11 +72,11 @@ namespace SuperWebSocket.Protocol
             //In this case, the handshake is not completed
             if (dataFrameReader == null)
             {
-                NextRequestFilter = this;
+                NextReceiveFilter = this;
                 return false;
             }
 
-            NextRequestFilter = dataFrameReader;
+            NextReceiveFilter = dataFrameReader;
             return true;
         }
 

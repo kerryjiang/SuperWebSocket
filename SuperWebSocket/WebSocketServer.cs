@@ -174,11 +174,11 @@ namespace SuperWebSocket
         /// <summary>
         /// Gets the request filter factory.
         /// </summary>
-        public new WebSocketProtocol RequestFilterFactory
+        public new WebSocketProtocol ReceiveFilterFactory
         {
             get
             {
-                return (WebSocketProtocol)base.RequestFilterFactory;
+                return (WebSocketProtocol)base.ReceiveFilterFactory;
             }
         }
 

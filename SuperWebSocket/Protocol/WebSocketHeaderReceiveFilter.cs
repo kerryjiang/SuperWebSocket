@@ -10,13 +10,13 @@ using SuperSocket.SocketBase.Protocol;
 
 namespace SuperWebSocket.Protocol
 {
-    class WebSocketHeaderRequestFilter : WebSocketRequestFilterBase
+    class WebSocketHeaderReceiveFilter : WebSocketReceiveFilterBase
     {
         private static readonly byte[] m_HeaderTerminator = Encoding.UTF8.GetBytes("\r\n\r\n");
 
         private readonly SearchMarkState<byte> m_SearchState;
 
-        public WebSocketHeaderRequestFilter(IWebSocketSession session)
+        public WebSocketHeaderReceiveFilter(IWebSocketSession session)
             : base(session)
         {
             m_SearchState = new SearchMarkState<byte>(m_HeaderTerminator);
@@ -115,7 +115,7 @@ namespace SuperWebSocket.Protocol
                         rest = 0;
                     }
 
-                    NextRequestFilter = new WebSocketSecKey3RequestFilter(this);
+                    NextReceiveFilter = new WebSocketSecKey3ReceiveFilter(this);
                     return null;
                 }
             }

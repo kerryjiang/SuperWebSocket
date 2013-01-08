@@ -8,9 +8,9 @@ using SuperSocket.SocketBase.Command;
 
 namespace SuperWebSocket.Protocol
 {
-    class WebSocketSecKey3RequestFilter : WebSocketRequestFilterBase
+    class WebSocketSecKey3ReceiveFilter : WebSocketReceiveFilterBase
     {
-        public WebSocketSecKey3RequestFilter(WebSocketRequestFilterBase prevFilter)
+        public WebSocketSecKey3ReceiveFilter(WebSocketReceiveFilterBase prevFilter)
             : base(prevFilter)
         {
             
@@ -48,7 +48,7 @@ namespace SuperWebSocket.Protocol
             {
                 AddArraySegment(readBuffer, offset, length, isReusableBuffer);
                 rest = 0;
-                NextRequestFilter = this;
+                NextReceiveFilter = this;
                 return null;
             }
 

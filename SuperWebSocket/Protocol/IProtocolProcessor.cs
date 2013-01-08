@@ -40,7 +40,7 @@ namespace SuperWebSocket.Protocol
         /// <param name="previousFilter">The previous filter.</param>
         /// <param name="dataFrameReader">The data frame reader.</param>
         /// <returns></returns>
-        bool Handshake(IWebSocketSession session, WebSocketRequestFilterBase previousFilter, out IRequestFilter<IWebSocketFragment> dataFrameReader);
+        bool Handshake(IWebSocketSession session, WebSocketReceiveFilterBase previousFilter, out IReceiveFilter<IWebSocketFragment> dataFrameReader);
 
         /// <summary>
         /// Sends the message.

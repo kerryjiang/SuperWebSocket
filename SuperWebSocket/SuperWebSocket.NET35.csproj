@@ -101,11 +101,11 @@
     <Compile Include="Protocol\ProtocolProcessorBase..cs" />
     <Compile Include="Protocol\Rfc6455Processor.cs" />
     <Compile Include="Protocol\WebSocketDataFrame.cs" />
-    <Compile Include="Protocol\WebSocketDataFrameRequestFilter.cs" />
-    <Compile Include="Protocol\WebSocketDataRequestFilter.cs" />
-    <Compile Include="Protocol\WebSocketHeaderRequestFilter.cs" />
-    <Compile Include="Protocol\WebSocketRequestFilterBase.cs" />
-    <Compile Include="Protocol\WebSocketSecKey3RequestFilter.cs" />
+    <Compile Include="Protocol\WebSocketDataFrameReceiveFilter.cs" />
+    <Compile Include="Protocol\WebSocketDataReceiveFilter.cs" />
+    <Compile Include="Protocol\WebSocketHeaderReceiveFilter.cs" />
+    <Compile Include="Protocol\WebSocketReceiveFilterBase.cs" />
+    <Compile Include="Protocol\WebSocketSecKey3ReceiveFilter.cs" />
     <Compile Include="SubProtocol\AsyncJsonSubCommand.cs" />
     <Compile Include="SubProtocol\BasicSubCommandParser.cs" />
     <Compile Include="SubProtocol\BasicSubProtocol.cs" />

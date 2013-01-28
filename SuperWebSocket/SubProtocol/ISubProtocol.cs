@@ -8,6 +8,7 @@ using SuperSocket.SocketBase.Command;
 using SuperSocket.SocketBase.Config;
 using SuperSocket.SocketBase.Protocol;
 using SuperWebSocket.Config;
+using SuperSocket.SocketBase;
 
 namespace SuperWebSocket.SubProtocol
 {
@@ -21,11 +22,11 @@ namespace SuperWebSocket.SubProtocol
         /// <summary>
         /// Initializes with the specified config.
         /// </summary>
-        /// <param name="config">The config.</param>
+        /// <param name="appServer">The app server.</param>
         /// <param name="protocolConfig">The protocol config.</param>
         /// <param name="logger">The logger.</param>
         /// <returns></returns>
-        bool Initialize(IServerConfig config, SubProtocolConfig protocolConfig, ILog logger);
+        bool Initialize(IAppServer appServer, SubProtocolConfig protocolConfig, ILog logger);
 
         /// <summary>
         /// Gets the name.

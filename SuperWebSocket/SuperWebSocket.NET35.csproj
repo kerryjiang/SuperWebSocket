@@ -110,10 +110,13 @@
     <Compile Include="SubProtocol\BasicSubCommandParser.cs" />
     <Compile Include="SubProtocol\BasicSubProtocol.cs" />
     <Compile Include="SubProtocol\ISubCommand.cs" />
+    <Compile Include="SubProtocol\ISubCommandFilterLoader.cs" />
     <Compile Include="SubProtocol\ISubProtocol.cs" />
+    <Compile Include="SubProtocol\ISubRequestInfo.cs" />
     <Compile Include="SubProtocol\JsonSubCommand.cs" />
     <Compile Include="SubProtocol\JsonSubCommandBase.cs" />
     <Compile Include="SubProtocol\SubCommandBase.cs" />
+    <Compile Include="SubProtocol\SubCommandFilterAttribute.cs" />
     <Compile Include="SubProtocol\SubProtocolBase.cs" />
     <Compile Include="SubProtocol\SubRequestInfo.cs" />
     <Compile Include="WebSocketConst.cs" />

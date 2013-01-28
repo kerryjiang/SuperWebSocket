@@ -9,7 +9,7 @@ namespace SuperWebSocket.SubProtocol
     /// <summary>
     /// SubProtocol RequestInfo type
     /// </summary>
-    public class SubRequestInfo : RequestInfo<string>
+    public class SubRequestInfo : RequestInfo<string>, ISubRequestInfo
     {
         /// <summary>
         /// Gets the token of this request, used for callback

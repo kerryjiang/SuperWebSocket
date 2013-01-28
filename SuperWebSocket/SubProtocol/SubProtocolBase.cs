@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SuperSocket.SocketBase.Logging;
+using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Command;
 using SuperSocket.SocketBase.Config;
+using SuperSocket.SocketBase.Logging;
 using SuperSocket.SocketBase.Protocol;
 using SuperWebSocket.Config;
 
@@ -39,11 +40,11 @@ namespace SuperWebSocket.SubProtocol
         /// <summary>
         /// Initializes with the specified config.
         /// </summary>
-        /// <param name="config">The config.</param>
+        /// <param name="appServer">The app server.</param>
         /// <param name="protocolConfig">The protocol config.</param>
         /// <param name="logger">The logger.</param>
         /// <returns></returns>
-        public abstract bool Initialize(IServerConfig config, SubProtocolConfig protocolConfig, ILog logger);
+        public abstract bool Initialize(IAppServer appServer, SubProtocolConfig protocolConfig, ILog logger);
 
         /// <summary>
         /// Gets or sets the sub request parser.

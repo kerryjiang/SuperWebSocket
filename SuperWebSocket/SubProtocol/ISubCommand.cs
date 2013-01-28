@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Command;
 using SuperSocket.SocketBase.Protocol;
 
@@ -11,14 +12,9 @@ namespace SuperWebSocket.SubProtocol
     /// SubCommand interface
     /// </summary>
     /// <typeparam name="TWebSocketSession">The type of the web socket session.</typeparam>
-    public interface ISubCommand<TWebSocketSession>
+    public interface ISubCommand<TWebSocketSession> : ICommand
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
-        /// <summary>
-        /// Gets the name.
-        /// </summary>
-        string Name { get; }
-
         /// <summary>
         /// Executes the command.
         /// </summary>

@@ -9,6 +9,7 @@ using SuperSocket.SocketBase.Command;
 using SuperSocket.SocketBase.Config;
 using SuperSocket.SocketBase.Protocol;
 using SuperWebSocket.Config;
+using SuperSocket.SocketBase;
 
 namespace SuperWebSocket.SubProtocol
 {
@@ -108,6 +109,8 @@ namespace SuperWebSocket.SubProtocol
         private Dictionary<string, ISubCommand<TWebSocketSession>> m_CommandDict;
 
         private ILog m_Logger;
+
+        private SubCommandFilterAttribute[] m_GlobalFilters;
 
         internal static BasicSubProtocol<TWebSocketSession> CreateDefaultSubProtocol()
         {
@@ -219,19 +222,36 @@ namespace SuperWebSocket.SubProtocol
 #endif
 
             m_CommandDict = new Dictionary<string, ISubCommand<TWebSocketSession>>(subCommands.Count, StringComparer.OrdinalIgnoreCase);
-            subCommands.ForEach(c => m_CommandDict.Add(c.Name, c));
+
+            subCommands.ForEach(c =>
+                    {
+                        var fc = c as ISubCommandFilterLoader;
+
+                        if (fc != null)
+                            fc.LoadSubCommandFilters(m_GlobalFilters);
+
+                        m_CommandDict.Add(c.Name, c);
+                    }
+                );
         }
 
         /// <summary>
         /// Initializes with the specified config.
         /// </summary>
-        /// <param name="config">The config.</param>
+        /// <param name="appServer">The app server.</param>
         /// <param name="protocolConfig">The protocol config.</param>
         /// <param name="logger">The logger.</param>
         /// <returns></returns>
-        public override bool Initialize(IServerConfig config, SubProtocolConfig protocolConfig, ILog logger)
+        public override bool Initialize(IAppServer appServer, SubProtocolConfig protocolConfig, ILog logger)
         {
             m_Logger = logger;
+
+            var config = appServer.Config;
+
+            m_GlobalFilters = appServer.GetType()
+                    .GetCustomAttributes(true)
+                    .OfType<SubCommandFilterAttribute>()
+                    .Where(a => string.IsNullOrEmpty(a.SubProtocol) || Name.Equals(a.SubProtocol, StringComparison.OrdinalIgnoreCase)).ToArray();
 
             if (Name.Equals(DefaultName, StringComparison.OrdinalIgnoreCase))
             {

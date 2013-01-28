@@ -11,6 +11,7 @@ using SuperSocket.SocketBase.Config;
 using SuperSocket.SocketEngine;
 using SuperWebSocket;
 using SuperWebSocket.SubProtocol;
+using SuperWebSocketTest.Command;
 using WebSocket4Net;
 
 namespace SuperWebSocketTest
@@ -179,6 +180,33 @@ namespace SuperWebSocketTest
                 Assert.Fail("Failed to close session ontime");
 
             Assert.AreEqual(WebSocketState.Closed, webSocketClient.State);
+        }
+
+        [Test]
+        public virtual void CommandFilterTest()
+        {
+            var webSocketClient = CreateClient(m_Version);
+
+            var oldExecutingCount = CountSubCommandFilterAttribute.ExecutingCount;
+            var oldExecutedCount = CountSubCommandFilterAttribute.ExecutedCount;
+            
+            for (int i = 0; i < 100; i++)
+            {
+                webSocketClient.Send("ECHO " + Guid.NewGuid().ToString());
+
+                if (!this.MessageReceiveEvent.WaitOne(1000))
+                    Assert.Fail("Cannot get response in time!");
+
+                Thread.Sleep(10);
+
+                Assert.AreEqual(oldExecutingCount + i + 1, CountSubCommandFilterAttribute.ExecutingCount);
+                Assert.AreEqual(oldExecutedCount + i + 1, CountSubCommandFilterAttribute.ExecutedCount);
+            }
+
+            webSocketClient.Close();
+
+            if (!CloseEvent.WaitOne(1000))
+                Assert.Fail("Failed to close session ontime");
         }
     }
 }

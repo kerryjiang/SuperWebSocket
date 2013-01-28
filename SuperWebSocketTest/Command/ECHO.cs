@@ -10,6 +10,7 @@ using System.Threading;
 
 namespace SuperWebSocketTest.Command
 {
+    [CountSubCommandFilter]
     public class ECHO : SubCommandBase
     {
         public override void ExecuteCommand(WebSocketSession session, SubRequestInfo requestInfo)

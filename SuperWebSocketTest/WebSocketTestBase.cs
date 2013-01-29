@@ -35,7 +35,7 @@ namespace SuperWebSocketTest
         protected void Setup(WebSocketServer websocketServer, Action<ServerConfig> configurator)
         {
             var rootConfig = new RootConfig { DisablePerformanceDataCollector = true };
-            
+
             websocketServer.NewDataReceived += new SessionHandler<WebSocketSession, byte[]>(WebSocketServer_NewDataReceived);
 
             var config = new ServerConfig();

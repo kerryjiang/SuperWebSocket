@@ -50,11 +50,69 @@ namespace SuperWebSocketTest
         {
 
         }
+
+        [Test, Repeat(10)]
+        public void SendBinaryMessageTest()
+        {
+            try
+            {
+                WebSocketServer.NewDataReceived -= new SessionHandler<WebSocketSession, byte[]>(WebSocketServer_NewDataReceived);
+
+                var webSocketClient = CreateClient(Version);
+
+                StringBuilder sb = new StringBuilder();
+
+                for (int i = 0; i < 10; i++)
+                {
+                    sb.Append(Guid.NewGuid().ToString());
+                }
+
+                string messageSource = sb.ToString();
+
+                Random rd = new Random();
+
+                for (int i = 0; i < 100; i++)
+                {
+                    int startPos = rd.Next(0, messageSource.Length - 2);
+                    int endPos = rd.Next(startPos + 1, messageSource.Length - 1);
+
+                    string message = messageSource.Substring(startPos, endPos - startPos);
+                    var data = Encoding.UTF8.GetBytes("ECHO " + message);
+
+                    webSocketClient.Send(data, 0, data.Length);
+
+                    Console.WriteLine("Client:" + message);
+
+                    if (!MessageReceiveEvent.WaitOne(1000))
+                        Assert.Fail("Cannot get response in time!");
+
+                    Assert.AreEqual(message, CurrentMessage);
+                }
+
+                webSocketClient.Close();
+
+                if (!CloseEvent.WaitOne(1000))
+                    Assert.Fail("Failed to close session ontime");
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            finally
+            {
+                WebSocketServer.NewDataReceived += new SessionHandler<WebSocketSession, byte[]>(WebSocketServer_NewDataReceived);
+            }
+        }
     }
 
     public abstract class WebSocketClientTest : WebSocketTestBase
     {
         private readonly WebSocketVersion m_Version;
+
+        protected WebSocketVersion Version
+        {
+            get { return m_Version; }
+        }
 
         public WebSocketClientTest(WebSocketVersion version)
         {

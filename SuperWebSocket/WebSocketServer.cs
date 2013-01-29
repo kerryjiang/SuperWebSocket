@@ -76,6 +76,20 @@ namespace SuperWebSocket
     public abstract class WebSocketServer<TWebSocketSession> : AppServer<TWebSocketSession, IWebSocketFragment>, IWebSocketServer
         where TWebSocketSession : WebSocketSession<TWebSocketSession>, new()
     {
+        private IBinaryDataConverter m_BinaryDataConverter;
+
+        /// <summary>
+        /// Gets or sets the binary data converter.
+        /// </summary>
+        /// <value>
+        /// The binary data converter.
+        /// </value>
+        protected IBinaryDataConverter BinaryDataConverter
+        {
+            get { return m_BinaryDataConverter; }
+            set { m_BinaryDataConverter = value; }
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="WebSocketServer&lt;TWebSocketSession&gt;"/> class.
         /// </summary>
@@ -332,6 +346,11 @@ namespace SuperWebSocket
             if (!int.TryParse(config.Options.GetValue("closeHandshakeTimeOut"), out m_CloseHandshakeTimeOut))
                 m_CloseHandshakeTimeOut = 120;// 2 minute default
 
+            if (m_BinaryDataConverter == null)
+            {
+                m_BinaryDataConverter = new TextEncodingBinaryDataConverter(Encoding.UTF8);
+            }
+
             return true;
         }
 
@@ -477,19 +496,24 @@ namespace SuperWebSocket
             }
         }
 
+        void ExecuteMessage(TWebSocketSession session, string message)
+        {
+            if (session.SubProtocol == null)
+            {
+                if (Logger.IsErrorEnabled)
+                    Logger.Error("No SubProtocol selected! This session cannot process any message!");
+                session.CloseWithHandshake(session.ProtocolProcessor.CloseStatusClode.ProtocolError, "No SubProtocol selected");
+                return;
+            }
+
+            ExecuteSubCommand(session, session.SubProtocol.SubRequestParser.ParseRequestInfo(message));
+        }
+
         internal void OnNewMessageReceived(TWebSocketSession session, string message)
         {
             if (m_NewMessageReceived == null)
             {
-                if (session.SubProtocol == null)
-                {
-                    if(Logger.IsErrorEnabled)
-                        Logger.Error("No SubProtocol selected! This session cannot process any message!");
-                    session.CloseWithHandshake(session.ProtocolProcessor.CloseStatusClode.ProtocolError, "No SubProtocol selected");
-                    return;
-                }
-
-                ExecuteSubCommand(session, session.SubProtocol.SubRequestParser.ParseRequestInfo(message));
+                ExecuteMessage(session, message);
             }
             else
             {
@@ -517,7 +541,16 @@ namespace SuperWebSocket
         internal void OnNewDataReceived(TWebSocketSession session, byte[] data)
         {
             if (m_NewDataReceived == null)
+            {
+                var converter = m_BinaryDataConverter;
+
+                if (converter != null)
+                {
+                    ExecuteMessage(session, converter.ToString(data, 0, data.Length));
+                }
+
                 return;
+            }
 
             m_NewDataReceived(session, data);
         }

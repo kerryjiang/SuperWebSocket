@@ -320,7 +320,7 @@
             Says the welcome information when a client connectted.
             </summary>
         </member>
-        <member name="M:SuperSocket.SocketEngine.SocketSession.OnClose(SuperSocket.SocketBase.CloseReason)">
+        <member name="M:SuperSocket.SocketEngine.SocketSession.OnClosed(SuperSocket.SocketBase.CloseReason)">
             <summary>
             Called when [close].
             </summary>

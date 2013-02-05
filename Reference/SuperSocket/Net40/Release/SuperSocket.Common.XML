@@ -904,6 +904,43 @@
             <param name="poolItems">The pool items.</param>
             <returns></returns>
         </member>
+        <member name="T:SuperSocket.Common.IPoolInfo">
+            <summary>
+            The pool information class
+            </summary>
+        </member>
+        <member name="P:SuperSocket.Common.IPoolInfo.MinPoolSize">
+            <summary>
+            Gets the min size of the pool.
+            </summary>
+            <value>
+            The min size of the pool.
+            </value>
+        </member>
+        <member name="P:SuperSocket.Common.IPoolInfo.MaxPoolSize">
+            <summary>
+            Gets the max size of the pool.
+            </summary>
+            <value>
+            The max size of the pool.
+            </value>
+        </member>
+        <member name="P:SuperSocket.Common.IPoolInfo.AvialableItemsCount">
+            <summary>
+            Gets the avialable items count.
+            </summary>
+            <value>
+            The avialable items count.
+            </value>
+        </member>
+        <member name="P:SuperSocket.Common.IPoolInfo.TotalItemsCount">
+            <summary>
+            Gets the total items count, include items in the pool and outside the pool.
+            </summary>
+            <value>
+            The total items count.
+            </value>
+        </member>
         <member name="T:SuperSocket.Common.ISmartPool`1">
             <summary>
             The basic interface of smart pool
@@ -931,30 +968,6 @@
             </summary>
             <param name="item">The item.</param>
             <returns></returns>
-        </member>
-        <member name="P:SuperSocket.Common.ISmartPool`1.MinPoolSize">
-            <summary>
-            Gets the min size of the pool.
-            </summary>
-            <value>
-            The min size of the pool.
-            </value>
-        </member>
-        <member name="P:SuperSocket.Common.ISmartPool`1.MaxPoolSize">
-            <summary>
-            Gets the max size of the pool.
-            </summary>
-            <value>
-            The max size of the pool.
-            </value>
-        </member>
-        <member name="P:SuperSocket.Common.ISmartPool`1.AvialableItemsCount">
-            <summary>
-            Gets the avialable items count.
-            </summary>
-            <value>
-            The avialable items count.
-            </value>
         </member>
         <member name="T:SuperSocket.Common.ISmartPoolSource">
             <summary>
@@ -1047,6 +1060,14 @@
             </summary>
             <value>
             The avialable items count.
+            </value>
+        </member>
+        <member name="P:SuperSocket.Common.SmartPool`1.TotalItemsCount">
+            <summary>
+            Gets the total items count, include items in the pool and outside the pool.
+            </summary>
+            <value>
+            The total items count.
             </value>
         </member>
         <member name="T:SuperSocket.Common.SocketEx">

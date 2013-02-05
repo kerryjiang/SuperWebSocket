@@ -7,10 +7,10 @@ Different projects just have different configuration file and different required
 Because SuperWebSocket is base on SuperSocket, so we can use the startup project of SuperSocket directly. The startup project of SuperSocket is SuperSocket.SocketService, which is either a console application, or a windows service application.
 
 
-How to get SuperSocket.SocketSerrvice?
+How to get SuperSocket.SocketService?
 
-SuperSocket.SocketService is included in SuperWebSocket's reference folder:
-* SuperSocket.SocketService.exe: the main assembly, either a console application, or a windows service application
+SuperSocket.SocketService is included in SuperWebSocket's SuperSocket reference folder:
+* SuperSocket.SocketService.exe: the main entrance assembly, either a console application, or a windows service application
 * InstallService.bat: the script which can insall SuperSocket.SocketService.exe as a windows service
 * UninstallService.bat: the script which can uninsall SuperSocket.SocketService.exe from the windows service list
 

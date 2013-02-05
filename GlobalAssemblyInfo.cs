@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyCompany("SuperWebSocket")]
 [assembly: AssemblyProduct("SuperWebSocket")]
-[assembly: AssemblyCopyright("Copyright © SuperWebSocket 2012")]
+[assembly: AssemblyCopyright("Copyright © SuperWebSocket 2010-2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyVersion("0.7.0.0")]

@@ -10,7 +10,7 @@ namespace SuperWebSocket.PerformanceTest.TestServer
     {
         protected override void ExecuteJsonCommand(TestSession session, string commandInfo)
         {
-            SendJson(session, commandInfo);
+            SendJsonMessage(session, commandInfo);
         }
     }
 }

@@ -32,16 +32,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net">
-      <HintPath>..\..\Reference\log4net.dll</HintPath>
+      <HintPath>..\..\Reference\SuperSocket\Net40\Debug\log4net.dll</HintPath>
     </Reference>
     <Reference Include="SuperSocket.Common">
       <HintPath>..\..\Reference\SuperSocket\Net40\$(Configuration)\SuperSocket.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="SuperSocket.Management.Server">
-      <HintPath>..\..\Reference\SuperSocket\Net40\$(Configuration)\SuperSocket.Management.Server.dll</HintPath>
-    </Reference>
-    <Reference Include="SuperSocket.Management.Shared">
-      <HintPath>..\..\Reference\SuperSocket\Net40\$(Configuration)\SuperSocket.Management.Shared.dll</HintPath>
     </Reference>
     <Reference Include="SuperSocket.SocketBase">
       <HintPath>..\..\Reference\SuperSocket\Net40\$(Configuration)\SuperSocket.SocketBase.dll</HintPath>

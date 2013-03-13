@@ -37,7 +37,7 @@ namespace SuperWebSocket.SubProtocol
         {
             var filters = m_Filters;
 
-            if (filters.Length == 0)
+            if (filters == null || filters.Length == 0)
             {
                 ExecuteCommand(session, requestInfo);
                 return;

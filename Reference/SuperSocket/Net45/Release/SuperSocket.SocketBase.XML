@@ -2150,11 +2150,10 @@
             Null RequestInfo
             </summary>
         </member>
-        <member name="M:SuperSocket.SocketBase.Protocol.TerminatorReceiveFilter`1.#ctor(SuperSocket.SocketBase.IAppSession,System.Byte[])">
+        <member name="M:SuperSocket.SocketBase.Protocol.TerminatorReceiveFilter`1.#ctor(System.Byte[])">
             <summary>
             Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.Protocol.TerminatorReceiveFilter`1"/> class.
             </summary>
-            <param name="session">The session.</param>
             <param name="terminator">The terminator.</param>
         </member>
         <member name="M:SuperSocket.SocketBase.Protocol.TerminatorReceiveFilter`1.Filter(System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
@@ -2192,19 +2191,17 @@
             TerminatorRequestFilter
             </summary>
         </member>
-        <member name="M:SuperSocket.SocketBase.Protocol.TerminatorReceiveFilter.#ctor(SuperSocket.SocketBase.IAppSession,System.Byte[],System.Text.Encoding)">
+        <member name="M:SuperSocket.SocketBase.Protocol.TerminatorReceiveFilter.#ctor(System.Byte[],System.Text.Encoding)">
             <summary>
             Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.Protocol.TerminatorReceiveFilter"/> class.
             </summary>
-            <param name="session">The session.</param>
             <param name="terminator">The terminator.</param>
             <param name="encoding">The encoding.</param>
         </member>
-        <member name="M:SuperSocket.SocketBase.Protocol.TerminatorReceiveFilter.#ctor(SuperSocket.SocketBase.IAppSession,System.Byte[],System.Text.Encoding,SuperSocket.SocketBase.Protocol.IRequestInfoParser{SuperSocket.SocketBase.Protocol.StringRequestInfo})">
+        <member name="M:SuperSocket.SocketBase.Protocol.TerminatorReceiveFilter.#ctor(System.Byte[],System.Text.Encoding,SuperSocket.SocketBase.Protocol.IRequestInfoParser{SuperSocket.SocketBase.Protocol.StringRequestInfo})">
             <summary>
             Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.Protocol.TerminatorReceiveFilter"/> class.
             </summary>
-            <param name="session">The session.</param>
             <param name="terminator">The terminator.</param>
             <param name="encoding">The encoding.</param>
             <param name="requestParser">The request parser.</param>
@@ -3825,14 +3822,6 @@
             <summary>
             Logger extension class
             </summary>
-        </member>
-        <member name="M:SuperSocket.SocketBase.LoggerExtension.Error(SuperSocket.SocketBase.Logging.ILog,SuperSocket.SocketBase.ISessionBase,System.Exception)">
-            <summary>
-            Logs the error
-            </summary>
-            <param name="logger">The logger.</param>
-            <param name="session">The session.</param>
-            <param name="e">The e.</param>
         </member>
         <member name="M:SuperSocket.SocketBase.LoggerExtension.Error(SuperSocket.SocketBase.Logging.ILog,SuperSocket.SocketBase.ISessionBase,System.String,System.Exception)">
             <summary>

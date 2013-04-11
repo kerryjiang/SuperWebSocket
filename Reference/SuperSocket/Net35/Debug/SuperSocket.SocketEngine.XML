@@ -351,6 +351,25 @@
             </summary>
             <param name="queue">The queue.</param>
         </member>
+        <member name="M:SuperSocket.SocketEngine.SocketSession.LogError(System.Exception)">
+            <summary>
+            Logs the error, skip the ignored exception
+            </summary>
+            <param name="exception">The exception.</param>
+        </member>
+        <member name="M:SuperSocket.SocketEngine.SocketSession.LogError(System.String,System.Exception)">
+            <summary>
+            Logs the error, skip the ignored exception
+            </summary>
+            <param name="message">The message.</param>
+            <param name="exception">The exception.</param>
+        </member>
+        <member name="M:SuperSocket.SocketEngine.SocketSession.LogError(System.Int32)">
+            <summary>
+            Logs the socket error, skip the ignored error
+            </summary>
+            <param name="socketErrorCode">The socket error code.</param>
+        </member>
         <member name="P:SuperSocket.SocketEngine.SocketSession.SessionID">
             <summary>
             Gets or sets the session ID.

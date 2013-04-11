@@ -450,6 +450,114 @@
             Gets the option elements.
             </summary>
         </member>
+        <member name="T:SuperSocket.SocketEngine.SocketSession">
+            <summary>
+            Socket Session, all application session should base on this class
+            </summary>
+        </member>
+        <member name="M:SuperSocket.SocketEngine.SocketSession.LogError(System.Exception)">
+            <summary>
+            Logs the error, skip the ignored exception
+            </summary>
+            <param name="exception">The exception.</param>
+        </member>
+        <member name="M:SuperSocket.SocketEngine.SocketSession.LogError(System.String,System.Exception)">
+            <summary>
+            Logs the error, skip the ignored exception
+            </summary>
+            <param name="message">The message.</param>
+            <param name="exception">The exception.</param>
+        </member>
+        <member name="M:SuperSocket.SocketEngine.SocketSession.LogError(System.Int32)">
+            <summary>
+            Logs the socket error, skip the ignored error
+            </summary>
+            <param name="socketErrorCode">The socket error code.</param>
+        </member>
+        <member name="M:SuperSocket.SocketEngine.SocketSession.Start">
+            <summary>
+            Starts this session.
+            </summary>
+        </member>
+        <member name="M:SuperSocket.SocketEngine.SocketSession.StartSession">
+            <summary>
+            Says the welcome information when a client connectted.
+            </summary>
+        </member>
+        <member name="M:SuperSocket.SocketEngine.SocketSession.OnClosed(SuperSocket.SocketBase.CloseReason)">
+            <summary>
+            Called when [close].
+            </summary>
+        </member>
+        <member name="M:SuperSocket.SocketEngine.SocketSession.TrySend(System.Collections.Generic.IList{System.ArraySegment{System.Byte}})">
+            <summary>
+            Tries to send array segment.
+            </summary>
+            <param name="segments">The segments.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.SocketEngine.SocketSession.TrySend(System.ArraySegment{System.Byte})">
+            <summary>
+            Tries to send array segment.
+            </summary>
+            <param name="segment">The segment.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.SocketEngine.SocketSession.SendAsync(SuperSocket.Common.SendingQueue)">
+            <summary>
+            Sends in async mode.
+            </summary>
+            <param name="queue">The queue.</param>
+        </member>
+        <member name="M:SuperSocket.SocketEngine.SocketSession.SendSync(SuperSocket.Common.SendingQueue)">
+            <summary>
+            Sends in sync mode.
+            </summary>
+            <param name="queue">The queue.</param>
+        </member>
+        <member name="P:SuperSocket.SocketEngine.SocketSession.SessionID">
+            <summary>
+            Gets or sets the session ID.
+            </summary>
+            <value>The session ID.</value>
+        </member>
+        <member name="P:SuperSocket.SocketEngine.SocketSession.Config">
+            <summary>
+            Gets or sets the config.
+            </summary>
+            <value>
+            The config.
+            </value>
+        </member>
+        <member name="P:SuperSocket.SocketEngine.SocketSession.Closed">
+            <summary>
+            Occurs when [closed].
+            </summary>
+        </member>
+        <member name="P:SuperSocket.SocketEngine.SocketSession.Client">
+            <summary>
+            Gets or sets the client.
+            </summary>
+            <value>The client.</value>
+        </member>
+        <member name="P:SuperSocket.SocketEngine.SocketSession.LocalEndPoint">
+            <summary>
+            Gets the local end point.
+            </summary>
+            <value>The local end point.</value>
+        </member>
+        <member name="P:SuperSocket.SocketEngine.SocketSession.RemoteEndPoint">
+            <summary>
+            Gets the remote end point.
+            </summary>
+            <value>The remote end point.</value>
+        </member>
+        <member name="P:SuperSocket.SocketEngine.SocketSession.SecureProtocol">
+            <summary>
+            Gets or sets the secure protocol.
+            </summary>
+            <value>The secure protocol.</value>
+        </member>
         <member name="M:SuperSocket.SocketEngine.MarshalAppServer.#ctor(System.String)">
             <summary>
             Initializes a new instance of the <see cref="T:SuperSocket.SocketEngine.AppDomainAppServer"/> class.
@@ -569,95 +677,6 @@
             <value>
             The sending queue manager.
             </value>
-        </member>
-        <member name="T:SuperSocket.SocketEngine.SocketSession">
-            <summary>
-            Socket Session, all application session should base on this class
-            </summary>
-        </member>
-        <member name="M:SuperSocket.SocketEngine.SocketSession.Start">
-            <summary>
-            Starts this session.
-            </summary>
-        </member>
-        <member name="M:SuperSocket.SocketEngine.SocketSession.StartSession">
-            <summary>
-            Says the welcome information when a client connectted.
-            </summary>
-        </member>
-        <member name="M:SuperSocket.SocketEngine.SocketSession.OnClosed(SuperSocket.SocketBase.CloseReason)">
-            <summary>
-            Called when [close].
-            </summary>
-        </member>
-        <member name="M:SuperSocket.SocketEngine.SocketSession.TrySend(System.Collections.Generic.IList{System.ArraySegment{System.Byte}})">
-            <summary>
-            Tries to send array segment.
-            </summary>
-            <param name="segments">The segments.</param>
-            <returns></returns>
-        </member>
-        <member name="M:SuperSocket.SocketEngine.SocketSession.TrySend(System.ArraySegment{System.Byte})">
-            <summary>
-            Tries to send array segment.
-            </summary>
-            <param name="segment">The segment.</param>
-            <returns></returns>
-        </member>
-        <member name="M:SuperSocket.SocketEngine.SocketSession.SendAsync(SuperSocket.Common.SendingQueue)">
-            <summary>
-            Sends in async mode.
-            </summary>
-            <param name="queue">The queue.</param>
-        </member>
-        <member name="M:SuperSocket.SocketEngine.SocketSession.SendSync(SuperSocket.Common.SendingQueue)">
-            <summary>
-            Sends in sync mode.
-            </summary>
-            <param name="queue">The queue.</param>
-        </member>
-        <member name="P:SuperSocket.SocketEngine.SocketSession.SessionID">
-            <summary>
-            Gets or sets the session ID.
-            </summary>
-            <value>The session ID.</value>
-        </member>
-        <member name="P:SuperSocket.SocketEngine.SocketSession.Config">
-            <summary>
-            Gets or sets the config.
-            </summary>
-            <value>
-            The config.
-            </value>
-        </member>
-        <member name="P:SuperSocket.SocketEngine.SocketSession.Closed">
-            <summary>
-            Occurs when [closed].
-            </summary>
-        </member>
-        <member name="P:SuperSocket.SocketEngine.SocketSession.Client">
-            <summary>
-            Gets or sets the client.
-            </summary>
-            <value>The client.</value>
-        </member>
-        <member name="P:SuperSocket.SocketEngine.SocketSession.LocalEndPoint">
-            <summary>
-            Gets the local end point.
-            </summary>
-            <value>The local end point.</value>
-        </member>
-        <member name="P:SuperSocket.SocketEngine.SocketSession.RemoteEndPoint">
-            <summary>
-            Gets the remote end point.
-            </summary>
-            <value>The remote end point.</value>
-        </member>
-        <member name="P:SuperSocket.SocketEngine.SocketSession.SecureProtocol">
-            <summary>
-            Gets or sets the secure protocol.
-            </summary>
-            <value>The secure protocol.</value>
         </member>
         <member name="M:SuperSocket.SocketEngine.AsyncStreamSocketSession.Start">
             <summary>

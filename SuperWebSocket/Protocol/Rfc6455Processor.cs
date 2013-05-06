@@ -16,6 +16,14 @@ namespace SuperWebSocket.Protocol
 
         }
 
+        protected override string OriginKey
+        {
+            get
+            {
+                return WebSocketConstant.Origin;
+            }
+        }
+
         public override bool IsValidCloseCode(int code)
         {
             var closeCode = this.CloseStatusClode;

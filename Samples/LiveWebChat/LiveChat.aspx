@@ -1,11 +1,9 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="LiveChatWithBridge.aspx.cs" Inherits="SuperWebSocketWeb.LiveChatWithBridge" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="LiveChat.aspx.cs" Inherits="SuperWebSocket.Samples.LiveWebChat.LiveChat" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head id="Head1" runat="server">
+<head runat="server">
     <title>Live Chat</title>
     <script type="text/javascript" src="Scripts/jquery.js"></script>
-    <script type="text/javascript" src="Scripts/Silverlight.js"></script>
-    <script type="text/javascript" src="Scripts/WebSocketEx.js"></script>
     <style type="text/css">
     body
     {
@@ -31,6 +29,7 @@
     }
     </style>
     <script type="text/javascript">
+        var noSupportMessage = "Your browser cannot support WebSocket!";
         var ws;
 
         function resizeFrame() {
@@ -59,20 +58,33 @@
         function connectSocketServer() {
             var messageBoard = $('#messageBoard');
 
+            var support = "MozWebSocket" in window ? 'MozWebSocket' : ("WebSocket" in window ? 'WebSocket' : null);
+
+            if (support == null) {
+                alert(noSupportMessage);
+                messageBoard.append("* " + noSupportMessage + "<br/>");
+                return;
+            }
+
             messageBoard.append("* Connecting to server ..<br/>");
             // create a new websocket and connect
-            var websocket = new WebSocketEx('ws://<%= Request.Url.Host %>:<%= WebSocketPort %>/sample', '', function () {
+            ws = new window[support]('ws://<%= Request.Url.Host %>:8080/sample');
+
+            // when data is comming from the server, this metod is called
+            ws.onmessage = function (evt) {
+                messageBoard.append("# " + evt.data + "<br />");
+                scrollToBottom(messageBoard);
+            };
+
+            // when the connection is established, this method is called
+            ws.onopen = function () {
                 messageBoard.append('* Connection open<br/>');
-                ws = websocket;
-            }, function () {
+            };
+
+            // when the connection is closed, this method is called
+            ws.onclose = function () {
                 messageBoard.append('* Connection closed<br/>');
-            }, function (evt) {
-                messageBoard.append("# " + evt.data + "<br />");
-                scrollToBottom(messageBoard);
-            }, function (evt) {
-                messageBoard.append("# " + evt.data + "<br />");
-                scrollToBottom(messageBoard);
-            });
+            }
         }
 
         function sendMessage() {
@@ -80,29 +92,29 @@
                 var messageBox = document.getElementById('messageBox');
                 ws.send(messageBox.value);
                 messageBox.value = "";
+            } else {
+                alert(noSupportMessage);
             }
         }
 
         jQuery.event.add(window, "resize", resizeFrame);
 
         window.onload = function () {
-            connectSocketServer();
             resizeFrame();
+            connectSocketServer();
         }
     
     </script>
 </head>
 <body>
     <form id="formMain" runat="server">
-        <div id="silverlightControlHost" style="width:0px; height:0px;">
-        </div>
         <table width="100%" cellspacing="1" bgcolor="#99BBE8" cellpadding="0" border="0">
             <tr>
                 <td class="panelHeader">Chat Message</td>
             </tr>
             <tr>
                 <td bgcolor="#ffffff">
-                    <div id="messageBoard"></div>
+                    <div id="messageBoard"></div>                
                 </td>
             </tr>
             <tr>

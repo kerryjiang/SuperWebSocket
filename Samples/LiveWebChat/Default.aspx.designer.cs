@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SuperWebSocketWeb {
+namespace SuperWebSocket.Samples.LiveWebChat {
     
     
     public partial class Default {

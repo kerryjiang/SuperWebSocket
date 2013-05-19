@@ -6,7 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Configuration;
 
-namespace SuperWebSocketWeb
+namespace SuperWebSocket.Samples.LiveWebChat
 {
     public partial class LiveChatWithBridge : System.Web.UI.Page
     {
@@ -16,19 +16,6 @@ namespace SuperWebSocketWeb
 
             if (nameCookie == null)
                 Response.Redirect("~/Default.aspx?returnUrl=" + Server.UrlEncode(Request.FilePath));
-        }
-
-        protected object WebSocketPort
-        {
-            get
-            {
-                var extPort = ConfigurationManager.AppSettings["extPort"];
-
-                if (string.IsNullOrEmpty(extPort))
-                    return Application["WebSocketPort"];
-                else
-                    return extPort;
-            }
         }
     }
 }

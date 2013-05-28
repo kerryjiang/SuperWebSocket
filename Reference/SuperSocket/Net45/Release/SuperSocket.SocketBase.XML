@@ -1785,12 +1785,7 @@
             </summary>
         </member>
         <member name="P:SuperSocket.SocketBase.Logging.LogFactoryBase.IsSharedConfig">
-            <summary>
-            Gets a value indicating whether this instance is isolated.
-            </summary>
-            <value>
-            <c>true</c> if this instance is isolated; otherwise, <c>false</c>.
-            </value>
+            Gets a value indicating whether the server instance is running in isolation mode and the multiple server instances share the same logging configuration.
         </member>
         <member name="M:SuperSocket.SocketBase.Logging.Log4NetLogFactory.#ctor">
             <summary>

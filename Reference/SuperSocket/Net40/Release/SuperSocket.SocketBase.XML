@@ -3072,6 +3072,16 @@
             Default MaxRequestLength
             </summary>
         </member>
+        <member name="F:SuperSocket.SocketBase.Config.ServerConfig.DefaultClearIdleSessionInterval">
+            <summary>
+            Default clear idle session interval
+            </summary>
+        </member>
+        <member name="F:SuperSocket.SocketBase.Config.ServerConfig.DefaultIdleSessionTimeOut">
+            <summary>
+            Default idle session timeout
+            </summary>
+        </member>
         <member name="M:SuperSocket.SocketBase.Config.ServerConfig.#ctor(SuperSocket.SocketBase.Config.IServerConfig)">
             <summary>
             Initializes a new instance of the <see cref="T:SuperSocket.SocketBase.Config.ServerConfig"/> class.

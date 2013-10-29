@@ -244,6 +244,15 @@
             <param name="parameters">The parameters.</param>
             <returns></returns>
         </member>
+        <member name="M:SuperSocket.Common.AssemblyUtil.GetType(System.String,System.Boolean,System.Boolean)">
+            <summary>
+            Gets the type by the full name, also return matched generic type without checking generic type parameters in the name.
+            </summary>
+            <param name="fullTypeName">Full name of the type.</param>
+            <param name="throwOnError">if set to <c>true</c> [throw on error].</param>
+            <param name="ignoreCase">if set to <c>true</c> [ignore case].</param>
+            <returns></returns>
+        </member>
         <member name="M:SuperSocket.Common.AssemblyUtil.GetImplementTypes``1(System.Reflection.Assembly)">
             <summary>
             Gets the implement types from assembly.

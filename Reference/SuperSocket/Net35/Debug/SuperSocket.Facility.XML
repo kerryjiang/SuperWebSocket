@@ -463,5 +463,139 @@
             Resets this instance.
             </summary>
         </member>
+        <member name="T:SuperSocket.Facility.Protocol.HttpReceiveFilterBase`1">
+            <summary>
+            HttpReceiveFilterBase
+            </summary>
+            <typeparam name="TRequestInfo">The type of the request info.</typeparam>
+        </member>
+        <member name="F:SuperSocket.Facility.Protocol.HttpReceiveFilterBase`1.NewLine">
+            <summary>
+            Http header terminator
+            </summary>
+        </member>
+        <member name="F:SuperSocket.Facility.Protocol.HttpReceiveFilterBase`1.m_HeaderParsed">
+            <summary>
+            indicate whether the header has been parsed
+            </summary>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.HttpReceiveFilterBase`1.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.Facility.Protocol.HttpReceiveFilterBase`1"/> class.
+            </summary>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.HttpReceiveFilterBase`1.Filter(System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
+            <summary>
+            Filters the specified session.
+            </summary>
+            <param name="readBuffer">The read buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="length">The length.</param>
+            <param name="toBeCopied">if set to <c>true</c> [to be copied].</param>
+            <param name="rest">The rest.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.HttpReceiveFilterBase`1.FilterRequestBody(System.Byte[],System.Int32,System.Int32,System.Boolean,System.Int32@)">
+            <summary>
+            Filters the request body.
+            </summary>
+            <param name="readBuffer">The read buffer.</param>
+            <param name="offset">The offset.</param>
+            <param name="length">The length.</param>
+            <param name="toBeCopied">if set to <c>true</c> [to be copied].</param>
+            <param name="rest">The rest data size.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.HttpReceiveFilterBase`1.ProcessMatchedRequest(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Resolves the specified data.
+            </summary>
+            <param name="data">The data.</param>
+            <param name="offset">The offset.</param>
+            <param name="length">The length.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.HttpReceiveFilterBase`1.FilterRequestHeader(System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Filters the request header.
+            </summary>
+            <param name="header">The header.</param>
+            <returns>
+            return the parsed request info from header; if the request has body, this method should return null
+            </returns>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.HttpReceiveFilterBase`1.Reset">
+            <summary>
+            Resets this instance to inital state.
+            </summary>
+        </member>
+        <member name="P:SuperSocket.Facility.Protocol.HttpReceiveFilterBase`1.HeaderItems">
+            <summary>
+            Gets the header items.
+            </summary>
+        </member>
+        <member name="T:SuperSocket.Facility.Protocol.IHttpRequestInfo">
+            <summary>
+            IHttpRequestInfo
+            </summary>
+        </member>
+        <member name="P:SuperSocket.Facility.Protocol.IHttpRequestInfo.Header">
+            <summary>
+            Gets the http header.
+            </summary>
+        </member>
+        <member name="T:SuperSocket.Facility.Protocol.HttpRequestInfoBase">
+            <summary>
+            HttpRequestInfoBase
+            </summary>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.HttpRequestInfoBase.#ctor(System.String,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.Facility.Protocol.HttpRequestInfoBase"/> class.
+            </summary>
+            <param name="key">The key.</param>
+            <param name="header">The header.</param>
+        </member>
+        <member name="P:SuperSocket.Facility.Protocol.HttpRequestInfoBase.Key">
+            <summary>
+            Gets the key of this request.
+            </summary>
+        </member>
+        <member name="P:SuperSocket.Facility.Protocol.HttpRequestInfoBase.Header">
+            <summary>
+            Gets the http header.
+            </summary>
+        </member>
+        <member name="T:SuperSocket.Facility.Protocol.HttpRequestInfoBase`1">
+            <summary>
+            HttpRequestInfoBase
+            </summary>
+            <typeparam name="TRequestBody">The type of the request body.</typeparam>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.HttpRequestInfoBase`1.#ctor(System.String,System.Collections.Specialized.NameValueCollection,`0)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SuperSocket.Facility.Protocol.HttpRequestInfoBase`1"/> class.
+            </summary>
+            <param name="key">The key.</param>
+            <param name="header">The header.</param>
+            <param name="body">The body.</param>
+        </member>
+        <member name="P:SuperSocket.Facility.Protocol.HttpRequestInfoBase`1.Body">
+            <summary>
+            Gets the body.
+            </summary>
+        </member>
+        <member name="T:SuperSocket.Facility.Protocol.MimeHeaderHelper">
+            <summary>
+            MimeHeader Helper class
+            </summary>
+        </member>
+        <member name="M:SuperSocket.Facility.Protocol.MimeHeaderHelper.ParseHttpHeader(System.String,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Parses the HTTP header.
+            </summary>
+            <param name="headerData">The header data.</param>
+            <param name="header">The header.</param>
+        </member>
     </members>
 </doc>

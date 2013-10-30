@@ -43,7 +43,8 @@ namespace SuperWebSocket.SubProtocol
                 return;
             }
 
-            var commandContext = new CommandExecutingContext(session, requestInfo, this);
+            var commandContext = new CommandExecutingContext();
+            commandContext.Initialize(session, requestInfo, this);
 
             for (var i = 0; i < filters.Length; i++)
             {

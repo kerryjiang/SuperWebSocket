@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SuperSocket.SocketBase;
+using SuperSocket.SocketBase.Metadata;
 
 namespace SuperWebSocket.SubProtocol
 {

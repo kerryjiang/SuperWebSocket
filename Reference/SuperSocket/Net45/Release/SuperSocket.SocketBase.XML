@@ -875,6 +875,22 @@
             Gets the current command.
             </summary>
         </member>
+        <member name="P:SuperSocket.SocketBase.CommandExecutingContext.Exception">
+            <summary>
+            Gets the exception.
+            </summary>
+            <value>
+            The exception.
+            </value>
+        </member>
+        <member name="P:SuperSocket.SocketBase.CommandExecutingContext.ExceptionHandled">
+            <summary>
+            Gets a value indicating whether [exception handled].
+            </summary>
+            <value>
+              <c>true</c> if [exception handled]; otherwise, <c>false</c>.
+            </value>
+        </member>
         <member name="P:SuperSocket.SocketBase.CommandExecutingContext.Cancel">
             <summary>
             Gets or sets a value indicating whether this command executing is cancelled.
@@ -982,6 +998,17 @@
             <summary>
             Gets the commands updated.
             </summary>
+        </member>
+        <member name="T:SuperSocket.SocketBase.Command.ICommandFilterProvider">
+            <summary>
+            The basic interface for CommandFilter
+            </summary>
+        </member>
+        <member name="M:SuperSocket.SocketBase.Command.ICommandFilterProvider.GetFilters">
+            <summary>
+            Gets the filters which assosiated with this command object.
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:SuperSocket.SocketBase.Config.CommandAssemblyConfig">
             <summary>

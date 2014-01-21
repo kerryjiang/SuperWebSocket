@@ -848,6 +848,16 @@
             </returns>
             <exception cref="T:System.Configuration.ConfigurationErrorsException">The element identified by <paramref name="elementName"/> is locked.- or -One or more of the element's attributes is locked.- or -<paramref name="elementName"/> is unrecognized, or the element has an unrecognized attribute.- or -The element has a Boolean attribute with an invalid value.- or -An attempt was made to deserialize a property more than once.- or -An attempt was made to deserialize a property that is not a valid member of the element.- or -The element cannot contain a CDATA or text element.</exception>
         </member>
+        <member name="M:SuperSocket.SocketEngine.Configuration.SocketServiceConfig.OnDeserializeUnrecognizedAttribute(System.String,System.String)">
+            <summary>
+            Gets a value indicating whether an unknown attribute is encountered during deserialization.
+            </summary>
+            <param name="name">The name of the unrecognized attribute.</param>
+            <param name="value">The value of the unrecognized attribute.</param>
+            <returns>
+            true when an unknown attribute is encountered while deserializing; otherwise, false.
+            </returns>
+        </member>
         <member name="M:SuperSocket.SocketEngine.Configuration.SocketServiceConfig.GetChildConfig``1(System.String)">
             <summary>
             Gets the child config.

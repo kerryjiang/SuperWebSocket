@@ -820,6 +820,12 @@
             </returns>
             <exception cref="T:System.NotSupportedException"></exception>
         </member>
+        <member name="M:SuperSocket.Common.SendingQueue.InternalTrim(System.Int32)">
+            <summary>
+            Trim the internal segments at the begining by the binary data size.
+            </summary>
+            <param name="offset">The binary data size should be trimed at the begining.</param>
+        </member>
         <member name="P:SuperSocket.Common.SendingQueue.TrackID">
             <summary>
             Gets the track ID.

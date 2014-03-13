@@ -72,7 +72,7 @@ namespace SuperWebSocket
         bool Handshaked { get; }
 
         /// <summary>
-        /// Sends the raw binary response.
+        /// Sends the raw binary data to client.
         /// </summary>
         /// <param name="data">The data.</param>
         /// <param name="offset">The offset.</param>
@@ -80,7 +80,7 @@ namespace SuperWebSocket
         void SendRawData(byte[] data, int offset, int length);
 
         /// <summary>
-        /// Try to send the raw binary response.
+        /// Try to send the raw binary data to client.
         /// </summary>
         /// <param name="data">The data.</param>
         /// <param name="offset">The offset.</param>
@@ -336,7 +336,7 @@ namespace SuperWebSocket
 
 
         /// <summary>
-        /// Sends the response.
+        /// Sends the message to client.
         /// </summary>
         /// <param name="message">The message.</param>
         public override void Send(string message)
@@ -355,7 +355,7 @@ namespace SuperWebSocket
         }
 
         /// <summary>
-        /// Sends the response.
+        /// Sends the data to client.
         /// </summary>
         /// <param name="data">The data.</param>
         /// <param name="offset">The offset.</param>
@@ -409,7 +409,7 @@ namespace SuperWebSocket
         }
 
         /// <summary>
-        /// Sends the response.
+        /// Sends the segment to client.
         /// </summary>
         /// <param name="segment">The segment.</param>
         public override void Send(ArraySegment<byte> segment)
@@ -430,7 +430,7 @@ namespace SuperWebSocket
 
 
         /// <summary>
-        /// Try to send the raw binary response.
+        /// Try to send the raw binary data to client.
         /// </summary>
         /// <param name="data">The data.</param>
         /// <param name="offset">The offset.</param>

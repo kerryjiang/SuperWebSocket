@@ -320,7 +320,14 @@ namespace SuperWebSocket
                         else
                             value = string.Empty;
 
-                        cookies[key] = Uri.UnescapeDataString(value);
+                        try
+                        {
+                            cookies[key] = Uri.UnescapeDataString(value);
+                        }
+                        catch
+                        {
+                            Logger.Error(this, string.Format("Failed to read cookie, key: {0}, value: {1}.", key, value));
+                        }
                     }
                 }
             }

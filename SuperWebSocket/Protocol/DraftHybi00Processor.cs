@@ -104,6 +104,16 @@ namespace SuperWebSocket.Protocol
             return hash;
         }
 
+        public override IList<ArraySegment<byte>> GetEncodedPackage(int opCode, byte[] data, int offset, int length)
+        {
+            throw new NotSupportedException();
+        }
+
+        public override IList<ArraySegment<byte>> GetEncodedPackage(int opCode, string message)
+        {
+            return new ArraySegment<byte>[] { GetPackageData(message) };
+        }
+
         private ArraySegment<byte> GetPackageData(string message)
         {
             var maxByteCount = Encoding.UTF8.GetMaxByteCount(message.Length) + 2;

@@ -42,6 +42,25 @@ namespace SuperWebSocket.Protocol
         /// <returns></returns>
         bool Handshake(IWebSocketSession session, WebSocketReceiveFilterBase previousFilter, out IReceiveFilter<IWebSocketFragment> dataFrameReader);
 
+
+        /// <summary>
+        /// Gets the encoded package.
+        /// </summary>
+        /// <param name="opCode">The op code.</param>
+        /// <param name="data">The data.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="length">The length.</param>
+        /// <returns></returns>
+        IList<ArraySegment<byte>> GetEncodedPackage(int opCode, byte[] data, int offset, int length);
+
+        /// <summary>
+        /// Gets the encoded package.
+        /// </summary>
+        /// <param name="opCode">The op code.</param>
+        /// <param name="message">The message.</param>
+        /// <returns></returns>
+        IList<ArraySegment<byte>> GetEncodedPackage(int opCode, string message);
+
         /// <summary>
         /// Sends the message.
         /// </summary>

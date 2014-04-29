@@ -83,5 +83,16 @@ namespace SuperWebSocket.Protocol
         {
             throw new NotImplementedException();
         }
+
+
+        public IList<ArraySegment<byte>> GetEncodedPackage(int opCode, byte[] data, int offset, int length)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IList<ArraySegment<byte>> GetEncodedPackage(int opCode, string message)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

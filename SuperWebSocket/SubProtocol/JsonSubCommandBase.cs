@@ -47,8 +47,7 @@ namespace SuperWebSocket.SubProtocol
 
             TJsonCommandInfo jsonCommandInfo;
 
-            if (!string.IsNullOrEmpty(requestInfo.Token))
-                session.CurrentToken = requestInfo.Token;
+            session.CurrentToken = requestInfo.Token;
 
             if (!m_IsSimpleType)
                 jsonCommandInfo = (TJsonCommandInfo)session.AppServer.JsonDeserialize(requestInfo.Body, m_CommandInfoType);

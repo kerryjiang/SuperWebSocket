@@ -719,20 +719,22 @@ namespace SuperWebSocket
         public void Broadcast(IEnumerable<TWebSocketSession> sessions, byte[] data, int offset, int length, Action<TWebSocketSession, bool> sendFeedback)
         {
             IList<ArraySegment<byte>> encodedPackage = null;
+            IProtocolProcessor encodingProcessor = null;
 
             foreach (var s in sessions)
             {
-                if (encodedPackage == null)
-                {
-                    if (!s.ProtocolProcessor.CanSendBinaryData)
-                        continue;
+                if (!s.Connected)
+                    continue;
 
-                    encodedPackage = s.ProtocolProcessor.GetEncodedPackage(OpCode.Binary, data, offset, length);
-                }
-                else
+                var currentProtocolProcessor = s.ProtocolProcessor;
+
+                if (currentProtocolProcessor == null || !currentProtocolProcessor.CanSendBinaryData)
+                    continue;
+
+                if (encodedPackage == null || currentProtocolProcessor != encodingProcessor)
                 {
-                    if (!s.ProtocolProcessor.CanSendBinaryData)
-                        continue;
+                    encodedPackage = currentProtocolProcessor.GetEncodedPackage(OpCode.Binary, data, offset, length);
+                    encodingProcessor = currentProtocolProcessor;
                 }
 
                 Task.Factory.StartNew(SendRawDataToSession, Tuple.Create(s, encodedPackage, sendFeedback));
@@ -752,10 +754,18 @@ namespace SuperWebSocket
 
             foreach (var s in sessions)
             {
-                if (encodedPackage == null || encodingProcessor != s.ProtocolProcessor)
+                if (!s.Connected)
+                    continue;
+
+                var currentProtocolProcessor = s.ProtocolProcessor;
+
+                if (currentProtocolProcessor == null)
+                    continue;
+
+                if (encodedPackage == null || encodingProcessor != currentProtocolProcessor)
                 {
-                    encodedPackage = s.ProtocolProcessor.GetEncodedPackage(OpCode.Text, message);
-                    encodingProcessor = s.ProtocolProcessor;
+                    encodedPackage = currentProtocolProcessor.GetEncodedPackage(OpCode.Text, message);
+                    encodingProcessor = currentProtocolProcessor;
                 }
 
                 Task.Factory.StartNew(SendRawDataToSession, Tuple.Create(s, encodedPackage, sendFeedback));
@@ -767,7 +777,18 @@ namespace SuperWebSocket
             var param = state as Tuple<TWebSocketSession, IList<ArraySegment<byte>>, Action<TWebSocketSession, bool>>;
             var session = param.Item1;
             var sendFeedback = param.Item3;
-            sendFeedback(param.Item1, param.Item1.TrySendRawData(param.Item2));
+            var sendOk = false;
+
+            try
+            {
+                sendOk = param.Item1.TrySendRawData(param.Item2);
+            }
+            catch (Exception e)
+            {
+                session.Logger.Error(e);
+            }
+
+            sendFeedback(session, sendOk);
         }
 
         #region JSON serialize/deserialize

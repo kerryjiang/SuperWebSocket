@@ -737,7 +737,7 @@ namespace SuperWebSocket
                     encodingProcessor = currentProtocolProcessor;
                 }
 
-                Task.Factory.StartNew(SendRawDataToSession, Tuple.Create(s, encodedPackage, sendFeedback));
+                Task.Factory.StartNew(SendRawDataToSession, new BroadcastState(s, encodedPackage, sendFeedback));
             }
         }
 
@@ -768,20 +768,20 @@ namespace SuperWebSocket
                     encodingProcessor = currentProtocolProcessor;
                 }
 
-                Task.Factory.StartNew(SendRawDataToSession, Tuple.Create(s, encodedPackage, sendFeedback));
+                Task.Factory.StartNew(SendRawDataToSession, new BroadcastState(s, encodedPackage, sendFeedback));
             }
         }
 
         private void SendRawDataToSession(object state)
         {
-            var param = state as Tuple<TWebSocketSession, IList<ArraySegment<byte>>, Action<TWebSocketSession, bool>>;
-            var session = param.Item1;
-            var sendFeedback = param.Item3;
+            var param = state as BroadcastState;
+            var session = param.Session;
+            var sendFeedback = param.FeedbackFunc;
             var sendOk = false;
 
             try
             {
-                sendOk = param.Item1.TrySendRawData(param.Item2);
+                sendOk = session.TrySendRawData(param.Data);
             }
             catch (Exception e)
             {
@@ -815,5 +815,21 @@ namespace SuperWebSocket
         }
 
         #endregion
+
+        class BroadcastState
+        {
+            public TWebSocketSession Session { get; private set; }
+
+            public IList<ArraySegment<byte>> Data { get; private set; }
+
+            public Action<TWebSocketSession, bool> FeedbackFunc { get; private set; }
+
+            public BroadcastState(TWebSocketSession session, IList<ArraySegment<byte>> data, Action<TWebSocketSession, bool> feedbackFunc)
+            {
+                Session = session;
+                Data = data;
+                FeedbackFunc = feedbackFunc;
+            }
+        }
     }
 }

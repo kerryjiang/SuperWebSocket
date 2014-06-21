@@ -323,6 +323,16 @@
             <param name="length">The length.</param>
             <returns></returns>
         </member>
+        <member name="M:SuperSocket.Common.BinaryUtil.SearchMark``1(System.Collections.Generic.IList{``0},``0[],System.Int32@)">
+            <summary>
+            Searches the mark from source.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source">The source.</param>
+            <param name="mark">The mark.</param>
+            <param name="parsedLength">Length of the parsed.</param>
+            <returns></returns>
+        </member>
         <member name="M:SuperSocket.Common.BinaryUtil.SearchMark``1(System.Collections.Generic.IList{``0},``0[])">
             <summary>
             Searches the mark from source.
@@ -343,6 +353,18 @@
             <param name="mark">The mark.</param>
             <returns></returns>
         </member>
+        <member name="M:SuperSocket.Common.BinaryUtil.SearchMark``1(System.Collections.Generic.IList{``0},System.Int32,System.Int32,``0[],System.Int32@)">
+            <summary>
+            Searches the mark from source.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source">The source.</param>
+            <param name="offset">The offset.</param>
+            <param name="length">The length.</param>
+            <param name="mark">The mark.</param>
+            <param name="parsedLength">Length of the parsed.</param>
+            <returns></returns>
+        </member>
         <member name="M:SuperSocket.Common.BinaryUtil.SearchMark``1(System.Collections.Generic.IList{``0},System.Int32,System.Int32,``0[],System.Int32)">
             <summary>
             Searches the mark from source.
@@ -353,6 +375,31 @@
             <param name="length">The length.</param>
             <param name="mark">The mark.</param>
             <param name="matched">The matched.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.Common.BinaryUtil.SearchMark``1(System.Collections.Generic.IList{``0},System.Int32,System.Int32,``0[],System.Int32,System.Int32@)">
+            <summary>
+            Searches the mark from source.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source">The source.</param>
+            <param name="offset">The offset.</param>
+            <param name="length">The length.</param>
+            <param name="mark">The mark.</param>
+            <param name="matched">The matched.</param>
+            <param name="parsedLength">Length of the parsed.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.Common.BinaryUtil.SearchMark``1(System.Collections.Generic.IList{``0},System.Int32,System.Int32,SuperSocket.Common.SearchMarkState{``0},System.Int32@)">
+            <summary>
+            Searches the mark from source.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source">The source.</param>
+            <param name="offset">The offset.</param>
+            <param name="length">The length.</param>
+            <param name="searchState">State of the search.</param>
+            <param name="parsedLength">Length of the parsed.</param>
             <returns></returns>
         </member>
         <member name="M:SuperSocket.Common.BinaryUtil.SearchMark``1(System.Collections.Generic.IList{``0},System.Int32,System.Int32,SuperSocket.Common.SearchMarkState{``0})">
@@ -482,6 +529,24 @@
             true when an unknown attribute is encountered while deserializing; otherwise, false.
             </returns>
         </member>
+        <member name="M:SuperSocket.Common.ConfigurationElementBase.Unmerge(System.Configuration.ConfigurationElement,System.Configuration.ConfigurationElement,System.Configuration.ConfigurationSaveMode)">
+            <summary>
+            Modifies the <see cref="T:System.Configuration.ConfigurationElement" /> object to remove all values that should not be saved.
+            </summary>
+            <param name="sourceElement">A <see cref="T:System.Configuration.ConfigurationElement" /> at the current level containing a merged view of the properties.</param>
+            <param name="parentElement">The parent <see cref="T:System.Configuration.ConfigurationElement" />, or null if this is the top level.</param>
+            <param name="saveMode">A <see cref="T:System.Configuration.ConfigurationSaveMode" /> that determines which property values to include.</param>
+        </member>
+        <member name="M:SuperSocket.Common.ConfigurationElementBase.SerializeElement(System.Xml.XmlWriter,System.Boolean)">
+            <summary>
+            Writes the contents of this configuration element to the configuration file when implemented in a derived class.
+            </summary>
+            <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> that writes to the configuration file.</param>
+            <param name="serializeCollectionKey">true to serialize only the collection key properties; otherwise, false.</param>
+            <returns>
+            true if any data was actually serialized; otherwise, false.
+            </returns>
+        </member>
         <member name="M:SuperSocket.Common.ConfigurationElementBase.OnDeserializeUnrecognizedElement(System.String,System.Xml.XmlReader)">
             <summary>
             Gets a value indicating whether an unknown element is encountered during deserialization.
@@ -553,6 +618,14 @@
             </summary>
             <param name="config">The config.</param>
             <returns></returns>
+        </member>
+        <member name="M:SuperSocket.Common.ConfigurationExtension.LoadFrom(System.Configuration.ConfigurationElement,System.Object)">
+            <summary>
+            Loads configuration element's node information from a model.
+            </summary>
+            <param name="configElement">The config element.</param>
+            <param name="source">The source.</param>
+            <exception cref="T:System.Exception">Cannot find expected property 'Item' from the type 'ConfigurationElement'.</exception>
         </member>
         <member name="T:SuperSocket.Common.DictionaryExtension">
             <summary>

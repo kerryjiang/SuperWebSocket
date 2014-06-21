@@ -83,7 +83,7 @@ namespace SuperWebSocketTest
 
                     Console.WriteLine("Client:" + message);
 
-                    if (!MessageReceiveEvent.WaitOne(1000))
+                    if (!MessageReceiveEvent.WaitOne(10000))
                         Assert.Fail("Cannot get response in time!");
 
                     Assert.AreEqual(message, CurrentMessage);

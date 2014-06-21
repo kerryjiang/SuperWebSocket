@@ -184,6 +184,17 @@
             Registers the bootstrap remoting access service.
             </summary>
         </member>
+        <member name="M:SuperSocket.SocketEngine.DefaultBootstrap.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources.
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="M:SuperSocket.SocketEngine.DefaultBootstrap.Dispose">
+            <summary>
+            Releases unmanaged and - optionally - managed resources.
+            </summary>
+        </member>
         <member name="P:SuperSocket.SocketEngine.DefaultBootstrap.LogFactory">
             <summary>
             Gets the log factory.
@@ -202,6 +213,11 @@
         <member name="P:SuperSocket.SocketEngine.DefaultBootstrap.StartupConfigFile">
             <summary>
             Gets the startup config file.
+            </summary>
+        </member>
+        <member name="P:SuperSocket.SocketEngine.DefaultBootstrap.PerfMonitor">
+            <summary>
+            Gets the <see cref="T:SuperSocket.SocketEngine.PerformanceMonitor"/> class.
             </summary>
         </member>
         <member name="P:SuperSocket.SocketEngine.DefaultBootstrap.BaseDirectory">
@@ -527,6 +543,11 @@
             <c>true</c> if [client certificate required]; otherwise, <c>false</c>.
             </value>
         </member>
+        <member name="P:SuperSocket.SocketEngine.Configuration.CertificateConfig.KeyStorageFlags">
+            <summary>
+            Gets a value that will be used to instantiate the X509Certificate2 object in the CertificateManager
+            </summary>
+        </member>
         <member name="T:SuperSocket.SocketEngine.Configuration.CommandAssembly">
             <summary>
             Command assembly configuration element
@@ -831,6 +852,18 @@
             Server configuration collection
             </summary>
         </member>
+        <member name="M:SuperSocket.SocketEngine.Configuration.ServerCollection.AddNew(SuperSocket.SocketEngine.Configuration.Server)">
+            <summary>
+            Adds the new server element.
+            </summary>
+            <param name="newServer">The new server.</param>
+        </member>
+        <member name="M:SuperSocket.SocketEngine.Configuration.ServerCollection.Remove(System.String)">
+            <summary>
+            Removes the specified server from the configuration.
+            </summary>
+            <param name="name">The name.</param>
+        </member>
         <member name="T:SuperSocket.SocketEngine.Configuration.SocketServiceConfig">
             <summary>
             SuperSocket's root configuration node
@@ -978,6 +1011,31 @@
             <param name="culture">The culture.</param>
             <param name="activationAttributes">The activation attributes.</param>
             <returns></returns>
+        </member>
+        <member name="T:SuperSocket.SocketEngine.IPerformanceMonitor">
+            <summary>
+            Interface of IPerformanceMonitor
+            </summary>
+        </member>
+        <member name="M:SuperSocket.SocketEngine.IPerformanceMonitor.Start">
+            <summary>
+            Start PerformanceMonitor.
+            </summary>
+        </member>
+        <member name="M:SuperSocket.SocketEngine.IPerformanceMonitor.Stop">
+            <summary>
+            Stop PerformanceMonitor.
+            </summary>
+        </member>
+        <member name="E:SuperSocket.SocketEngine.IPerformanceMonitor.OnStatusUpdate">
+            <summary>
+            Invokes when status update.
+            </summary>
+        </member>
+        <member name="P:SuperSocket.SocketEngine.IPerformanceMonitor.StatusUpdateInterval">
+            <summary>
+            Get or Set status update time in seconds.
+            </summary>
         </member>
         <member name="T:SuperSocket.SocketEngine.IProcessServer">
             <summary>

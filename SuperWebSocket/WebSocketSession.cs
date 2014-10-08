@@ -315,11 +315,11 @@ namespace SuperWebSocket
         {
             string cookieValue = this.Items.GetValue<string>(WebSocketConstant.Cookie, string.Empty);
 
-            var cookies = new StringDictionary();
-            this.Cookies = cookies;
-
             if (string.IsNullOrEmpty(cookieValue))
                 return;
+
+            var cookies = new StringDictionary();
+            this.Cookies = cookies;
 
             string[] pairs = cookieValue.Split(';');
 

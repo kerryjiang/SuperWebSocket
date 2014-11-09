@@ -36,7 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net">
-      <HintPath>..\..\Reference\log4net.dll</HintPath>
+      <HintPath>..\..\Reference\SuperSocket\Net40\Debug\log4net.dll</HintPath>
     </Reference>
     <Reference Include="SuperSocket.Common">
       <HintPath>..\..\Reference\SuperSocket\Net40\Debug\SuperSocket.Common.dll</HintPath>

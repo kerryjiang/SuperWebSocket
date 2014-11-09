@@ -518,6 +518,13 @@
             <param name="socketSession">The socket session.</param>
             <returns></returns>
         </member>
+        <member name="M:SuperSocket.SocketBase.AppServerBase`2.CreateAppSession(SuperSocket.SocketBase.ISocketSession)">
+            <summary>
+            create a new TAppSession instance, you can override it to create the session instance in your own way
+            </summary>
+            <param name="socketSession">the socket session.</param>
+            <returns>the new created session instance</returns>
+        </member>
         <member name="M:SuperSocket.SocketBase.AppServerBase`2.SuperSocket#SocketBase#IAppServer#RegisterSession(SuperSocket.SocketBase.IAppSession)">
             <summary>
             Registers the new created app session into the appserver's session container.

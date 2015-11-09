@@ -290,8 +290,20 @@
             <summary>
             Copies the properties of one object to another object.
             </summary>
+            <typeparam name="T"></typeparam>
             <param name="source">The source.</param>
             <param name="target">The target.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.Common.AssemblyUtil.CopyPropertiesTo``1(``0,System.Predicate{System.Reflection.PropertyInfo},``0)">
+            <summary>
+            Copies the properties of one object to another object.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source">The source.</param>
+            <param name="predict">The properties predict.</param>
+            <param name="target">The target.</param>
+            <returns></returns>
         </member>
         <member name="M:SuperSocket.Common.AssemblyUtil.GetAssembliesFromString(System.String)">
             <summary>
@@ -603,6 +615,14 @@
             <param name="section">The section.</param>
             <param name="reader">The reader.</param>
         </member>
+        <member name="M:SuperSocket.Common.ConfigurationExtension.DeserializeChildConfig``1(System.String)">
+            <summary>
+            Deserializes the child configuration.
+            </summary>
+            <typeparam name="TConfig">The type of the configuration.</typeparam>
+            <param name="childConfig">The child configuration string.</param>
+            <returns></returns>
+        </member>
         <member name="M:SuperSocket.Common.ConfigurationExtension.GetChildConfig``1(System.Collections.Specialized.NameValueCollection,System.String)">
             <summary>
             Gets the child config.
@@ -626,6 +646,20 @@
             <param name="configElement">The config element.</param>
             <param name="source">The source.</param>
             <exception cref="T:System.Exception">Cannot find expected property 'Item' from the type 'ConfigurationElement'.</exception>
+        </member>
+        <member name="M:SuperSocket.Common.ConfigurationExtension.GetCurrentConfiguration(System.Configuration.ConfigurationElement)">
+            <summary>
+            Gets the current configuration of the configuration element.
+            </summary>
+            <returns>The current configuration.</returns>
+            <param name="configElement">Configuration element.</param>
+        </member>
+        <member name="M:SuperSocket.Common.ConfigurationExtension.ResetConfiguration(System.AppDomain,System.String)">
+            <summary>
+            Reset application's configuration to a another config file
+            </summary>
+            <param name="appDomain">the assosiated AppDomain</param>
+            <param name="configFilePath">the config file path want to reset to</param>
         </member>
         <member name="T:SuperSocket.Common.DictionaryExtension">
             <summary>

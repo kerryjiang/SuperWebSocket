@@ -195,6 +195,11 @@
             Releases unmanaged and - optionally - managed resources.
             </summary>
         </member>
+        <member name="P:SuperSocket.SocketEngine.DefaultBootstrap.SuperSocket#SocketBase#ILoggerProvider#Logger">
+            <summary>
+            Gets the bootstrap logger.
+            </summary>
+        </member>
         <member name="P:SuperSocket.SocketEngine.DefaultBootstrap.LogFactory">
             <summary>
             Gets the log factory.
@@ -294,6 +299,11 @@
             Gets the config.
             </summary>
         </member>
+        <member name="P:SuperSocket.SocketEngine.AppDomainBootstrap.SuperSocket#SocketBase#ILoggerProvider#Logger">
+            <summary>
+            Gets the bootstrap logger.
+            </summary>
+        </member>
         <member name="P:SuperSocket.SocketEngine.AppDomainBootstrap.StartupConfigFile">
             <summary>
             Gets the startup config file.
@@ -340,6 +350,18 @@
             </summary>
             <param name="configFile">The configuration file.</param>
             <returns></returns>
+        </member>
+        <member name="T:SuperSocket.SocketEngine.ConfigurationWatcher">
+            <summary>
+            The configuration file watcher, it is used for hot configuration updating
+            </summary>
+        </member>
+        <member name="M:SuperSocket.SocketEngine.ConfigurationWatcher.Watch(System.Configuration.ConfigurationSection,SuperSocket.SocketBase.IBootstrap)">
+            <summary>
+            Watches the specified configuration section.
+            </summary>
+            <param name="configSection">The configuration section.</param>
+            <param name="bootstrap">The bootstrap.</param>
         </member>
         <member name="T:SuperSocket.SocketEngine.Configuration.CommandAssembly">
             <summary>
@@ -788,7 +810,7 @@
             IRemoteWorkItem
             </summary>
         </member>
-        <member name="M:SuperSocket.SocketEngine.IRemoteWorkItem.Setup(System.String,System.String,System.String,SuperSocket.SocketBase.Config.IServerConfig,SuperSocket.SocketBase.Provider.ProviderFactoryInfo[])">
+        <member name="M:SuperSocket.SocketEngine.IRemoteWorkItem.Setup(System.String,System.String,System.String,SuperSocket.SocketBase.Config.IServerConfig,SuperSocket.SocketBase.Provider.ProviderFactoryInfo[],System.String)">
             <summary>
             Setups the specified config.
             </summary>
@@ -797,6 +819,7 @@
             <param name="assemblyImportRoot">The assembly import root.</param>
             <param name="config">The config.</param>
             <param name="factories">The factories.</param>
+            <param name="startupConfigFile">The startup configuration file path</param>
             <returns></returns>
         </member>
         <member name="M:SuperSocket.SocketEngine.ProcessAppServer.#ctor(System.String,SuperSocket.SocketBase.Metadata.StatusInfoAttribute[])">
@@ -958,6 +981,13 @@
             <param name="factories">The providers.</param>
             <returns></returns>
         </member>
+        <member name="M:SuperSocket.SocketEngine.MarshalAppServer.ReportPotentialConfigChange(SuperSocket.SocketBase.Config.IServerConfig)">
+            <summary>
+            Reports the potential configuration change.
+            </summary>
+            <param name="config">The server config which may be changed.</param>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
         <member name="M:SuperSocket.SocketEngine.MarshalAppServer.Start">
             <summary>
             Starts this server instance.
@@ -986,6 +1016,14 @@
             <summary>
             Gets the name of the server instance.
             </summary>
+        </member>
+        <member name="P:SuperSocket.SocketEngine.MarshalAppServer.Config">
+            <summary>
+            Gets the server's config.
+            </summary>
+            <value>
+            The server's config.
+            </value>
         </member>
         <member name="P:SuperSocket.SocketEngine.MarshalAppServer.State">
             <summary>

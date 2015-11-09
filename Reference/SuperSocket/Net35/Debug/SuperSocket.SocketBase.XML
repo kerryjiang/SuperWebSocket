@@ -93,6 +93,12 @@
             </summary>
             <returns>return true if start successfull, else false</returns>
         </member>
+        <member name="M:SuperSocket.SocketBase.IWorkItemBase.ReportPotentialConfigChange(SuperSocket.SocketBase.Config.IServerConfig)">
+            <summary>
+            Reports the potential configuration change.
+            </summary>
+            <param name="config">The server config which may be changed.</param>
+        </member>
         <member name="M:SuperSocket.SocketBase.IWorkItemBase.Stop">
             <summary>
             Stops this server instance.
@@ -102,6 +108,14 @@
             <summary>
             Gets the name.
             </summary>
+        </member>
+        <member name="P:SuperSocket.SocketBase.IWorkItemBase.Config">
+            <summary>
+            Gets the server's config.
+            </summary>
+            <value>
+            The server's config.
+            </value>
         </member>
         <member name="P:SuperSocket.SocketBase.IWorkItemBase.SessionCount">
             <summary>
@@ -182,11 +196,6 @@
         <member name="P:SuperSocket.SocketBase.IAppServer.ReceiveFilterFactory">
             <summary>
             Gets the Receive filter factory.
-            </summary>
-        </member>
-        <member name="P:SuperSocket.SocketBase.IAppServer.Config">
-            <summary>
-            Gets the server's config.
             </summary>
         </member>
         <member name="P:SuperSocket.SocketBase.IAppServer.Certificate">
@@ -301,6 +310,31 @@
             </summary>
             <param name="targetEndPoint">The target end point.</param>
             <returns></returns>
+        </member>
+        <member name="M:SuperSocket.SocketBase.IActiveConnector.ActiveConnect(System.Net.EndPoint,System.Net.EndPoint)">
+            <summary>
+            Connect the target endpoint actively.
+            </summary>
+            <param name="targetEndPoint">The target end point.</param>
+            <param name="localEndPoint">The local end point.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SuperSocket.SocketBase.AppServerBase`2.RegisterConfigHandler``1(SuperSocket.SocketBase.Config.IServerConfig,System.String,System.Func{``0,System.Boolean})">
+            <summary>
+            Registers the configuration option value handler, it is used for reading configuration value and reload it after the configuration is changed;
+            </summary>
+            <typeparam name="TConfigOption">The type of the configuration option.</typeparam>
+            <param name="config">The server configuration.</param>
+            <param name="name">The changed config option's name.</param>
+            <param name="handler">The handler.</param>
+        </member>
+        <member name="M:SuperSocket.SocketBase.AppServerBase`2.RegisterConfigHandler(SuperSocket.SocketBase.Config.IServerConfig,System.String,System.Func{System.String,System.Boolean})">
+            <summary>
+            Registers the configuration option value handler, it is used for reading configuration value and reload it after the configuration is changed;
+            </summary>
+            <param name="config">The server configuration.</param>
+            <param name="name">The changed config option name.</param>
+            <param name="handler">The handler.</param>
         </member>
         <member name="F:SuperSocket.SocketBase.AppServerBase`2.NullAppSession">
             <summary>
@@ -599,6 +633,15 @@
             </summary>
             <param name="relativeFilePath">The relative file path.</param>
             <returns></returns>
+        </member>
+        <member name="M:SuperSocket.SocketBase.AppServerBase`2.SuperSocket#SocketBase#IActiveConnector#ActiveConnect(System.Net.EndPoint,System.Net.EndPoint)">
+            <summary>
+            Connect the remote endpoint actively.
+            </summary>
+            <param name="targetEndPoint">The target end point.</param>
+            <param name="localEndPoint">The local end point.</param>
+            <returns></returns>
+            <exception cref="T:System.Exception">This server cannot support active connect.</exception>
         </member>
         <member name="M:SuperSocket.SocketBase.AppServerBase`2.SuperSocket#SocketBase#IActiveConnector#ActiveConnect(System.Net.EndPoint)">
             <summary>
@@ -2053,6 +2096,11 @@
         <member name="P:SuperSocket.SocketBase.Config.ConfigurationSource.CommandLoaders">
             <summary>
             Gets/sets the command loaders definition.
+            </summary>
+        </member>
+        <member name="T:SuperSocket.SocketBase.Config.HotUpdateAttribute">
+            <summary>
+            the attribute to mark which property of ServerConfig support hot update
             </summary>
         </member>
         <member name="T:SuperSocket.SocketBase.Config.IListenerConfig">

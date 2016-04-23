@@ -11,4 +11,4 @@ The WebSocket API is being standardized by the W3C and the WebSocket protocol is
 Please refer to http://en.wikipedia.org/wiki/WebSockets.
 
 
-**SuperWebSocket** is being merged into **SuperSocket** as an additional module **SuperSocket.WebSocket**. You can use **SuperSocket.WebSocket** in the same way with **SuperWebSocket** but with a different namespace.
+**SuperWebSocket** is being merged into [**SuperSocket**](https://github.com/kerryjiang/SuperSocket) as an additional module **SuperSocket.WebSocket**. You can use **SuperSocket.WebSocket** in the same way with **SuperWebSocket** but with a different namespace.
